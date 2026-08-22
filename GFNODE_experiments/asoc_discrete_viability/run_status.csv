@@ -1,0 +1,37 @@
+run_id,model,dataset,seed,status
+Discrete Candidate_Sanyo_42,Discrete Candidate,Sanyo,42,completed
+Discrete Candidate_Sanyo_43,Discrete Candidate,Sanyo,43,completed
+Discrete Candidate_Sanyo_44,Discrete Candidate,Sanyo,44,completed
+iTransformer_Sanyo_42,iTransformer,Sanyo,42,completed
+iTransformer_Sanyo_43,iTransformer,Sanyo,43,completed
+iTransformer_Sanyo_44,iTransformer,Sanyo,44,completed
+PatchTST_Sanyo_42,PatchTST,Sanyo,42,completed
+PatchTST_Sanyo_43,PatchTST,Sanyo,43,completed
+PatchTST_Sanyo_44,PatchTST,Sanyo,44,completed
+ModernTCN_Sanyo_42,ModernTCN,Sanyo,42,completed
+ModernTCN_Sanyo_43,ModernTCN,Sanyo,43,completed
+ModernTCN_Sanyo_44,ModernTCN,Sanyo,44,completed
+Discrete Candidate_Hanwha_42,Discrete Candidate,Hanwha,42,completed
+Discrete Candidate_Hanwha_43,Discrete Candidate,Hanwha,43,completed
+Discrete Candidate_Hanwha_44,Discrete Candidate,Hanwha,44,completed
+iTransformer_Hanwha_42,iTransformer,Hanwha,42,completed
+iTransformer_Hanwha_43,iTransformer,Hanwha,43,completed
+iTransformer_Hanwha_44,iTransformer,Hanwha,44,completed
+PatchTST_Hanwha_42,PatchTST,Hanwha,42,completed
+PatchTST_Hanwha_43,PatchTST,Hanwha,43,completed
+PatchTST_Hanwha_44,PatchTST,Hanwha,44,completed
+ModernTCN_Hanwha_42,ModernTCN,Hanwha,42,completed
+ModernTCN_Hanwha_43,ModernTCN,Hanwha,43,completed
+ModernTCN_Hanwha_44,ModernTCN,Hanwha,44,completed
+Discrete Candidate_Qcells_42,Discrete Candidate,Qcells,42,completed
+Discrete Candidate_Qcells_43,Discrete Candidate,Qcells,43,completed
+Discrete Candidate_Qcells_44,Discrete Candidate,Qcells,44,completed
+iTransformer_Qcells_42,iTransformer,Qcells,42,completed
+iTransformer_Qcells_43,iTransformer,Qcells,43,completed
+iTransformer_Qcells_44,iTransformer,Qcells,44,completed
+PatchTST_Qcells_42,PatchTST,Qcells,42,completed
+PatchTST_Qcells_43,PatchTST,Qcells,43,completed
+PatchTST_Qcells_44,PatchTST,Qcells,44,completed
+ModernTCN_Qcells_42,ModernTCN,Qcells,42,completed
+ModernTCN_Qcells_43,ModernTCN,Qcells,43,completed
+ModernTCN_Qcells_44,ModernTCN,Qcells,44,completed

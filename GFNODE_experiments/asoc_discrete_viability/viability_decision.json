@@ -1,0 +1,7 @@
+{
+  "average_rmse_rank": 2.6666666666666665,
+  "H144_top2_datasets": 1,
+  "combinations_more_than_5pct_behind_best": 8,
+  "no_dataset_all_horizons_last": true,
+  "verdict": "FAIL"
+}
