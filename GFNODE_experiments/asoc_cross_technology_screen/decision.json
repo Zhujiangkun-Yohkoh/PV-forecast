@@ -1,0 +1,13 @@
+{
+  "verdict": "FAIL",
+  "candidate": "SharedPrivateModernTCN",
+  "comparison": "IndependentModernTCN",
+  "scope": "regular_full_timeline, three-seed mean nRMSE",
+  "macro_nrmse_change_percent": -16.3311,
+  "improved_combinations": "0/12",
+  "h144_technologies_improved": "0/3",
+  "technology_mean_nrmse_change_percent": {"Sanyo": -16.567, "Hanwha": -14.686, "Qcells": -17.924},
+  "versus_early_fusion": {"macro_nrmse_change_percent": -1.9623, "noninferior_combinations": "4/12"},
+  "parameters": {"joint_early_fusion": 1496832, "shared_private": 55257000, "independent_single": 682896, "independent_three_total": 2048688},
+  "reason": "All pre-specified Shared–Private screening conditions failed; do not develop a v2/v3 of this route."
+}
