@@ -1,0 +1,146 @@
+{
+  "Sanyo": {
+    "dataset": "Sanyo",
+    "raw_timestamp_range": [
+      "2018-04-01 00:00:00",
+      "2018-08-31 23:55:00"
+    ],
+    "duplicate_source_timestamps": 0,
+    "feature_count_before_masks": 7,
+    "model_input_feature_count": 15,
+    "target_scaler_train_range": [
+      0.0,
+      6.05786705
+    ],
+    "target_range_for_nrmse": 6.05786705,
+    "fit_log": [
+      {
+        "preprocessor": "KNNImputer",
+        "operation": "fit",
+        "split": "train"
+      },
+      {
+        "preprocessor": "IsolationForest",
+        "operation": "fit",
+        "split": "train"
+      },
+      {
+        "preprocessor": "feature_MinMaxScaler",
+        "operation": "fit",
+        "split": "train"
+      },
+      {
+        "preprocessor": "target_MinMaxScaler",
+        "operation": "fit",
+        "split": "train"
+      }
+    ],
+    "splits": {
+      "train": {
+        "timestamp_range": [
+          "2018-04-01 00:00:00",
+          "2018-07-15 23:55:00"
+        ],
+        "regular_rows": 30528,
+        "source_timestamp_missing_rows": 0,
+        "valid_windows": 20409,
+        "valid_evaluation_targets": 2938896,
+        "daylight_evaluation_targets": 1230308
+      },
+      "validation": {
+        "timestamp_range": [
+          "2018-07-16 00:00:00",
+          "2018-08-07 23:55:00"
+        ],
+        "regular_rows": 6624,
+        "source_timestamp_missing_rows": 0,
+        "valid_windows": 3619,
+        "valid_evaluation_targets": 521136,
+        "daylight_evaluation_targets": 213896
+      },
+      "test": {
+        "timestamp_range": [
+          "2018-08-08 00:00:00",
+          "2018-08-31 23:55:00"
+        ],
+        "regular_rows": 6912,
+        "source_timestamp_missing_rows": 0,
+        "valid_windows": 4177,
+        "valid_evaluation_targets": 601488,
+        "daylight_evaluation_targets": 263547
+      }
+    }
+  },
+  "Qcells": {
+    "dataset": "Qcells",
+    "raw_timestamp_range": [
+      "2018-04-01 00:00:00",
+      "2018-08-31 23:55:00"
+    ],
+    "duplicate_source_timestamps": 0,
+    "feature_count_before_masks": 7,
+    "model_input_feature_count": 15,
+    "target_scaler_train_range": [
+      0.0,
+      6.036834717
+    ],
+    "target_range_for_nrmse": 6.036834717,
+    "fit_log": [
+      {
+        "preprocessor": "KNNImputer",
+        "operation": "fit",
+        "split": "train"
+      },
+      {
+        "preprocessor": "IsolationForest",
+        "operation": "fit",
+        "split": "train"
+      },
+      {
+        "preprocessor": "feature_MinMaxScaler",
+        "operation": "fit",
+        "split": "train"
+      },
+      {
+        "preprocessor": "target_MinMaxScaler",
+        "operation": "fit",
+        "split": "train"
+      }
+    ],
+    "splits": {
+      "train": {
+        "timestamp_range": [
+          "2018-04-01 00:00:00",
+          "2018-07-15 23:55:00"
+        ],
+        "regular_rows": 30528,
+        "source_timestamp_missing_rows": 0,
+        "valid_windows": 12747,
+        "valid_evaluation_targets": 1835568,
+        "daylight_evaluation_targets": 731400
+      },
+      "validation": {
+        "timestamp_range": [
+          "2018-07-16 00:00:00",
+          "2018-08-07 23:55:00"
+        ],
+        "regular_rows": 6624,
+        "source_timestamp_missing_rows": 0,
+        "valid_windows": 2999,
+        "valid_evaluation_targets": 431856,
+        "daylight_evaluation_targets": 171791
+      },
+      "test": {
+        "timestamp_range": [
+          "2018-08-08 00:00:00",
+          "2018-08-31 23:55:00"
+        ],
+        "regular_rows": 6912,
+        "source_timestamp_missing_rows": 0,
+        "valid_windows": 3019,
+        "valid_evaluation_targets": 434736,
+        "daylight_evaluation_targets": 187271
+      }
+    }
+  }
+}

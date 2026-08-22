@@ -1,0 +1,28 @@
+{
+  "dataset": {
+    "Qcells": {
+      "H144_gfnode_rmse_mean": 0.830724835395813,
+      "H144_discrete_rmse_mean": 0.8853740890820821,
+      "H144_relative_rmse_improvement_percent": 6.172447822922756,
+      "H12_relative_rmse_improvement_percent": -49.186649221864855,
+      "H144_seedwise_gfnode_better": 3
+    },
+    "Sanyo": {
+      "H144_gfnode_rmse_mean": 0.954094668229421,
+      "H144_discrete_rmse_mean": 0.8719446857770284,
+      "H144_relative_rmse_improvement_percent": -9.421467186210911,
+      "H12_relative_rmse_improvement_percent": -52.9942633791045,
+      "H144_seedwise_gfnode_better": 0
+    }
+  },
+  "all_runs_numerically_finite": true,
+  "criteria": {
+    "both_datasets_H144_better": false,
+    "at_least_one_H144_improves_3_percent": true,
+    "other_dataset_not_worse_than_1_percent": false,
+    "long_horizon_not_more_than_1pp_weaker_than_H12": true,
+    "not_single_seed_effect": false,
+    "no_numerical_divergence": true
+  },
+  "verdict": "FAIL"
+}

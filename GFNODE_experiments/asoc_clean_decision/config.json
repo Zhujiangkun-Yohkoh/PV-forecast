@@ -1,0 +1,25 @@
+{
+  "seed_values": [42, 43, 44],
+  "datasets": {
+    "Sanyo": "../17Sanyo.csv",
+    "Qcells": "../38QCELLS.csv"
+  },
+  "timestamp_column": "timestamp",
+  "target_column": "Active_Power",
+  "irradiance_column": "Global_Horizontal_Radiation",
+  "splits": {
+    "train": ["2018-04-01 00:00:00", "2018-07-15 23:55:00"],
+    "validation": ["2018-07-16 00:00:00", "2018-08-07 23:55:00"],
+    "test": ["2018-08-08 00:00:00", "2018-08-31 23:55:00"]
+  },
+  "lookback": 72,
+  "horizon": 144,
+  "frequency_minutes": 5,
+  "daylight_ghi_threshold": 20.0,
+  "knn_neighbors": 5,
+  "isolation_forest": {"enabled": true, "contamination": 0.01, "random_state": 42},
+  "model": {"embedding_dim": 64, "tcn_branch_channels": 24, "transformer_heads": 4, "transformer_layers": 1, "dropout": 0.1},
+  "training": {"batch_size": 256, "learning_rate": 0.001, "weight_decay": 0.00001, "max_epochs": 25, "patience": 5, "num_workers": 0},
+  "device": "cuda_if_available",
+  "normalized_rmse_denominator": "train_target_range"
+}
