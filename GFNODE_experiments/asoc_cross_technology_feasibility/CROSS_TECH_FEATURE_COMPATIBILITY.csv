@@ -1,0 +1,8 @@
+feature,all_three_present,comparison,units,source
+Performance_Ratio,True,different_sensor_or_values,UNKNOWN,CSV only
+Weather_Temperature_Celsius,True,exactly_identical,UNKNOWN,CSV only
+Weather_Relative_Humidity,True,exactly_identical,UNKNOWN,CSV only
+Global_Horizontal_Radiation,True,exactly_identical,UNKNOWN,CSV only
+Diffuse_Horizontal_Radiation,True,exactly_identical,UNKNOWN,CSV only
+Radiation_Global_Tilted,True,exactly_identical,UNKNOWN,CSV only
+Radiation_Diffuse_Tilted,True,exactly_identical,UNKNOWN,CSV only
