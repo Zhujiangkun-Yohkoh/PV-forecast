@@ -1,0 +1,532 @@
+﻿section,array,year,scope,metric,value,unit,notes
+weather,ALL,ALL,past_only,dominant_records_per_5min,300,records,
+weather,ALL,ALL,past_only,observed_5min_bins_2021_2023,560,intervals,
+weather,ALL,ALL,past_only,records_per_bin_distribution,"{""252"": 1, ""300"": 559}",records,
+source_coverage,Calyxo,2021,calendar_year,expected_5min_intervals,105120,intervals,
+source_coverage,Calyxo,2021,calendar_year,pv_rows_present,100539,intervals,
+source_coverage,Calyxo,2021,calendar_year,pv_values_valid,99074,intervals,
+source_coverage,Calyxo,2021,calendar_year,weather_bins_present,0,intervals,
+source_coverage,Calyxo,2021,calendar_year,weather_complete_bins,0,intervals,
+source_coverage,Calyxo,2022,calendar_year,expected_5min_intervals,105120,intervals,
+source_coverage,Calyxo,2022,calendar_year,pv_rows_present,102901,intervals,
+source_coverage,Calyxo,2022,calendar_year,pv_values_valid,100501,intervals,
+source_coverage,Calyxo,2022,calendar_year,weather_bins_present,0,intervals,
+source_coverage,Calyxo,2022,calendar_year,weather_complete_bins,0,intervals,
+source_coverage,Calyxo,2023,calendar_year,expected_5min_intervals,105120,intervals,
+source_coverage,Calyxo,2023,calendar_year,pv_rows_present,101810,intervals,
+source_coverage,Calyxo,2023,calendar_year,pv_values_valid,95794,intervals,
+source_coverage,Calyxo,2023,calendar_year,weather_bins_present,560,intervals,
+source_coverage,Calyxo,2023,calendar_year,weather_complete_bins,544,intervals,
+alignment,Calyxo,ALL,common,common_start,2023-01-01 09:05:00,,
+alignment,Calyxo,ALL,common,common_end,2023-01-03 07:40:00,,
+coverage,Calyxo,2021,full_timeline,expected_intervals,0,intervals,
+coverage,Calyxo,2021,full_timeline,pv_rows_present,0,intervals,
+coverage,Calyxo,2021,full_timeline,weather_rows_present,0,intervals,
+coverage,Calyxo,2021,full_timeline,complete_intervals,0,intervals,
+coverage,Calyxo,2021,full_timeline,partial_intervals,0,intervals,
+coverage,Calyxo,2021,full_timeline,no_weather_intervals,0,intervals,
+coverage,Calyxo,2022,full_timeline,expected_intervals,0,intervals,
+coverage,Calyxo,2022,full_timeline,pv_rows_present,0,intervals,
+coverage,Calyxo,2022,full_timeline,weather_rows_present,0,intervals,
+coverage,Calyxo,2022,full_timeline,complete_intervals,0,intervals,
+coverage,Calyxo,2022,full_timeline,partial_intervals,0,intervals,
+coverage,Calyxo,2022,full_timeline,no_weather_intervals,0,intervals,
+coverage,Calyxo,2023,full_timeline,expected_intervals,560,intervals,
+coverage,Calyxo,2023,full_timeline,pv_rows_present,560,intervals,
+coverage,Calyxo,2023,full_timeline,pv_values_valid,560,intervals,
+coverage,Calyxo,2023,full_timeline,malformed_source_records,0,intervals,
+coverage,Calyxo,2023,full_timeline,weather_rows_present,560,intervals,
+coverage,Calyxo,2023,full_timeline,weather_values_valid,560,intervals,
+coverage,Calyxo,2023,full_timeline,complete_intervals,544,intervals,
+coverage,Calyxo,2023,full_timeline,partial_intervals,16,intervals,
+coverage,Calyxo,2023,full_timeline,no_weather_intervals,0,intervals,
+coverage,Calyxo,2023,full_timeline,pv_valid_weather_incomplete,16,intervals,
+coverage,Calyxo,2023,full_timeline,weather_valid_pv_missing,0,intervals,
+coverage,Calyxo,2023,full_timeline,longest_complete_segment,925,minutes,
+coverage,Calyxo,2023,full_timeline,longest_weather_gap,0,minutes,
+coverage,Calyxo,2023,daylight,classified_intervals,290,intervals,Daylight threshold: past-interval mean irradiance >20 W/m2; missing-weather intervals unclassified.
+coverage,Calyxo,2023,daylight,pv_value_valid_ratio,1.0,ratio,
+coverage,Calyxo,2023,daylight,weather_complete_ratio,0.9793103448275862,ratio,
+coverage,Calyxo,2023,night,classified_intervals,270,intervals,Daylight threshold: past-interval mean irradiance >20 W/m2; missing-weather intervals unclassified.
+coverage,Calyxo,2023,night,pv_value_valid_ratio,1.0,ratio,
+coverage,Calyxo,2023,night,weather_complete_ratio,0.9629629629629629,ratio,
+descriptive,Calyxo,2023,past_only,usable_feature_rows,560,intervals,
+correlation,Calyxo,2023,past_only,mean_vs_next_ramp_pearson,0.04423153628932448,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,mean_vs_next_ramp_spearman,0.04040699157792022,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,mean_vs_hour_ramp_pearson,-0.032882431604536744,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,mean_vs_hour_ramp_spearman,0.014094713837544317,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,mean_vs_abs_hour_ramp_pearson,0.5405694749536778,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,mean_vs_abs_hour_ramp_spearman,0.8440585108108779,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,std_vs_next_ramp_pearson,-0.03956826816724637,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,std_vs_next_ramp_spearman,0.024646292363208276,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,std_vs_hour_ramp_pearson,-0.07350685691669276,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,std_vs_hour_ramp_spearman,-0.028704441279517667,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,std_vs_abs_hour_ramp_pearson,0.42439710427860905,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,std_vs_abs_hour_ramp_spearman,0.8550755628445109,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,minimum_vs_next_ramp_pearson,0.052942181037928346,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,minimum_vs_next_ramp_spearman,0.02259662635372445,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,minimum_vs_hour_ramp_pearson,-0.0049768520478187025,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,minimum_vs_hour_ramp_spearman,0.019478137903438077,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,minimum_vs_abs_hour_ramp_pearson,0.5071878878907502,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,minimum_vs_abs_hour_ramp_spearman,0.8418093280003767,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,maximum_vs_next_ramp_pearson,0.023913102028546625,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,maximum_vs_next_ramp_spearman,0.037965662779120515,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,maximum_vs_hour_ramp_pearson,-0.0614182350882192,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,maximum_vs_hour_ramp_spearman,0.005555420141521224,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,maximum_vs_abs_hour_ramp_pearson,0.5783029359323675,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,maximum_vs_abs_hour_ramp_spearman,0.8511731472011355,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,range_vs_next_ramp_pearson,-0.01483163578583968,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,range_vs_next_ramp_spearman,0.031510876137011735,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,range_vs_hour_ramp_pearson,-0.10328434192218115,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,range_vs_hour_ramp_spearman,-0.02846239326676026,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,range_vs_abs_hour_ramp_pearson,0.4757107325708047,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,range_vs_abs_hour_ramp_spearman,0.8567813115518529,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,first_last_change_vs_next_ramp_pearson,-0.06581301076323891,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,first_last_change_vs_next_ramp_spearman,0.12713294486870466,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,first_last_change_vs_hour_ramp_pearson,0.0867996241173512,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,first_last_change_vs_hour_ramp_spearman,0.2634099734818884,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,first_last_change_vs_abs_hour_ramp_pearson,0.011144024862459967,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,first_last_change_vs_abs_hour_ramp_spearman,0.05257838492957217,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,max_abs_first_difference_vs_next_ramp_pearson,-0.006239581817970021,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,max_abs_first_difference_vs_next_ramp_spearman,0.01116039225178711,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,max_abs_first_difference_vs_hour_ramp_pearson,-0.08578155441387336,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,max_abs_first_difference_vs_hour_ramp_spearman,-0.04590495493454195,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,max_abs_first_difference_vs_abs_hour_ramp_pearson,0.3649016471581255,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,max_abs_first_difference_vs_abs_hour_ramp_spearman,0.8507060486868006,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,slope_vs_next_ramp_pearson,0.031199275299383166,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,slope_vs_next_ramp_spearman,0.12033368921480557,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,slope_vs_hour_ramp_pearson,0.06177951959812715,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,slope_vs_hour_ramp_spearman,0.23183339262627722,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,slope_vs_abs_hour_ramp_pearson,0.06395217333143391,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,slope_vs_abs_hour_ramp_spearman,0.05302237968301611,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,coefficient_of_variation_vs_next_ramp_pearson,-0.027311415254983557,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,coefficient_of_variation_vs_next_ramp_spearman,-0.046770318553980395,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,coefficient_of_variation_vs_hour_ramp_pearson,-0.03259762544723695,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,coefficient_of_variation_vs_hour_ramp_spearman,-0.1506369793978244,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,coefficient_of_variation_vs_abs_hour_ramp_pearson,-0.0883223923466711,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,coefficient_of_variation_vs_abs_hour_ramp_spearman,-0.04519420977351779,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,valid_count_vs_next_ramp_pearson,-0.007027137694956631,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,valid_count_vs_next_ramp_spearman,-0.045571888941135036,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,valid_count_vs_hour_ramp_pearson,-0.1335428202306049,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,valid_count_vs_hour_ramp_spearman,-0.0877194052384332,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,valid_count_vs_abs_hour_ramp_pearson,-0.12220767914592487,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Calyxo,2023,past_only,valid_count_vs_abs_hour_ramp_spearman,0.05232983386865466,rho,"Feature interval is (t-5min,t]; target begins at t."
+incremental,Calyxo,2023,past_only,std_partial_corr_abs_hour_ramp_given_mean,0.11607175457024187,r,
+incremental,Calyxo,2023,past_only,range_partial_corr_abs_hour_ramp_given_mean,0.14195041029081001,r,
+incremental,Calyxo,2023,past_only,max_abs_first_difference_partial_corr_abs_hour_ramp_given_mean,0.10792039590068987,r,
+incremental,Calyxo,2023,past_only,slope_partial_corr_abs_hour_ramp_given_mean,0.09570284142624119,r,
+incremental,Calyxo,2023,past_only,coefficient_of_variation_partial_corr_abs_hour_ramp_given_mean,-0.0714727952521912,r,
+ramp_group,Calyxo,2023,stable,mean_mean,0.006406035665294927,,
+ramp_group,Calyxo,2023,stable,std_mean,0.004211520916411523,,
+ramp_group,Calyxo,2023,stable,range_mean,0.012345679012345678,,
+ramp_group,Calyxo,2023,stable,max_abs_first_difference_mean,0.005486968449931413,,
+ramp_group,Calyxo,2023,stable,slope_mean,3.521544996285657e-05,,
+ramp_group,Calyxo,2023,stable,coefficient_of_variation_mean,1.3039303782593623,,
+ramp_group,Calyxo,2023,moderate,mean_mean,329.3547718320327,,
+ramp_group,Calyxo,2023,moderate,std_mean,47.46817878706405,,
+ramp_group,Calyxo,2023,moderate,range_mean,166.1628205128205,,
+ramp_group,Calyxo,2023,moderate,max_abs_first_difference_mean,27.74102564102564,,
+ramp_group,Calyxo,2023,moderate,slope_mean,-0.09335990966568267,,
+ramp_group,Calyxo,2023,moderate,coefficient_of_variation_mean,0.18037352789420327,,
+ramp_group,Calyxo,2023,ramp,mean_mean,404.99501605006714,,
+ramp_group,Calyxo,2023,ramp,std_mean,61.49598981270635,,
+ramp_group,Calyxo,2023,ramp,range_mean,216.79946524064172,,
+ramp_group,Calyxo,2023,ramp,max_abs_first_difference_mean,45.815508021390386,,
+ramp_group,Calyxo,2023,ramp,slope_mean,0.058317666542624685,,
+ramp_group,Calyxo,2023,ramp,coefficient_of_variation_mean,0.1370265160505644,,
+source_coverage,Hanwha,2021,calendar_year,expected_5min_intervals,105120,intervals,
+source_coverage,Hanwha,2021,calendar_year,pv_rows_present,100541,intervals,
+source_coverage,Hanwha,2021,calendar_year,pv_values_valid,99076,intervals,
+source_coverage,Hanwha,2021,calendar_year,weather_bins_present,0,intervals,
+source_coverage,Hanwha,2021,calendar_year,weather_complete_bins,0,intervals,
+source_coverage,Hanwha,2022,calendar_year,expected_5min_intervals,105120,intervals,
+source_coverage,Hanwha,2022,calendar_year,pv_rows_present,102901,intervals,
+source_coverage,Hanwha,2022,calendar_year,pv_values_valid,100501,intervals,
+source_coverage,Hanwha,2022,calendar_year,weather_bins_present,0,intervals,
+source_coverage,Hanwha,2022,calendar_year,weather_complete_bins,0,intervals,
+source_coverage,Hanwha,2023,calendar_year,expected_5min_intervals,105120,intervals,
+source_coverage,Hanwha,2023,calendar_year,pv_rows_present,101833,intervals,
+source_coverage,Hanwha,2023,calendar_year,pv_values_valid,95908,intervals,
+source_coverage,Hanwha,2023,calendar_year,weather_bins_present,560,intervals,
+source_coverage,Hanwha,2023,calendar_year,weather_complete_bins,544,intervals,
+alignment,Hanwha,ALL,common,common_start,2023-01-01 09:05:00,,
+alignment,Hanwha,ALL,common,common_end,2023-01-03 07:40:00,,
+coverage,Hanwha,2021,full_timeline,expected_intervals,0,intervals,
+coverage,Hanwha,2021,full_timeline,pv_rows_present,0,intervals,
+coverage,Hanwha,2021,full_timeline,weather_rows_present,0,intervals,
+coverage,Hanwha,2021,full_timeline,complete_intervals,0,intervals,
+coverage,Hanwha,2021,full_timeline,partial_intervals,0,intervals,
+coverage,Hanwha,2021,full_timeline,no_weather_intervals,0,intervals,
+coverage,Hanwha,2022,full_timeline,expected_intervals,0,intervals,
+coverage,Hanwha,2022,full_timeline,pv_rows_present,0,intervals,
+coverage,Hanwha,2022,full_timeline,weather_rows_present,0,intervals,
+coverage,Hanwha,2022,full_timeline,complete_intervals,0,intervals,
+coverage,Hanwha,2022,full_timeline,partial_intervals,0,intervals,
+coverage,Hanwha,2022,full_timeline,no_weather_intervals,0,intervals,
+coverage,Hanwha,2023,full_timeline,expected_intervals,560,intervals,
+coverage,Hanwha,2023,full_timeline,pv_rows_present,560,intervals,
+coverage,Hanwha,2023,full_timeline,pv_values_valid,560,intervals,
+coverage,Hanwha,2023,full_timeline,malformed_source_records,0,intervals,
+coverage,Hanwha,2023,full_timeline,weather_rows_present,560,intervals,
+coverage,Hanwha,2023,full_timeline,weather_values_valid,560,intervals,
+coverage,Hanwha,2023,full_timeline,complete_intervals,544,intervals,
+coverage,Hanwha,2023,full_timeline,partial_intervals,16,intervals,
+coverage,Hanwha,2023,full_timeline,no_weather_intervals,0,intervals,
+coverage,Hanwha,2023,full_timeline,pv_valid_weather_incomplete,16,intervals,
+coverage,Hanwha,2023,full_timeline,weather_valid_pv_missing,0,intervals,
+coverage,Hanwha,2023,full_timeline,longest_complete_segment,925,minutes,
+coverage,Hanwha,2023,full_timeline,longest_weather_gap,0,minutes,
+coverage,Hanwha,2023,daylight,classified_intervals,290,intervals,Daylight threshold: past-interval mean irradiance >20 W/m2; missing-weather intervals unclassified.
+coverage,Hanwha,2023,daylight,pv_value_valid_ratio,1.0,ratio,
+coverage,Hanwha,2023,daylight,weather_complete_ratio,0.9793103448275862,ratio,
+coverage,Hanwha,2023,night,classified_intervals,270,intervals,Daylight threshold: past-interval mean irradiance >20 W/m2; missing-weather intervals unclassified.
+coverage,Hanwha,2023,night,pv_value_valid_ratio,1.0,ratio,
+coverage,Hanwha,2023,night,weather_complete_ratio,0.9629629629629629,ratio,
+descriptive,Hanwha,2023,past_only,usable_feature_rows,560,intervals,
+correlation,Hanwha,2023,past_only,mean_vs_next_ramp_pearson,0.04337441406640809,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,mean_vs_next_ramp_spearman,0.04763707482165257,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,mean_vs_hour_ramp_pearson,-0.03470190288400888,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,mean_vs_hour_ramp_spearman,0.010740004888061015,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,mean_vs_abs_hour_ramp_pearson,0.5290428190489849,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,mean_vs_abs_hour_ramp_spearman,0.8282683373702815,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,std_vs_next_ramp_pearson,-0.03989996444353206,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,std_vs_next_ramp_spearman,0.03618895369301571,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,std_vs_hour_ramp_pearson,-0.07308606345182393,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,std_vs_hour_ramp_spearman,-0.03317143473240707,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,std_vs_abs_hour_ramp_pearson,0.41537819471084575,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,std_vs_abs_hour_ramp_spearman,0.8404693962176905,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,minimum_vs_next_ramp_pearson,0.05363185445001864,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,minimum_vs_next_ramp_spearman,0.030295438362068796,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,minimum_vs_hour_ramp_pearson,-0.006867215555745418,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,minimum_vs_hour_ramp_spearman,0.01593018524678806,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,minimum_vs_abs_hour_ramp_pearson,0.4962640083924169,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,minimum_vs_abs_hour_ramp_spearman,0.8246937073517182,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,maximum_vs_next_ramp_pearson,0.02315705869424412,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,maximum_vs_next_ramp_spearman,0.04615271184193397,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,maximum_vs_hour_ramp_pearson,-0.06238202702277474,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,maximum_vs_hour_ramp_spearman,0.0006318784521686356,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,maximum_vs_abs_hour_ramp_pearson,0.5659241942083635,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,maximum_vs_abs_hour_ramp_spearman,0.8355994797082448,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,range_vs_next_ramp_pearson,-0.016913470343943672,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,range_vs_next_ramp_spearman,0.04166494417338797,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,range_vs_hour_ramp_pearson,-0.10294926742210438,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,range_vs_hour_ramp_spearman,-0.03302878628231072,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,range_vs_abs_hour_ramp_pearson,0.4656007204326917,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,range_vs_abs_hour_ramp_spearman,0.842161546200519,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,first_last_change_vs_next_ramp_pearson,-0.06414217249620993,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,first_last_change_vs_next_ramp_spearman,0.13733110437396592,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,first_last_change_vs_hour_ramp_pearson,0.08875845023264922,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,first_last_change_vs_hour_ramp_spearman,0.2710132162442875,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,first_last_change_vs_abs_hour_ramp_pearson,0.01158871512105026,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,first_last_change_vs_abs_hour_ramp_spearman,0.05534402599406271,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,max_abs_first_difference_vs_next_ramp_pearson,-0.010183507153539589,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,max_abs_first_difference_vs_next_ramp_spearman,0.018859538121111494,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,max_abs_first_difference_vs_hour_ramp_pearson,-0.08735898160622725,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,max_abs_first_difference_vs_hour_ramp_spearman,-0.050587324310573153,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,max_abs_first_difference_vs_abs_hour_ramp_pearson,0.358203001615372,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,max_abs_first_difference_vs_abs_hour_ramp_spearman,0.8381200721113357,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,slope_vs_next_ramp_pearson,0.033321096806387916,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,slope_vs_next_ramp_spearman,0.13038913372380628,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,slope_vs_hour_ramp_pearson,0.0644327578509932,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,slope_vs_hour_ramp_spearman,0.23428624947080662,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,slope_vs_abs_hour_ramp_pearson,0.06500823852442623,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,slope_vs_abs_hour_ramp_spearman,0.05518029452780798,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,coefficient_of_variation_vs_next_ramp_pearson,-0.027989736259593678,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,coefficient_of_variation_vs_next_ramp_spearman,-0.052414378552331845,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,coefficient_of_variation_vs_hour_ramp_pearson,-0.03659509816049348,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,coefficient_of_variation_vs_hour_ramp_spearman,-0.1506088653299739,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,coefficient_of_variation_vs_abs_hour_ramp_pearson,-0.08664305243696756,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,coefficient_of_variation_vs_abs_hour_ramp_spearman,-0.04383994569661455,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,valid_count_vs_next_ramp_pearson,-0.007235787320445411,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,valid_count_vs_next_ramp_spearman,-0.04557229364534697,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,valid_count_vs_hour_ramp_pearson,-0.13370395836814222,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,valid_count_vs_hour_ramp_spearman,-0.09546452893543263,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,valid_count_vs_abs_hour_ramp_pearson,-0.12292142960400292,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Hanwha,2023,past_only,valid_count_vs_abs_hour_ramp_spearman,0.04735691679843065,rho,"Feature interval is (t-5min,t]; target begins at t."
+incremental,Hanwha,2023,past_only,std_partial_corr_abs_hour_ramp_given_mean,0.11266738187847478,r,
+incremental,Hanwha,2023,past_only,range_partial_corr_abs_hour_ramp_given_mean,0.13778709403797942,r,
+incremental,Hanwha,2023,past_only,max_abs_first_difference_partial_corr_abs_hour_ramp_given_mean,0.10621827797880799,r,
+incremental,Hanwha,2023,past_only,slope_partial_corr_abs_hour_ramp_given_mean,0.09570968312283593,r,
+incremental,Hanwha,2023,past_only,coefficient_of_variation_partial_corr_abs_hour_ramp_given_mean,-0.07273573051978967,r,
+ramp_group,Hanwha,2023,stable,mean_mean,0.0007118807118807115,,
+ramp_group,Hanwha,2023,stable,std_mean,0.0011972320330542114,,
+ramp_group,Hanwha,2023,stable,range_mean,0.002886002886002886,,
+ramp_group,Hanwha,2023,stable,max_abs_first_difference_mean,0.002886002886002886,,
+ramp_group,Hanwha,2023,stable,slope_mean,2.4665978732135087e-06,,
+ramp_group,Hanwha,2023,stable,coefficient_of_variation_mean,1.8924518512946973,,
+ramp_group,Hanwha,2023,moderate,mean_mean,311.2144077022521,,
+ramp_group,Hanwha,2023,moderate,std_mean,43.62988759003388,,
+ramp_group,Hanwha,2023,moderate,range_mean,153.42136150234742,,
+ramp_group,Hanwha,2023,moderate,max_abs_first_difference_mean,25.680751173708916,,
+ramp_group,Hanwha,2023,moderate,slope_mean,-0.08806351888262227,,
+ramp_group,Hanwha,2023,moderate,coefficient_of_variation_mean,0.18517649689380133,,
+ramp_group,Hanwha,2023,ramp,mean_mean,397.6424313798355,,
+ramp_group,Hanwha,2023,ramp,std_mean,61.36853549996073,,
+ramp_group,Hanwha,2023,ramp,range_mean,215.82442067736187,,
+ramp_group,Hanwha,2023,ramp,max_abs_first_difference_mean,45.603386809269175,,
+ramp_group,Hanwha,2023,ramp,slope_mean,0.06032953282618552,,
+ramp_group,Hanwha,2023,ramp,coefficient_of_variation_mean,0.1394355414714815,,
+source_coverage,Q CELLS,2021,calendar_year,expected_5min_intervals,105120,intervals,
+source_coverage,Q CELLS,2021,calendar_year,pv_rows_present,100539,intervals,
+source_coverage,Q CELLS,2021,calendar_year,pv_values_valid,99074,intervals,
+source_coverage,Q CELLS,2021,calendar_year,weather_bins_present,0,intervals,
+source_coverage,Q CELLS,2021,calendar_year,weather_complete_bins,0,intervals,
+source_coverage,Q CELLS,2022,calendar_year,expected_5min_intervals,105120,intervals,
+source_coverage,Q CELLS,2022,calendar_year,pv_rows_present,102901,intervals,
+source_coverage,Q CELLS,2022,calendar_year,pv_values_valid,100501,intervals,
+source_coverage,Q CELLS,2022,calendar_year,weather_bins_present,0,intervals,
+source_coverage,Q CELLS,2022,calendar_year,weather_complete_bins,0,intervals,
+source_coverage,Q CELLS,2023,calendar_year,expected_5min_intervals,105120,intervals,
+source_coverage,Q CELLS,2023,calendar_year,pv_rows_present,101812,intervals,
+source_coverage,Q CELLS,2023,calendar_year,pv_values_valid,95981,intervals,
+source_coverage,Q CELLS,2023,calendar_year,weather_bins_present,560,intervals,
+source_coverage,Q CELLS,2023,calendar_year,weather_complete_bins,544,intervals,
+alignment,Q CELLS,ALL,common,common_start,2023-01-01 09:05:00,,
+alignment,Q CELLS,ALL,common,common_end,2023-01-03 07:40:00,,
+coverage,Q CELLS,2021,full_timeline,expected_intervals,0,intervals,
+coverage,Q CELLS,2021,full_timeline,pv_rows_present,0,intervals,
+coverage,Q CELLS,2021,full_timeline,weather_rows_present,0,intervals,
+coverage,Q CELLS,2021,full_timeline,complete_intervals,0,intervals,
+coverage,Q CELLS,2021,full_timeline,partial_intervals,0,intervals,
+coverage,Q CELLS,2021,full_timeline,no_weather_intervals,0,intervals,
+coverage,Q CELLS,2022,full_timeline,expected_intervals,0,intervals,
+coverage,Q CELLS,2022,full_timeline,pv_rows_present,0,intervals,
+coverage,Q CELLS,2022,full_timeline,weather_rows_present,0,intervals,
+coverage,Q CELLS,2022,full_timeline,complete_intervals,0,intervals,
+coverage,Q CELLS,2022,full_timeline,partial_intervals,0,intervals,
+coverage,Q CELLS,2022,full_timeline,no_weather_intervals,0,intervals,
+coverage,Q CELLS,2023,full_timeline,expected_intervals,560,intervals,
+coverage,Q CELLS,2023,full_timeline,pv_rows_present,560,intervals,
+coverage,Q CELLS,2023,full_timeline,pv_values_valid,560,intervals,
+coverage,Q CELLS,2023,full_timeline,malformed_source_records,0,intervals,
+coverage,Q CELLS,2023,full_timeline,weather_rows_present,560,intervals,
+coverage,Q CELLS,2023,full_timeline,weather_values_valid,560,intervals,
+coverage,Q CELLS,2023,full_timeline,complete_intervals,544,intervals,
+coverage,Q CELLS,2023,full_timeline,partial_intervals,16,intervals,
+coverage,Q CELLS,2023,full_timeline,no_weather_intervals,0,intervals,
+coverage,Q CELLS,2023,full_timeline,pv_valid_weather_incomplete,16,intervals,
+coverage,Q CELLS,2023,full_timeline,weather_valid_pv_missing,0,intervals,
+coverage,Q CELLS,2023,full_timeline,longest_complete_segment,925,minutes,
+coverage,Q CELLS,2023,full_timeline,longest_weather_gap,0,minutes,
+coverage,Q CELLS,2023,daylight,classified_intervals,290,intervals,Daylight threshold: past-interval mean irradiance >20 W/m2; missing-weather intervals unclassified.
+coverage,Q CELLS,2023,daylight,pv_value_valid_ratio,1.0,ratio,
+coverage,Q CELLS,2023,daylight,weather_complete_ratio,0.9793103448275862,ratio,
+coverage,Q CELLS,2023,night,classified_intervals,270,intervals,Daylight threshold: past-interval mean irradiance >20 W/m2; missing-weather intervals unclassified.
+coverage,Q CELLS,2023,night,pv_value_valid_ratio,1.0,ratio,
+coverage,Q CELLS,2023,night,weather_complete_ratio,0.9629629629629629,ratio,
+descriptive,Q CELLS,2023,past_only,usable_feature_rows,560,intervals,
+correlation,Q CELLS,2023,past_only,mean_vs_next_ramp_pearson,0.041900494163624895,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,mean_vs_next_ramp_spearman,0.05018286943407658,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,mean_vs_hour_ramp_pearson,-0.039424720229541056,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,mean_vs_hour_ramp_spearman,0.00832300916797094,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,mean_vs_abs_hour_ramp_pearson,0.525357669887237,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,mean_vs_abs_hour_ramp_spearman,0.8222653874812687,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,std_vs_next_ramp_pearson,-0.03920675991646953,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,std_vs_next_ramp_spearman,0.03706579274921973,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,std_vs_hour_ramp_pearson,-0.07975598979341188,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,std_vs_hour_ramp_spearman,-0.03599532024427254,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,std_vs_abs_hour_ramp_pearson,0.41207248658420104,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,std_vs_abs_hour_ramp_spearman,0.8359993447708126,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,minimum_vs_next_ramp_pearson,0.0541572580952737,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,minimum_vs_next_ramp_spearman,0.03993527952362809,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,minimum_vs_hour_ramp_pearson,-0.00898626961102648,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,minimum_vs_hour_ramp_spearman,0.014261469206879391,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,minimum_vs_abs_hour_ramp_pearson,0.49171153412200963,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,minimum_vs_abs_hour_ramp_spearman,0.8186160423560949,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,maximum_vs_next_ramp_pearson,0.021506428650592425,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,maximum_vs_next_ramp_spearman,0.048149040012083005,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,maximum_vs_hour_ramp_pearson,-0.06767979427047022,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,maximum_vs_hour_ramp_spearman,-0.0016966908625299446,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,maximum_vs_abs_hour_ramp_pearson,0.5614552365455439,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,maximum_vs_abs_hour_ramp_spearman,0.8296281187568024,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,range_vs_next_ramp_pearson,-0.02040064133738503,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,range_vs_next_ramp_spearman,0.04107656139986841,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,range_vs_hour_ramp_pearson,-0.11003465426698757,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,range_vs_hour_ramp_spearman,-0.03590320649739185,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,range_vs_abs_hour_ramp_pearson,0.4626077935487246,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,range_vs_abs_hour_ramp_spearman,0.8377720413608767,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,first_last_change_vs_next_ramp_pearson,-0.06564310813142067,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,first_last_change_vs_next_ramp_spearman,0.14487289084195382,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,first_last_change_vs_hour_ramp_pearson,0.08980169926940698,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,first_last_change_vs_hour_ramp_spearman,0.2795258522096491,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,first_last_change_vs_abs_hour_ramp_pearson,0.011137831893967859,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,first_last_change_vs_abs_hour_ramp_spearman,0.054331206994916614,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,max_abs_first_difference_vs_next_ramp_pearson,-0.01528286924222155,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,max_abs_first_difference_vs_next_ramp_spearman,0.016368596053249605,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,max_abs_first_difference_vs_hour_ramp_pearson,-0.09215374009594048,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,max_abs_first_difference_vs_hour_ramp_spearman,-0.05271149626823548,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,max_abs_first_difference_vs_abs_hour_ramp_pearson,0.356698437209806,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,max_abs_first_difference_vs_abs_hour_ramp_spearman,0.8337874574618648,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,slope_vs_next_ramp_pearson,0.02900251360637851,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,slope_vs_next_ramp_spearman,0.13875686412995739,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,slope_vs_hour_ramp_pearson,0.06387442813552363,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,slope_vs_hour_ramp_spearman,0.24142734783863795,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,slope_vs_abs_hour_ramp_pearson,0.0627824758170686,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,slope_vs_abs_hour_ramp_spearman,0.0543434032876495,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,coefficient_of_variation_vs_next_ramp_pearson,-0.026967106657508195,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,coefficient_of_variation_vs_next_ramp_spearman,-0.05289015854431264,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,coefficient_of_variation_vs_hour_ramp_pearson,-0.03946726303009279,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,coefficient_of_variation_vs_hour_ramp_spearman,-0.15557610259205254,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,coefficient_of_variation_vs_abs_hour_ramp_pearson,-0.08940432006536093,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,coefficient_of_variation_vs_abs_hour_ramp_spearman,-0.04247415136266458,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,valid_count_vs_next_ramp_pearson,-0.007704718226083447,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,valid_count_vs_next_ramp_spearman,-0.04336005228492996,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,valid_count_vs_hour_ramp_pearson,-0.13659151691850777,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,valid_count_vs_hour_ramp_spearman,-0.09462540983625635,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,valid_count_vs_abs_hour_ramp_pearson,-0.12661041244277085,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Q CELLS,2023,past_only,valid_count_vs_abs_hour_ramp_spearman,0.04929974250298965,rho,"Feature interval is (t-5min,t]; target begins at t."
+incremental,Q CELLS,2023,past_only,std_partial_corr_abs_hour_ramp_given_mean,0.11094613612200635,r,
+incremental,Q CELLS,2023,past_only,range_partial_corr_abs_hour_ramp_given_mean,0.13688922094370998,r,
+incremental,Q CELLS,2023,past_only,max_abs_first_difference_partial_corr_abs_hour_ramp_given_mean,0.1065707710900698,r,
+incremental,Q CELLS,2023,past_only,slope_partial_corr_abs_hour_ramp_given_mean,0.09270299359155654,r,
+incremental,Q CELLS,2023,past_only,coefficient_of_variation_partial_corr_abs_hour_ramp_given_mean,-0.07661035807082262,r,
+ramp_group,Q CELLS,2023,stable,mean_mean,0.0007374190333831586,,
+ramp_group,Q CELLS,2023,stable,std_mean,0.0012401820611458423,,
+ramp_group,Q CELLS,2023,stable,range_mean,0.002989536621823617,,
+ramp_group,Q CELLS,2023,stable,max_abs_first_difference_mean,0.002989536621823617,,
+ramp_group,Q CELLS,2023,stable,slope_mean,2.555085689292917e-06,,
+ramp_group,Q CELLS,2023,stable,coefficient_of_variation_mean,1.8924518512946973,,
+ramp_group,Q CELLS,2023,moderate,mean_mean,302.63463929146536,,
+ramp_group,Q CELLS,2023,moderate,std_mean,40.88181943402588,,
+ramp_group,Q CELLS,2023,moderate,range_mean,144.87666666666667,,
+ramp_group,Q CELLS,2023,moderate,max_abs_first_difference_mean,24.56888888888889,,
+ramp_group,Q CELLS,2023,moderate,slope_mean,-0.08892857868545923,,
+ramp_group,Q CELLS,2023,moderate,coefficient_of_variation_mean,0.18234557050076175,,
+ramp_group,Q CELLS,2023,ramp,mean_mean,391.2106131980172,,
+ramp_group,Q CELLS,2023,ramp,std_mean,61.706348990233074,,
+ramp_group,Q CELLS,2023,ramp,range_mean,216.1149732620321,,
+ramp_group,Q CELLS,2023,ramp,max_abs_first_difference_mean,45.39661319073085,,
+ramp_group,Q CELLS,2023,ramp,slope_mean,0.06479085433146102,,
+ramp_group,Q CELLS,2023,ramp,coefficient_of_variation_mean,0.14138842652336442,,
+source_coverage,Sanyo,2021,calendar_year,expected_5min_intervals,105120,intervals,
+source_coverage,Sanyo,2021,calendar_year,pv_rows_present,100539,intervals,
+source_coverage,Sanyo,2021,calendar_year,pv_values_valid,100534,intervals,
+source_coverage,Sanyo,2021,calendar_year,weather_bins_present,0,intervals,
+source_coverage,Sanyo,2021,calendar_year,weather_complete_bins,0,intervals,
+source_coverage,Sanyo,2022,calendar_year,expected_5min_intervals,105120,intervals,
+source_coverage,Sanyo,2022,calendar_year,pv_rows_present,102901,intervals,
+source_coverage,Sanyo,2022,calendar_year,pv_values_valid,102890,intervals,
+source_coverage,Sanyo,2022,calendar_year,weather_bins_present,0,intervals,
+source_coverage,Sanyo,2022,calendar_year,weather_complete_bins,0,intervals,
+source_coverage,Sanyo,2023,calendar_year,expected_5min_intervals,105120,intervals,
+source_coverage,Sanyo,2023,calendar_year,pv_rows_present,101797,intervals,
+source_coverage,Sanyo,2023,calendar_year,pv_values_valid,96941,intervals,
+source_coverage,Sanyo,2023,calendar_year,weather_bins_present,560,intervals,
+source_coverage,Sanyo,2023,calendar_year,weather_complete_bins,544,intervals,
+alignment,Sanyo,ALL,common,common_start,2023-01-01 09:05:00,,
+alignment,Sanyo,ALL,common,common_end,2023-01-03 07:40:00,,
+coverage,Sanyo,2021,full_timeline,expected_intervals,0,intervals,
+coverage,Sanyo,2021,full_timeline,pv_rows_present,0,intervals,
+coverage,Sanyo,2021,full_timeline,weather_rows_present,0,intervals,
+coverage,Sanyo,2021,full_timeline,complete_intervals,0,intervals,
+coverage,Sanyo,2021,full_timeline,partial_intervals,0,intervals,
+coverage,Sanyo,2021,full_timeline,no_weather_intervals,0,intervals,
+coverage,Sanyo,2022,full_timeline,expected_intervals,0,intervals,
+coverage,Sanyo,2022,full_timeline,pv_rows_present,0,intervals,
+coverage,Sanyo,2022,full_timeline,weather_rows_present,0,intervals,
+coverage,Sanyo,2022,full_timeline,complete_intervals,0,intervals,
+coverage,Sanyo,2022,full_timeline,partial_intervals,0,intervals,
+coverage,Sanyo,2022,full_timeline,no_weather_intervals,0,intervals,
+coverage,Sanyo,2023,full_timeline,expected_intervals,560,intervals,
+coverage,Sanyo,2023,full_timeline,pv_rows_present,560,intervals,
+coverage,Sanyo,2023,full_timeline,pv_values_valid,560,intervals,
+coverage,Sanyo,2023,full_timeline,malformed_source_records,0,intervals,
+coverage,Sanyo,2023,full_timeline,weather_rows_present,560,intervals,
+coverage,Sanyo,2023,full_timeline,weather_values_valid,560,intervals,
+coverage,Sanyo,2023,full_timeline,complete_intervals,544,intervals,
+coverage,Sanyo,2023,full_timeline,partial_intervals,16,intervals,
+coverage,Sanyo,2023,full_timeline,no_weather_intervals,0,intervals,
+coverage,Sanyo,2023,full_timeline,pv_valid_weather_incomplete,16,intervals,
+coverage,Sanyo,2023,full_timeline,weather_valid_pv_missing,0,intervals,
+coverage,Sanyo,2023,full_timeline,longest_complete_segment,925,minutes,
+coverage,Sanyo,2023,full_timeline,longest_weather_gap,0,minutes,
+coverage,Sanyo,2023,daylight,classified_intervals,290,intervals,Daylight threshold: past-interval mean irradiance >20 W/m2; missing-weather intervals unclassified.
+coverage,Sanyo,2023,daylight,pv_value_valid_ratio,1.0,ratio,
+coverage,Sanyo,2023,daylight,weather_complete_ratio,0.9793103448275862,ratio,
+coverage,Sanyo,2023,night,classified_intervals,270,intervals,Daylight threshold: past-interval mean irradiance >20 W/m2; missing-weather intervals unclassified.
+coverage,Sanyo,2023,night,pv_value_valid_ratio,1.0,ratio,
+coverage,Sanyo,2023,night,weather_complete_ratio,0.9629629629629629,ratio,
+descriptive,Sanyo,2023,past_only,usable_feature_rows,560,intervals,
+correlation,Sanyo,2023,past_only,mean_vs_next_ramp_pearson,0.0459874225603322,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,mean_vs_next_ramp_spearman,0.057049790034454435,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,mean_vs_hour_ramp_pearson,-0.03780548008987044,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,mean_vs_hour_ramp_spearman,0.017700866291663342,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,mean_vs_abs_hour_ramp_pearson,0.5353056870686708,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,mean_vs_abs_hour_ramp_spearman,0.834766003159316,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,std_vs_next_ramp_pearson,-0.04569991082502963,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,std_vs_next_ramp_spearman,0.042104600586039126,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,std_vs_hour_ramp_pearson,-0.07071269506055813,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,std_vs_hour_ramp_spearman,-0.01730416395751667,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,std_vs_abs_hour_ramp_pearson,0.4172297115293861,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,std_vs_abs_hour_ramp_spearman,0.8452586115053302,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,minimum_vs_next_ramp_pearson,0.049642263607035844,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,minimum_vs_next_ramp_spearman,0.035437155165596236,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,minimum_vs_hour_ramp_pearson,-0.01571483695607117,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,minimum_vs_hour_ramp_spearman,0.01919843830886438,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,minimum_vs_abs_hour_ramp_pearson,0.5023949550444361,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,minimum_vs_abs_hour_ramp_spearman,0.8310460136342721,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,maximum_vs_next_ramp_pearson,0.021702772651156974,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,maximum_vs_next_ramp_spearman,0.05505953166062495,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,maximum_vs_hour_ramp_pearson,-0.06586557420483823,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,maximum_vs_hour_ramp_spearman,0.011286020564273537,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,maximum_vs_abs_hour_ramp_pearson,0.5714851837746258,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,maximum_vs_abs_hour_ramp_spearman,0.8418064320796468,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,range_vs_next_ramp_pearson,-0.015180595509495826,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,range_vs_next_ramp_spearman,0.048634034172066645,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,range_vs_hour_ramp_pearson,-0.09956346940038645,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,range_vs_hour_ramp_spearman,-0.017677271132036487,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,range_vs_abs_hour_ramp_pearson,0.4688220436590789,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,range_vs_abs_hour_ramp_spearman,0.8468472596604193,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,first_last_change_vs_next_ramp_pearson,-0.04461813295575764,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,first_last_change_vs_next_ramp_spearman,0.13535227463792635,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,first_last_change_vs_hour_ramp_pearson,0.08847589586337981,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,first_last_change_vs_hour_ramp_spearman,0.2514049092226452,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,first_last_change_vs_abs_hour_ramp_pearson,0.017268908059502288,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,first_last_change_vs_abs_hour_ramp_spearman,0.05563676325956883,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,max_abs_first_difference_vs_next_ramp_pearson,-0.007421815575901659,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,max_abs_first_difference_vs_next_ramp_spearman,0.0272981670188345,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,max_abs_first_difference_vs_hour_ramp_pearson,-0.07966589759341676,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,max_abs_first_difference_vs_hour_ramp_spearman,-0.03377389127124826,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,max_abs_first_difference_vs_abs_hour_ramp_pearson,0.35804832567065176,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,max_abs_first_difference_vs_abs_hour_ramp_spearman,0.8412367278131458,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,slope_vs_next_ramp_pearson,0.038677976566092995,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,slope_vs_next_ramp_spearman,0.14238146532253773,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,slope_vs_hour_ramp_pearson,0.06337336208698302,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,slope_vs_hour_ramp_spearman,0.2229770963987275,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,slope_vs_abs_hour_ramp_pearson,0.07423994653953651,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,slope_vs_abs_hour_ramp_spearman,0.05583081101850065,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,coefficient_of_variation_vs_next_ramp_pearson,-0.03423638324380735,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,coefficient_of_variation_vs_next_ramp_spearman,-0.04546583672370426,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,coefficient_of_variation_vs_hour_ramp_pearson,-0.03637267472367484,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,coefficient_of_variation_vs_hour_ramp_spearman,-0.14676635597022444,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,coefficient_of_variation_vs_abs_hour_ramp_pearson,-0.08377859226638713,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,coefficient_of_variation_vs_abs_hour_ramp_spearman,-0.04714061533699363,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,valid_count_vs_next_ramp_pearson,-0.007289961757322216,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,valid_count_vs_next_ramp_spearman,-0.046500453771186334,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,valid_count_vs_hour_ramp_pearson,-0.13679741794611358,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,valid_count_vs_hour_ramp_spearman,-0.0864135462518444,rho,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,valid_count_vs_abs_hour_ramp_pearson,-0.12657851906457226,r,"Feature interval is (t-5min,t]; target begins at t."
+correlation,Sanyo,2023,past_only,valid_count_vs_abs_hour_ramp_spearman,0.05751129309314235,rho,"Feature interval is (t-5min,t]; target begins at t."
+incremental,Sanyo,2023,past_only,std_partial_corr_abs_hour_ramp_given_mean,0.10977006977037383,r,
+incremental,Sanyo,2023,past_only,range_partial_corr_abs_hour_ramp_given_mean,0.1361080917389793,r,
+incremental,Sanyo,2023,past_only,max_abs_first_difference_partial_corr_abs_hour_ramp_given_mean,0.1018272374910594,r,
+incremental,Sanyo,2023,past_only,slope_partial_corr_abs_hour_ramp_given_mean,0.10731715600622872,r,
+incremental,Sanyo,2023,past_only,coefficient_of_variation_partial_corr_abs_hour_ramp_given_mean,-0.06825367012856472,r,
+ramp_group,Sanyo,2023,stable,mean_mean,0.0007027540360873691,,
+ramp_group,Sanyo,2023,stable,std_mean,0.001181882904425311,,
+ramp_group,Sanyo,2023,stable,range_mean,0.0028490028490028487,,
+ramp_group,Sanyo,2023,stable,max_abs_first_difference_mean,0.0028490028490028487,,
+ramp_group,Sanyo,2023,stable,slope_mean,2.4349748235569252e-06,,
+ramp_group,Sanyo,2023,stable,coefficient_of_variation_mean,1.8924518512946973,,
+ramp_group,Sanyo,2023,moderate,mean_mean,304.328561832808,,
+ramp_group,Sanyo,2023,moderate,std_mean,40.981996028212045,,
+ramp_group,Sanyo,2023,moderate,range_mean,147.69544364508394,,
+ramp_group,Sanyo,2023,moderate,max_abs_first_difference_mean,25.20743405275779,,
+ramp_group,Sanyo,2023,moderate,slope_mean,-0.07276518177278453,,
+ramp_group,Sanyo,2023,moderate,coefficient_of_variation_mean,0.17935016687928862,,
+ramp_group,Sanyo,2023,ramp,mean_mean,407.7535319090306,,
+ramp_group,Sanyo,2023,ramp,std_mean,64.03669908211761,,
+ramp_group,Sanyo,2023,ramp,range_mean,222.54188948306592,,
+ramp_group,Sanyo,2023,ramp,max_abs_first_difference_mean,46.36720142602496,,
+ramp_group,Sanyo,2023,ramp,slope_mean,0.04754525788011434,,
+ramp_group,Sanyo,2023,ramp,coefficient_of_variation_mean,0.14345477447614535,,
