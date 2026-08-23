@@ -1,5 +1,6 @@
 {
-  "verdict": "FAIL",
+  "verdict": "FAIL_CURRENT_IMPLEMENTATION",
+  "submission_decision": "NO_GO_FOR_SUBMISSION",
   "candidate": "SharedPrivateModernTCN",
   "comparison": "IndependentModernTCN",
   "scope": "regular_full_timeline, three-seed mean nRMSE",
@@ -9,5 +10,12 @@
   "technology_mean_nrmse_change_percent": {"Sanyo": -16.567, "Hanwha": -14.686, "Qcells": -17.924},
   "versus_early_fusion": {"macro_nrmse_change_percent": -1.9623, "noninferior_combinations": "4/12"},
   "parameters": {"joint_early_fusion": 1496832, "shared_private": 55257000, "independent_single": 682896, "independent_three_total": 2048688},
-  "reason": "All pre-specified Shared–Private screening conditions failed; do not develop a v2/v3 of this route."
+  "evidence_scope": "Sufficient to reject the evaluated Joint Early-Fusion and Shared-Private implementations, but not to universally reject cross-technology shared forecasting because backbone, channel count, depth, parameterization, and training budget were not strictly matched to Independent ModernTCN.",
+  "matched_rerun_recommended": false,
+  "matched_rerun_reason": "Both evaluated joint implementations lost in all 12 technology-horizon combinations; further investment conflicts with the fastest-validation objective for the final paper route.",
+  "verification": {
+    "implementation_smoke_tests": "passed",
+    "end_to_end_protocol_provenance": "partially_verified"
+  },
+  "reason": "All pre-specified Shared-Private screening conditions failed; do not develop a v2/v3 of this implementation route."
 }
