@@ -1,0 +1,28 @@
+{
+  "pv_file": "C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PV_improve_v1/原始Dataset/5min pv active power data/17 Sanyo.csv",
+  "high_frequency_file": "C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PV_improve_v1/GFNODE_experiments/asoc_multirate_redownload_validation/fsm1m_7111_ekistica-alice-springs-ekistica-alice-springs_irradiancedata_1sec_2022.csv",
+  "site": "Site 17 Sanyo",
+  "capacity_kw": 6.3,
+  "utc_to_pv_clock_minutes": 570,
+  "lookback": 72,
+  "horizon": 12,
+  "splits": {
+    "train": ["2022-01-01 00:00:00", "2022-09-01 00:00:00"],
+    "validation": ["2022-09-01 00:00:00", "2022-11-01 00:00:00"],
+    "test": ["2022-11-01 00:00:00", "2023-01-01 00:00:00"]
+  },
+  "conditions": ["MEAN_ONLY", "HF_DYNAMICS"],
+  "seeds": [42, 43, 44],
+  "model": {"channels": 64, "layers": 4, "kernel_size": 5, "dropout": 0.0},
+  "training": {
+    "batch_size": 256,
+    "learning_rate": 0.001,
+    "weight_decay": 0.00001,
+    "max_epochs": 25,
+    "patience": 5,
+    "num_workers": 0,
+    "optimizer": "AdamW",
+    "checkpoint_metric": "validation_rmse_kw",
+    "ramp_quantile": 0.9
+  }
+}
