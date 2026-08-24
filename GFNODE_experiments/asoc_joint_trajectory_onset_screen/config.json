@@ -1,0 +1,33 @@
+{
+  "prepared_data": "../asoc_multirate_information_screen/results/prepared_data.npz",
+  "trajectory_only_results": "../asoc_multirate_information_screen/results/MEAN_ONLY",
+  "site": "Site 17 Sanyo",
+  "year": 2022,
+  "capacity_kw": 6.3,
+  "lookback": 72,
+  "horizon": 12,
+  "splits": {
+    "train": ["2022-01-01 00:00:00", "2022-09-01 00:00:00"],
+    "validation": ["2022-09-01 00:00:00", "2022-11-01 00:00:00"],
+    "test": ["2022-11-01 00:00:00", "2023-01-01 00:00:00"]
+  },
+  "seeds": [42, 43, 44],
+  "models": ["STEP_MULTITASK", "ONSET_HAZARD"],
+  "model": {"channels": 64, "layers": 4, "kernel_size": 5, "dropout": 0.0},
+  "training": {
+    "batch_size": 256,
+    "optimizer": "AdamW",
+    "learning_rate": 0.001,
+    "weight_decay": 0.00001,
+    "scheduler": "none",
+    "max_epochs": 25,
+    "patience": 5,
+    "min_delta": 1e-8,
+    "gradient_clip_norm": 1.0,
+    "mixed_precision": false,
+    "num_workers": 0,
+    "lambda_step": 0.2,
+    "lambda_hazard": 0.2,
+    "event_threshold": 0.5
+  }
+}
