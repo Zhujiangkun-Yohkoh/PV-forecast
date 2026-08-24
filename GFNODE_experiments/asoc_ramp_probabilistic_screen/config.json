@@ -1,0 +1,29 @@
+{
+  "source_commit": "265cd6183ff374850786df8f30844b8dec043044",
+  "prepared_data": "../asoc_multirate_information_screen/results/prepared_data.npz",
+  "deterministic_results": "../asoc_multirate_information_screen/results/MEAN_ONLY",
+  "site": "Site 17 Sanyo",
+  "capacity_kw": 6.3,
+  "lookback": 72,
+  "horizon": 12,
+  "quantiles": [0.1, 0.5, 0.9],
+  "splits": {
+    "train": ["2022-01-01 00:00:00", "2022-09-01 00:00:00"],
+    "validation": ["2022-09-01 00:00:00", "2022-11-01 00:00:00"],
+    "test": ["2022-11-01 00:00:00", "2023-01-01 00:00:00"]
+  },
+  "conditions": ["STANDARD_NCQ", "RAMP_AWARE_NCQ"],
+  "seeds": [42, 43, 44],
+  "model": {"channels": 64, "layers": 4, "kernel_size": 5, "dropout": 0.0},
+  "training": {
+    "batch_size": 256,
+    "learning_rate": 0.001,
+    "weight_decay": 0.00001,
+    "max_epochs": 30,
+    "patience": 6,
+    "optimizer": "AdamW",
+    "checkpoint_metric": "validation_mean_pinball",
+    "lambda_ramp": 0.2,
+    "ramp_classification_threshold": 0.5
+  }
+}
