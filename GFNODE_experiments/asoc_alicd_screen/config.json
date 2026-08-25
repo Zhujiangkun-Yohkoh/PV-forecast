@@ -1,0 +1,39 @@
+{
+  "experiment": "ALICD minimal feasibility screen",
+  "site": "Site 17 Sanyo",
+  "capacity_kw": 6.3,
+  "year": 2022,
+  "utc_to_acst_minutes": 570,
+  "lookback": 72,
+  "horizon": 12,
+  "anchor_indices_zero_based": [2, 5, 11],
+  "splits": {
+    "train": ["2022-01-01 00:00:00", "2022-09-01 00:00:00"],
+    "validation": ["2022-09-01 00:00:00", "2022-11-01 00:00:00"],
+    "test": ["2022-11-01 00:00:00", "2023-01-01 00:00:00"]
+  },
+  "seeds": [42, 43, 44],
+  "model": {"channels": 64, "layers": 4, "kernel_size": 5, "dropout": 0.0},
+  "loss_weights": {"trajectory": 1.0, "anchor": 0.2, "increment": 0.1},
+  "training": {
+    "optimizer": "AdamW",
+    "learning_rate": 0.001,
+    "weight_decay": 0.00001,
+    "batch_size": 256,
+    "max_epochs": 25,
+    "patience": 5,
+    "min_delta": 1e-8,
+    "gradient_clip_norm": 1.0,
+    "mixed_precision": false,
+    "num_workers": 0,
+    "scheduler": null,
+    "checkpoint_metric": "validation_total_loss"
+  },
+  "scenario_thresholds_train_only": {
+    "high_change_kw": 0.10713335871696472,
+    "irradiance_std_median": 0.11680415272712708,
+    "direction_tolerance_kw": 0.0363999605178833
+  },
+  "prepared_data": "../asoc_multirate_information_screen/results/prepared_data.npz",
+  "trajectory_results": "../asoc_multirate_information_screen/results/MEAN_ONLY"
+}
