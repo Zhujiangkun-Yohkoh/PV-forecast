@@ -1,0 +1,39 @@
+{
+  "study_id": "C1-S0",
+  "site": "Site 17 Sanyo",
+  "source_experiment": "C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PVforecast16/GFNODE_experiments/asoc_multirate_information_screen",
+  "prepared_artifact": "C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PVforecast16/GFNODE_experiments/asoc_multirate_information_screen/results/prepared_data.npz",
+  "condition": "MEAN_ONLY",
+  "seeds": [42, 43, 44],
+  "lookback": 72,
+  "horizon": 12,
+  "evaluation_horizons": [3, 6, 12],
+  "capacity_kw": 6.3,
+  "origin_daylight_threshold_kw": 0.063,
+  "risk_fit_fraction": 0.5,
+  "high_error_quantile": 0.8,
+  "calibration_acceptance_quantiles": [0.5, 0.7, 0.8, 0.9],
+  "risk_estimator": {
+    "class": "sklearn.ensemble.HistGradientBoostingRegressor",
+    "loss": "squared_error",
+    "learning_rate": 0.05,
+    "max_iter": 100,
+    "max_leaf_nodes": 15,
+    "max_depth": null,
+    "min_samples_leaf": 30,
+    "l2_regularization": 1.0,
+    "early_stopping": false
+  },
+  "risk_methods": [
+    "FULL_RISK_MODEL",
+    "RECENT_VARIATION",
+    "MODEL_PERSISTENCE_DISAGREEMENT"
+  ],
+  "bootstrap": {
+    "unit": "natural_day",
+    "replicates": 1000,
+    "confidence_level": 0.95,
+    "random_seed": 20260826
+  },
+  "formal_protocol_warning": "The frozen deep-model checkpoint used the full original validation split. A positive screen would require a future Train/Model-Validation/Risk-Calibration/Test protocol."
+}
