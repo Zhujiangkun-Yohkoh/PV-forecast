@@ -1,82 +1,72 @@
-# Independent reviewer-style audit
+# Independent reviewer-style review after submission-critical correction
 
 ## Overall assessment
 
-This draft is now a coherent benchmark/application manuscript rather than a renamed GFNODE paper. Its contribution is a controlled evaluation protocol and an evidence-backed negative result: ModernTCN is the most consistent **neural** model, but none of the neural models has positive mean RMSE skill over last-value persistence across all 24 array–horizon–scope combinations. The paper does not imply that ModernTCN is original, does not revive ODE claims, and does not claim cross-site or deployment generality.
+The corrected manuscript is a defensible leakage-aware benchmark/application study, but it is not yet a submission-ready final package. The correction materially changes its inputs, samples, rankings, and persistence conclusions. Thirty-six corrected GPU runs and 15 protocol tests support the new results. The manuscript now describes the executed compact implementations rather than presenting them as full official iTransformer, PatchTST, or ModernTCN reproductions.
 
-Estimated completion: **85% of a submission-ready scientific manuscript**. The technical narrative, evidence tables, four figures, references, and compiled PDF are complete. Human author/funding approval and institutional journal verification remain.
+**Completion estimate: 78%.** Scientific consistency is restored, figures and tables are regenerated from corrected evidence, and the main conclusions are appropriately narrow. Before submission, the authors must confirm CRediT, funding, author metadata, current journal/indexing/charge details, and decide whether a manuscript whose strongest supplementary result is Daily Persistence beating the best neural implementation in 22/24 combinations is positioned persuasively enough for JRSE.
 
-## Checklist review
+## Correction audit
 
-1. **Does the paper still imply algorithmic novelty?**
-   No. The title, abstract, contribution list, methods, discussion, and conclusion consistently describe an empirical and methodological benchmark. ModernTCN, iTransformer, PatchTST, and the other methods are cited as existing architectures.
+1. **Input fairness:** passed. The previous 15-channel input had seven raw fields, seven missing masks, and one Isolation Forest marker; it had no cyclical time features and no past Active Power. The corrected 17-channel input adds only causal historical Active Power and its missing mask. Future power remains target-only.
+2. **Train-only fitting:** passed. Active Power and all other imputation/scaling state, plus Isolation Forest, are fitted on Train only.
+3. **Validation aggregation:** passed. Validation selection uses global target-weighted MSE (total SSE divided by valid-target count), not an equal average of batch means.
+4. **Test isolation:** correctly narrowed. Test was excluded from preprocessing fitting, training, and checkpoint selection. The manuscript no longer calls it untouched or evaluated once at project level.
+5. **Sample matching:** passed. Within every array/horizon, neural models and Last-value Persistence have identical origins, labels, masks, forecast-origin counts, and valid-target counts.
+6. **Horizon design:** corrected. Primary metrics use horizon-specific valid origins; complete-H144-prefix evaluation is explicitly secondary sensitivity analysis.
+7. **Qcells H12:** corrected. The old 3,019-versus-2,996 origin mismatch and 42-point daylight subset are removed. The primary set has 6,463 origins, 77,556 targets, and 36,504 daylight targets.
+8. **Model naming:** corrected. Descriptive implementation names are used, and cited methods are identified only as inspiration.
+9. **Reproducibility:** passed at ordinary implementation level. All 36 runs completed and 15/15 tests passed with no non-finite result.
 
-2. **Is the contribution sufficient for a benchmark/application article?**
-   Potentially yes for JRSE if the editor values reproducibility-oriented application evidence. The strongest contribution is the combination of Train-only preprocessing, split-local windows, Validation-only checkpoint selection, a same-origin persistence challenge, controlled co-location, multiple horizons/scopes, seed variability, and unified GPU efficiency. The paper avoids claiming that any one component is new.
+## Scientific interpretation
 
-3. **Are unfavorable persistence results fully reported?**
-   Yes. Persistence is included in the main table and Figure 2. The Qcells H12 reversal is shown, quantified, and discussed. The negative mean skills (ModernTCN −0.066; discrete candidate −0.444; iTransformer −0.798; PatchTST −1.073) are reported rather than hidden. The text explains why the small persistence denominator makes the macro skill sensitive without dismissing the result.
+The corrected primary ranking, including Last-value Persistence, is: Inverted-variate Transformer 12 wins (mean rank 1.875), Depthwise convolutional TCN 9 (2.167), Joint-patch Transformer 2 (2.458), Discrete recurrent decoder 1 (3.667), and Last-value Persistence 0 (4.833). Arithmetic mean RMSE skill relative to Last-value Persistence is positive for all learned implementations, but this ratio-based summary is not interchangeable with macro mean range-nRMSE.
 
-4. **Do key numbers match Stage-2 evidence?**
-   Checked against `FINAL_METRICS_LONG.csv`, `FINAL_EFFICIENCY.csv`, `FINAL_DATASET_METADATA.csv`, and `FINAL_SAMPLE_COUNTS.csv`. The 36/36 run count, window counts, RMSE/range-nRMSE values, neural win counts and ranks, parameters, latency, throughput, and memory values match Stage 2. Stage 2 supersedes all earlier summaries.
+The more important qualification is Daily Persistence. Its valid sample set differs slightly because a 24-hour lag is required, so it is correctly excluded from the primary rank. On its own eligible set it beats the best neural result in 22/24 array--horizon--scope combinations. This is not a footnote: it changes the practical message from “deep models beat persistence” to “learned trajectories beat Last-value Persistence but rarely beat daily recurrence in this short, seasonal archive.”
 
-5. **Are full/daylight definitions clear?**
-   Yes. Daylight is target power above 1% of the array’s Train maximum. It is explicitly evaluation-only and is not described as a causal input, routing feature, or deployable detector.
+## Reviewer checklist
 
-6. **Is Daily Persistence incorrectly mixed into the main ranking?**
-   No. It is described as supplementary because the 24 h lag changes sample availability. Last-value persistence alone is the same-sample primary reference.
-
-7. **Is unknown AC capacity handled correctly?**
-   Yes. The manuscript separates official DC nameplate ratings from measured AC Active Power and uses Train-range nRMSE. It does not call this capacity-normalized RMSE.
-
-8. **Are there overextended cross-site or deployment claims?**
-   No. The systems are repeatedly described as co-located. Limitations state that the evidence is not cross-climate, cross-region, or deployment validation. GPU timing is expressly hardware-specific.
-
-9. **Is the 18/24 result correctly scoped?**
-   Yes. It is consistently “first among neural models” and never represented as 18 wins against persistence.
-
-10. **Are references real and relevant?**
-    The bibliography contains 35 entries spanning PV forecasting, multi-horizon time-series architectures, leakage/evaluation, imputation/anomaly tools, and official DKASC material. DOI/official links are included where available. Before formal submission, the authors should run the publisher’s reference check and confirm full author lists for entries intentionally abbreviated with `and others`.
-
-11. **Are figures reproducible?**
-    Yes. `build_figures.py` reads the Stage-2 evidence directly, asserts the 3,696-row evidence table and expected model/horizon sets, and generates four vector PDFs. No key result is hand-entered into a figure.
-
-12. **Does LaTeX compile and pass visual inspection?**
-    Yes. `latexmk` produced a 12-page PDF with resolved references/citations and no overfull boxes. All pages were rendered to PNG and inspected as a contact sheet. Tables remain inside page bounds; plot labels and legends are legible at the present two-column scale. A benign REVTeX float-placement warning appears even though all four figures and all four tables are present in the rendered PDF; it does not indicate missing content.
-
-13. **Is JRSE in scope?**
-    Yes at the subject level: the official scope includes solar photovoltaics, energy meteorology, distributed generation, utility power, and system integration. The reproducibility/benchmark emphasis should be connected to renewable-energy engineering consequences in the cover letter.
-
-14. **Did Stage 1 and Stage 2 conflict?**
-    Stage 1 was a planning document; Stage 2 is the final unified evidence. Where provisional Stage-1 descriptions could differ (especially daylight definition, normalized metric wording, or actual model list), the manuscript follows Stage 2. No favorable Stage-1 number was selected over a Stage-2 value.
+1. **Does the paper imply algorithmic novelty?** No. It explicitly frames the models as compact implementations inspired by established families.
+2. **Is the application contribution potentially sufficient?** Yes, if the editor values fairness corrections, controlled co-location, horizon-specific sample accounting, and persistence-centered evidence. Limited architectural fidelity reduces suitability as an architecture benchmark.
+3. **Are unfavorable results visible?** Yes. Daily Persistence dominance and the two Qcells H12 neural failures versus Last-value Persistence are explicit.
+4. **Do manuscript numbers match corrected evidence?** Yes for the main tables, ranks, skill summaries, sample counts, and efficiency values checked after regeneration.
+5. **Are full/daylight definitions clear?** Yes. Daylight uses true target power above 1% of the Train maximum and is evaluation-only.
+6. **Is Daily Persistence mixed into the primary ranking?** No; its different eligible counts are stated.
+7. **Is unknown AC capacity handled correctly?** Yes. Train-range nRMSE is used and DC nameplate capacity is not mixed with AC output.
+8. **Are cross-site/deployment claims controlled?** Yes. The study is explicitly one co-located facility and one historical period.
+9. **Is the old 18/24 claim removed?** Yes. It is mentioned only as withdrawn correction history.
+10. **Are citations and Alice Springs precedents adequate?** MANODE 2024 and existing Alice Springs/DKASC work are included; a final publisher metadata check remains advisable.
+11. **Are figures reproducible and fonts embedded?** Yes. The script reads corrected evidence and embeds Arial in vector PDFs. Figure 4 marker area is mathematically proportional to parameter count.
+12. **Has the PDF been compiled and visually inspected?** Yes after correction; see build notes below.
 
 ## Main strengths
 
-- The temporal protocol is unusually explicit and internally consistent.
-- Co-location reduces climate/site confounding without being misrepresented as cross-site generalization.
-- Persistence is a genuine same-sample challenge rather than a decorative baseline.
-- The negative result is useful, nuanced, and not hidden behind average neural ranks.
-- Results have artifact-level provenance, three-seed summaries, and common efficiency measurements.
+- The study openly corrects a target-history fairness flaw instead of preserving favorable legacy conclusions.
+- Horizon-specific eligibility and exact model--Persistence sample matching make the primary comparisons interpretable.
+- Co-location reduces weather/site confounding without being mislabeled as cross-site validation.
+- The paper separates absolute normalized error from the arithmetic mean of ratio-based skill.
+- Daily Persistence is allowed to challenge the entire learned-model narrative.
+- Code-level names prevent overstating fidelity to published architectures.
 
-## Three most likely rejection risks
+## Most likely rejection risks
 
-1. **Perceived limited novelty.** A reviewer may view the work as a comparison of existing models on one public dataset. The response must emphasize evaluation rigor, controlled technology comparison, persistence reversal, and reproducible evidence rather than overstate architecture novelty.
-2. **Limited external validity.** One site, a short April–August 2018 interval, and three arrays may be judged insufficient for broad forecasting conclusions. The manuscript already narrows its claims, but an editor may still prefer multi-site or multi-year evidence.
-3. **Persistence result and data regime.** The extremely low Qcells H12 persistence error may prompt questions about target dynamics, masks, or sample composition. The artifact consistency checks and exact daylight/full definitions should be highlighted, and sample counts should be readily available during review.
+1. **Limited novelty and architecture fidelity.** The contribution is evaluation methodology and empirical correction, while the models are compact project implementations rather than official baselines.
+2. **Daily Persistence dominance.** An editor may ask why learned models are necessary when daily recurrence wins 22/24 supplementary comparisons. The answer must be scientific---different eligible samples and a short seasonal archive---not rhetorical concealment.
+3. **External validity.** One site, April--August 2018, three arrays, and three seeds do not establish multi-climate or multi-year generality.
+4. **Test reuse during development.** Although Test never influenced fitting, training, or checkpoint selection, the project has inspected it repeatedly. The paper must not market it as pristine external confirmation.
 
-## Human actions before direct submission
+## Submission judgment
 
-- Confirm author order, affiliations, corresponding authors, and CRediT roles with all authors.
-- Insert verified funding and grant information.
-- Verify current SCIE/JCR status through institutional Clarivate access.
-- Reconfirm JRSE subscription-route charges and decide whether all figures should remain color in the online version.
-- Run a final bibliographic metadata check and replace abbreviated author lists if required by the submission system.
-- Prepare cover letter, highlights only if requested by AIP, and any data/code-access statements required by the submission portal.
+**GO for continued JRSE benchmark/application preparation; NO-GO for immediate submission without author confirmation and editorial positioning review.** No additional model development is recommended. Any extra scientific work should be an independently held-out temporal confirmation, not another architecture or hyperparameter cycle; that work is outside the present authorization.
 
-## Recommendation
+## Human confirmation required
 
-Proceed to formal submission-material preparation after the human confirmations above. No new neural-network training is required to complete this JRSE-targeted draft. Additional training should not be started merely to make the benchmark appear algorithmically novel.
+- Author order, affiliations, corresponding authors, and CRediT roles.
+- Funding agencies and grant numbers.
+- Current institutional confirmation of SCIE/JCR status and subscription-route unavoidable charges.
+- Agreement that Daily Persistence is presented as a central limitation rather than minimized.
+- Final release wording for data, code, and the untracked corrected artifacts.
 
-## Complete prompt for the next Codex round
+## Next Codex prompt
 
-> In the isolated `manuscript/clean-pv-benchmark-latex` worktree, finalize the JRSE submission package without changing any numerical result or training a model. Read `manuscript/clean_pv_benchmark/README.md`, `REVIEW.md`, `main.tex`, and the official current AIP/JRSE author instructions. Ask me only for the missing verified author CRediT roles, funding/grant text, and institutional SCIE/JCR confirmation. Then: (1) insert only the confirmed information; (2) perform a full DOI/author metadata check of every cited reference and correct bibliographic metadata without changing the scientific claims; (3) prepare the cover letter and any JRSE-required submission declarations in the same manuscript directory; (4) rebuild figures and `main.pdf`; (5) verify no undefined references, missing citations, overfull boxes, or out-of-page tables; (6) render and visually inspect every PDF page; (7) update `REVIEW.md`; and (8) commit only the manuscript directory to the same branch and update the existing Draft PR. Do not train models, alter Stage-2 evidence, modify master/C1/NWP/old manuscript files, or merge the PR.
+> In the isolated `manuscript/clean-pv-benchmark-latex` worktree, prepare the final JRSE submission package without training or changing any result. Read the corrected `GFNODE_experiments/scheme_A_submission_correction/REPORT.md`, `manuscript/clean_pv_benchmark/main.tex`, `README.md`, and `REVIEW.md`. Obtain from me only the verified CRediT roles, funding text, author approval, and institutional journal/indexing/charge confirmation. Insert that information; run a full DOI/author metadata check; ensure Daily Persistence remains prominent and sample-set caveats remain exact; rebuild all figures and `main.pdf`; verify no undefined references, missing citations, overfull boxes, or out-of-page content; render and inspect every page; prepare the cover letter and required declarations; then commit only the manuscript directory to the same branch and update Draft PR #5. Do not train, modify evidence, touch master/C1/NWP/old manuscript files, or merge the PR.

@@ -4,7 +4,7 @@ This directory contains a complete LaTeX draft targeted to the **Journal of Rene
 
 ## Journal and publication-route verification
 
-Verified on 2026-08-26 from official AIP sources:
+Verified on 2026-08-26 from official AIP sources; manuscript evidence corrected on 2026-08-27:
 
 - [JRSE aims and scope](https://pubs.aip.org/aip/jrse/pages/about): the journal covers interdisciplinary renewable-energy physical science and engineering, including solar photovoltaics, energy meteorology, distributed generation, utility power, and system integration. This supports the present PV forecasting application/evaluation scope.
 - [AIP author instructions](https://publishing.aip.org/resources/researchers/author-instructions/): Word or LaTeX submissions are accepted; the initial submission may be a single compiled PDF; the abstract limit is 250 words; conflict-of-interest, author-contribution, and data-availability statements are required.
@@ -20,11 +20,15 @@ The JRSE page reports a 2025 Journal Impact Factor of 2.4 and Q4 in both *Energy
 
 ## Evidence boundary
 
-All quantitative results and metadata come from the committed Stage-2 evidence under:
+The original manuscript draft used Stage-2 evidence under:
 
 `GFNODE_experiments/clean_deterministic_manuscript_stage2_evidence/`
 
-`build_figures.py` reads `FINAL_METRICS_LONG.csv` and `FINAL_EFFICIENCY.csv` directly from that location. No duplicate evidence CSV is stored here. If Stage-1 and Stage-2 differ, Stage-2 is authoritative. The manuscript does not use the former GFNODE Tables 9--13, Figures 10--14, or any C1/NWP artifacts.
+Submission-critical review identified three issues in that evidence: historical Active Power was absent from all learned inputs despite being available to Last-value Persistence, Validation batch means were weighted equally, and prefix metrics were restricted to complete-H144 origins. The corrected quantitative source is now:
+
+`GFNODE_experiments/scheme_A_submission_correction/corrected_metrics.csv`
+
+`build_figures.py` reads that long-format file directly. The previous Stage-2 CSVs are retained as audit history but are not authoritative for manuscript results. The paper does not use former GFNODE Tables 9--13, Figures 10--14, or any C1/NWP artifact.
 
 ## Build
 
@@ -40,7 +44,7 @@ The checked build produces `main.pdf` with no missing citations, no undefined re
 ## Files
 
 - `main.tex`: complete English manuscript.
-- `references.bib`: 35 references, including current time-series methods and PV forecasting studies.
+- `references.bib`: verified references including MANODE and other Alice Springs/PV forecasting studies.
 - `build_figures.py`: evidence-driven generator for four vector PDF figures.
 - `figures/`: final vector figures.
 - `main.pdf`: compiled manuscript.
@@ -56,4 +60,4 @@ The following are intentionally not guessed:
 4. Corresponding-author confirmation of subscription-route production charges at the point of submission.
 5. Final confirmation that the repository/data-availability wording matches the release policy.
 
-No neural-network training was performed, and no old manuscript, raw data, checkpoint, prediction artifact, master worktree, or Scheme C1 file was modified.
+The submission correction trained 36 runs in the isolated Scheme-A worktree. It did not modify the old GFNODE manuscript, raw data, prior artifacts, master worktree, Scheme C1, or NWP branches. New checkpoints and predictions remain local and untracked.
