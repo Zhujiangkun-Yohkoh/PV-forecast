@@ -1,0 +1,373 @@
+\documentclass[aip,reprint,floatfix,amsmath,amssymb]{revtex4-2}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{siunitx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{url}
+\hypersetup{colorlinks=true,linkcolor=blue!45!black,citecolor=blue!45!black,urlcolor=blue!45!black,pdftitle={Leakage-Aware Multi-Horizon Benchmarking of Deep Learning Models for Photovoltaic Power Forecasting Across Co-Located PV Technologies},pdfauthor={Jiangkun Zhu et al.}}
+\sisetup{detect-all,round-mode=places,round-precision=3}
+
+\begin{document}
+
+\title{Leakage-Aware Multi-Horizon Benchmarking of Deep Learning Models for Photovoltaic Power Forecasting Across Co-Located PV Technologies}
+
+\author{Jiangkun Zhu}
+\affiliation{College of Advanced Manufacturing, Fuzhou University, 1 Shuicheng Road, Quanzhou 362251, China}
+\author{Yongming Cai}
+\affiliation{Fujian Provincial Institute of Architectural Design and Research Co., Ltd., 5 Hongshanyuan Road, Fuzhou 350001, China}
+\author{Zhende Wu}
+\affiliation{Fujian Provincial Institute of Architectural Design and Research Co., Ltd., 5 Hongshanyuan Road, Fuzhou 350001, China}
+\author{Mengling Yang}
+\affiliation{College of Advanced Manufacturing, Fuzhou University, 1 Shuicheng Road, Quanzhou 362251, China}
+\author{Zhicong Chen}
+\email{zhicong.chen@fzu.edu.cn}
+\affiliation{College of Advanced Manufacturing, Fuzhou University, 1 Shuicheng Road, Quanzhou 362251, China}
+\affiliation{College of Physics and Information Engineering, Fuzhou University, 2 Xueyuan Road, Fuzhou 350116, China}
+\author{Lijun Wu}
+\email{lijun.wu@fzu.edu.cn}
+\affiliation{College of Advanced Manufacturing, Fuzhou University, 1 Shuicheng Road, Quanzhou 362251, China}
+\affiliation{College of Physics and Information Engineering, Fuzhou University, 2 Xueyuan Road, Fuzhou 350116, China}
+
+\date{August 26, 2026}
+
+\begin{abstract}
+Comparisons of photovoltaic (PV) forecasting models can be distorted by preprocessing fitted outside the training period, windows that cross temporal splits, test-informed checkpoint selection, or omission of a strong persistence reference. We conduct a leakage-aware deterministic benchmark on three co-located PV arrays at the DKA Solar Centre in Alice Springs. The arrays use Sanyo HIT hybrid-silicon, Hanwha polycrystalline-silicon, and Q CELLS monocrystalline-silicon modules while sharing the same meteorological observations. Four direct multi-output neural models---a parameter-matched discrete decoder, iTransformer, PatchTST, and ModernTCN---produce one 144-step trajectory from which 1, 4, 8, and 12 h prefixes are evaluated. Preprocessing is fitted on Train only, windows are constructed independently within Train, Validation, and Test, checkpoints are selected only on Validation, and Test is evaluated once. Across 24 array--horizon--scope combinations, ModernTCN ranks first among neural models in 18, with an average neural-model rank of 1.29. This advantage is conditional rather than universal: the ordering changes with PV technology, horizon, and whether the full timeline or daylight targets are evaluated. More importantly, when averaged across combinations, none of the neural models improves upon last-value persistence, despite clear neural gains in most long-horizon settings. Unified GPU measurements further show that the most accurate neural model is not uniformly the most efficient. These results demonstrate that leakage control, persistence skill, scope definition, seed variability, and computational cost materially change the interpretation of PV forecasting benchmarks. The study supports protocol- and application-level conclusions, not a claim of a new forecasting architecture or cross-site generalization.
+\end{abstract}
+
+\keywords{photovoltaic power forecasting, multi-horizon forecasting, data leakage, persistence benchmark, reproducibility, ModernTCN, co-located PV arrays}
+\maketitle
+
+\section{Introduction}
+
+Short-term PV power forecasts support scheduling, reserve allocation, storage coordination, and distribution-system operation, but the stochastic motion of clouds makes accuracy strongly dependent on horizon and available information. Reviews of solar forecasting have consequently emphasized that model comparisons must be interpreted together with forecast horizon, temporal resolution, weather regime, and data source.\cite{Antonanzas2016,Mellit2021Review} Recent work has applied recurrent neural networks, temporal convolutional networks (TCNs), Transformer variants, and hybrid decompositions to PV prediction.\cite{DuPlessis2021,Wang2019DKASC,PVAutoformer2023,Bhatt2021} The resulting literature often reports that a proposed architecture outperforms several learned baselines. Such comparisons can nevertheless be difficult to interpret when basic evaluation choices differ.
+
+Three risks are especially important. First, preprocessing can leak future distributional information if imputation, anomaly detection, or scaling is fitted before the temporal split. Second, a nominally chronological split can still leak if sliding windows cross a split boundary or if the same target interval appears in overlapping subsets. Third, repeated inspection of Test during hyperparameter or checkpoint selection turns Test into another validation set. General machine-learning audits have shown that leakage and weak independence between training and evaluation can inflate performance estimates and undermine reproducibility.\cite{Kapoor2023,Hewamalage2023,Bergmeir2012,Tashman2000} Time-series forecasting additionally requires a meaningful naive reference: a learned model may rank first among neural networks while offering no skill over persistence.\cite{Hyndman2006,Makridakis2020}
+
+PV benchmarking faces another confounder. Comparisons across sites mix differences in technology with differences in weather, orientation, capacity, sensors, and data quality. The DKA Solar Centre in Alice Springs provides co-located arrays and shared environmental measurements, making it possible to compare forecasting behavior while holding site-level meteorology substantially constant.\cite{DKASC2026,Wang2019DKASC} This does not create cross-climate evidence, but it provides a controlled application setting for asking whether conclusions are stable across distinct PV module technologies.
+
+This study therefore asks four questions. (RQ1) Under a unified protocol that excludes future information from preprocessing, window construction, and model selection, are model rankings stable? (RQ2) How do rankings change across 1, 4, 8, and 12 h horizons and between full-timeline and daylight evaluation? (RQ3) Do complex neural models consistently beat last-value persistence, and are their accuracy gains commensurate with parameter count and inference cost? (RQ4) Under common meteorological forcing at one site, do these conclusions remain consistent across three PV technologies?
+
+The contribution is empirical and methodological rather than architectural:
+\begin{enumerate}
+  \item We implement a leakage-aware protocol with a complete 5-min timeline, Train-only preprocessing, split-local window construction, Validation-only model selection, and one untouched Test evaluation.
+  \item We compare three co-located PV technologies under common meteorological observations, reducing site and climate confounding while retaining technology-specific targets.
+  \item We report four prefixes of a common 12 h trajectory, full-timeline and daylight metrics, three-seed variability, persistence skill, and unified computational efficiency.
+  \item We document a practically important negative result: complex neural models do not necessarily outperform persistence under strict evaluation, and their ordering depends on technology, horizon, and evaluation scope.
+\end{enumerate}
+We do not propose ModernTCN or any other new neural architecture, and we make no claim of state-of-the-art performance, cross-site generalization, or deployment readiness.
+
+\section{Related Work}
+
+\subsection{PV power forecasting models}
+
+PV forecasting has progressed from physical and statistical models toward data-driven systems that combine recent power, irradiance, meteorology, and temporal covariates. General surveys document the parallel development of recurrent, convolutional, attention-based, and probabilistic sequence forecasting.\cite{Hewamalage2021RNN,Benidis2022,Salinas2020DeepAR,Lim2021TFT} The appropriate method depends on whether future exogenous forecasts are available and on whether the target is minutes, hours, or days ahead.\cite{Antonanzas2016,Mellit2021Review} Recurrent models based on long short-term memory (LSTM) networks remain common because they capture ordered dependencies.\cite{Hochreiter1997,DuPlessis2021} Convolutional sequence models offer parallel computation and long receptive fields, while attention-based architectures can represent cross-variable and long-range relationships.\cite{Bai2018TCN,Vaswani2017}
+
+Modern time-series architectures were generally proposed outside the PV domain. DLinear challenged the assumption that complex Transformers always dominate long-term forecasting.\cite{Zeng2023DLinear} Informer introduced efficient attention for long sequences,\cite{Zhou2021Informer} while Autoformer and FEDformer integrated decomposition or frequency-domain structure.\cite{Wu2021Autoformer,Zhou2022FEDformer} PatchTST represents each variable through temporal patches and channel-independent processing.\cite{Nie2023PatchTST} iTransformer inverts the tokenization axis to model variates as tokens.\cite{Liu2024iTransformer} ModernTCN revisits convolutional designs with large kernels and modern architectural choices.\cite{Luo2024ModernTCN} These are established methods; their use in the present benchmark is an evaluation choice, not an algorithmic contribution.
+
+Recent PV studies have used attention, decomposition, recurrent learning, and direct multi-step output.\cite{DuPlessis2021,Wang2019DKASC,PVAutoformer2023,Bhatt2021} The diversity of datasets and protocols, however, makes reported gains difficult to transfer. Some studies use different horizons or site-specific filters; others omit naive references or evaluate only daylight intervals. Our purpose is not to reproduce every published architecture but to test representative direct multi-output families under one controlled protocol.
+
+\subsection{Multi-horizon forecasting and persistence benchmarks}
+
+Recursive multi-step forecasting feeds predicted values back into the model and can accumulate error. Direct approaches instead predict each future step without recursion, either with separate models or a joint output trajectory. The latter is attractive when evaluation spans many horizons because one trained model supplies all prefixes. General benchmark studies such as M4 illustrate that no single forecasting method dominates across all series and horizons.\cite{Makridakis2020} The same warning applies to PV forecasting: a model that performs well at 12 h may not be best at 1 h, and a metric averaged over night and day can conceal materially different behavior.
+
+Persistence is especially important for solar data. Last-value persistence is strong over short horizons when power changes slowly and becomes weaker as forecast age grows. A daily seasonal reference can be informative at matched clock times but requires lagged observations and may change the eligible sample set. Skill scores relative to a naive method provide a direct answer to whether complexity adds predictive value.\cite{Hyndman2006} We therefore use last-value persistence on exactly the same origins and masks as the neural models. Daily persistence is supplementary because its requirement for a valid 24 h lag changes sample availability.
+
+\subsection{Data leakage and reproducibility risks}
+
+Forecasting evaluation should preserve the direction of time. Random cross-validation is generally unsuitable when temporal dependence is present, and even blocked evaluation can be optimistic if preprocessing is fitted globally.\cite{Bergmeir2012,Tashman2000,Hewamalage2023} Leakage can also arise indirectly through repeated model selection on the reported test period. Kapoor and Narayanan documented reproducibility failures arising from leakage in data science research more broadly.\cite{Kapoor2023} In PV applications, missingness, night periods, anomaly treatment, and scaler definitions add further opportunities for unintentional information transfer.
+
+Reproducibility requires more than publishing a metric table. The split, target timestamps, masks, inverse transformation, checkpoint rule, and metric definitions must be traceable. Three random seeds do not establish broad statistical significance, but per-seed results at least reveal whether a ranking is driven by one initialization. Computational comparisons similarly require a common device, input shape, warm-up, batch size, and timing boundary.
+
+\subsection{Identified evaluation gap}
+
+The literature contains many PV model comparisons and several studies using Alice Springs data,\cite{Wang2019DKASC,Bhatt2021,PVAutoformer2023} but fewer studies combine all of the following in one controlled design: co-located arrays with different PV technologies, Train-only preprocessing, split-local windows, an identical direct multi-output horizon, a same-sample persistence challenge, full-timeline and daylight reporting, seed variability, and unified inference efficiency. We describe this as a narrow evaluation gap rather than a claim of first use of any component. The benchmark is intended to show how those choices alter conclusions about established models.
+
+\section{Data and Experimental Protocol}
+
+\subsection{Alice Springs co-located PV systems}
+
+The data originate from the DKA Solar Centre in Alice Springs, Australia. Three systems are used: Site 17 with Sanyo HIT-210NKHE5 hybrid-silicon modules (rated DC array capacity 6.30 kW), Site 25 with Hanwha Solar HSL 60S polycrystalline-silicon modules (5.83 kW DC), and Site 38 with Q CELLS Q.PEAK-G4.1 monocrystalline-silicon modules (5.90 kW DC). The official AC capacity is unavailable; therefore the DC ratings are not used to normalize AC power. The target field is Active Power in kW AC according to the DKASC data glossary. The systems share six project weather inputs: ambient temperature, relative humidity, global and diffuse horizontal radiation, and global and diffuse tilted radiation. Official metadata support the technology labels, but latitude and longitude were not available in the final evidence and are not inferred from filenames.
+
+Table~\ref{tab:data} summarizes the temporal protocol. All systems use the same date boundaries, but valid window counts differ because targets and input features contain system-specific missing intervals. The complete 5-min timeline is retained, including nighttime timestamps.
+
+The use of co-located arrays is a control strategy rather than a claim that the targets are interchangeable. Each array has its own Active Power target, performance ratio, missingness pattern, and Train-fitted target transformation. By contrast, the six weather fields are identical in the clean project data for aligned timestamps. This separation prevents the same weather observation from being counted as three independent meteorological sources while preserving technology-specific response. It also limits the scientific question: the experiment compares systems under common forcing, not generalization to an unseen site.
+
+The available interval is shorter than many operational PV archives, but the five-minute cadence produces thousands of valid forecast origins per split. Adjacent origins share most of their lookback and target intervals and are not independent experimental units. We therefore treat origins as repeated operational forecast instances and random seeds as optimization replications. This is one reason that the study emphasizes descriptive effect sizes and avoids a nominal significance test whose independence assumptions would be difficult to defend.
+
+\begin{table*}[t]
+\caption{Dataset and temporal protocol. Capacities are official DC array ratings and are not used for AC-power normalization. Window counts correspond to lookback 72 and output 144 constructed independently within each split.}
+\label{tab:data}
+\centering\small
+\resizebox{\textwidth}{!}{\begin{tabular}{llllrrrr}
+\toprule
+Array (site) & Module technology & Rated DC & Target & Train windows & Validation windows & Test windows & Resolution \\
+\midrule
+Sanyo (17) & HIT hybrid silicon & 6.30 kW & Active Power (kW AC) & 20,409 & 3,619 & 4,177 & 5 min \\
+Hanwha (25) & Polycrystalline silicon & 5.83 kW & Active Power (kW AC) & 20,183 & 4,239 & 4,535 & 5 min \\
+Qcells (38) & Monocrystalline silicon & 5.90 kW & Active Power (kW AC) & 12,747 & 2,999 & 3,019 & 5 min \\
+\midrule
+\multicolumn{8}{l}{Train: 2018-04-01--2018-07-15; Validation: 2018-07-16--2018-08-07; Test: 2018-08-08--2018-08-31 (ACST).}\\
+\bottomrule
+\end{tabular}}
+\end{table*}
+
+\subsection{Temporal alignment and data preprocessing}
+
+Raw timestamps are reindexed to a regular 5-min axis. Nighttime is not removed, because deletion would change temporal spacing and can make window construction ambiguous. Missing values are represented explicitly. K-nearest-neighbor imputation, Isolation Forest fitting, feature scaling, and target scaling are fitted using Train only. The fitted transformations are then applied without refitting to Validation and Test. KNN imputation and isolation-based anomaly detection are established tools;\cite{Troyanskaya2001,Liu2008Isolation} here they are protocol components rather than methodological contributions.
+
+Each model receives 72 past samples (6 h) and outputs 144 future samples (12 h). Fifteen ordered input features include the six shared meteorological variables, array-specific performance ratio and quality indicators, and cyclical time features. Active Power is the target and is not supplied as future input. The target is transformed using the Train-fitted scaler and inverse-transformed once before metrics are computed in kW AC.
+
+The complete timeline makes missingness visible. Reindexing does not assert that an absent record was observed; it creates a regular coordinate system on which missing indicators and Train-fitted transformations can operate. If night records or missing intervals were silently removed, two adjacent rows could be more than five minutes apart although a model treats them as consecutive samples. The clean protocol instead requires temporal continuity and does not use interpolation to bridge a split boundary.
+
+Preprocessing state is immutable after Train fitting. Validation and Test do not update neighbor sets, anomaly thresholds, feature extrema, or target extrema. This avoids transductive evaluation in which the marginal distribution of future data informs the representation. The same principle applies to inverse transformation: predictions and labels are compared only after one common return to the physical target unit.
+
+\subsection{Leakage-free split and window construction}
+
+Figure~\ref{fig:protocol} shows the evaluation flow. Windows are generated separately inside each split; no input or target interval crosses a boundary. Validation loss alone selects the checkpoint and triggers early stopping. Test is not passed to the training function and is evaluated once after checkpoint selection. The three seeds use identical labels, forecast-origin timestamps, and masks within each array. All reported H12, H48, H96, and H144 values are prefixes of the same H144 prediction rather than results from four separately trained models. Thus shortening the reported horizon does not increase the sample count.
+
+Artifact-level checks confirmed 36 completed runs: four neural models, three arrays, and three seeds. Each run maps to an H144 prediction, label array, forecast-origin timestamps, mask, configuration, and selected checkpoint. Within an array, labels, origins, and masks are elementwise identical across all models and seeds, and all numeric arrays are finite. Metrics in this manuscript were recomputed from those artifacts in the final evidence stage rather than copied from earlier summary tables. The final Stage-2 evidence supersedes all preliminary project tables.
+
+\begin{figure*}[t]
+\centering\includegraphics[width=0.97\textwidth]{figures/fig1_leakage_free_protocol.pdf}
+\caption{Leakage-free evaluation protocol. Preprocessing is fitted exclusively on Train; windows are built independently inside Train, Validation, and Test; Validation selects checkpoints; and Test is untouched until final evaluation.}
+\label{fig:protocol}
+\end{figure*}
+
+The daylight mask is defined after prediction for descriptive evaluation: a target point is daylight when its true power exceeds 1\% of the corresponding array's Train maximum. Because this uses the target, it is not an input, routing variable, or deployable daylight detector. It merely removes near-zero target points when computing a second set of metrics.
+
+\subsection{Forecasting models}
+
+Four neural models are compared. The \emph{discrete candidate} is a parameter-matched direct trajectory decoder retained from the clean decision experiment. PatchTST, iTransformer, and ModernTCN represent patch-based Transformer, inverted-variate Transformer, and modern convolutional forecasting families, respectively.\cite{Nie2023PatchTST,Liu2024iTransformer,Luo2024ModernTCN} Every model maps the same 72-by-15 input to a 144-step target and is trained with the same data protocol and seeds 42, 43, and 44. Model-specific architectural requirements prevent exact parameter equality, so parameter count is reported rather than hidden.
+
+The shared optimization configuration is AdamW\cite{Loshchilov2019AdamW} with learning rate 0.001, weight decay $10^{-5}$, batch size 256, a maximum of 25 epochs, and early-stopping patience 5. The output checkpoint minimizes Validation loss. These settings were fixed before Test evaluation; Test does not select architecture, seed, epoch, or horizon.
+
+\subsection{Persistence references}
+
+Last-value persistence repeats the most recent observed PV power at the forecast origin across all 144 future steps. It uses the exact neural-model origins, labels, and masks and therefore provides the main naive reference. Daily persistence takes the value at each target timestamp from 24 h earlier (288 five-minute samples). No interpolation is used. Because the required lag is unavailable for some otherwise valid origins, daily persistence has a different effective sample count and is reported only as supplementary context, not ranked directly in the primary table.
+
+\subsection{Evaluation metrics}
+
+For $n$ valid target points with observations $y_i$ and predictions $\hat y_i$, RMSE, MAE, bias, and $R^2$ are
+\begin{align}
+\mathrm{RMSE}&=\sqrt{n^{-1}\sum_i(y_i-\hat y_i)^2},\\
+\mathrm{MAE}&=n^{-1}\sum_i|y_i-\hat y_i|,\\
+\mathrm{Bias}&=n^{-1}\sum_i(\hat y_i-y_i),\\
+R^2&=1-\frac{\sum_i(y_i-\hat y_i)^2}{\sum_i(y_i-\bar y)^2}.
+\end{align}
+Negative $R^2$ values are retained. Since official AC capacities are unknown, AC RMSE is not divided by the DC array rating. Instead, the primary normalized measure is
+\begin{equation}
+\mathrm{range\mbox{-}nRMSE}=\frac{\mathrm{RMSE}}{y_{\max,\mathrm{Train}}-y_{\min,\mathrm{Train}}}.
+\end{equation}
+The denominator is fixed from Train for each array. Skill relative to last-value persistence is $1-\mathrm{RMSE}_{model}/\mathrm{RMSE}_{pers}$ (and analogously for MAE); positive values indicate improvement. Neural metrics are reported as mean and sample standard deviation across three seeds. We do not interpret the three seeds as an independent-sample significance test.
+
+\subsection{Computational efficiency measurement}
+
+Inference was measured on one NVIDIA GeForce RTX 3060 Laptop GPU (6143.5 MB) under Windows, Python 3.12.4, PyTorch 2.5.1+cu121, CUDA 12.1, and cuDNN 90100, using float32 without mixed precision. All models used input shape $[B,72,15]$ in evaluation and inference mode. Batch-one latency used 100 warm-up and 500 measured repetitions with device synchronization; throughput used batch 256 and 100 repetitions. Timing excludes model loading, disk I/O, data loading, and host-to-device transfer. These measurements characterize this hardware and software stack only.
+
+\subsection{Evidence construction and reproducibility}
+
+The final evidence table is stored in long format, with one row per array, model, seed, horizon, scope, statistic, and metric. Each row records physical units, sample and valid-target counts, normalization definition, prediction, label, timestamp and mask paths, configuration, and source commit. This format separates calculation from manuscript layout: plots and summary tables can be regenerated without transcribing values from a PDF or spreadsheet. Persistence rows record their causal construction rule instead of a checkpoint.
+
+Three consistency levels were checked. At the run level, every expected model--array--seed combination had a completed configuration, H144 prediction, and checkpoint. At the array level, labels, timestamps, and masks were compared elementwise across models and seeds. At the metric level, every H12, H48, H96, and H144 result was recomputed from the corresponding prefix of one H144 artifact. Means, sample standard deviations, and neural ranks were then derived from per-seed rows. The 36 run count refers only to trained neural runs; persistence is deterministic and adds no training run.
+
+Figure generation reads those evidence files directly from their audited project location. The manuscript directory intentionally does not contain a copied metric table, because a duplicate would become a competing source of truth. The Python figure script asserts the expected evidence row count, required model set, and horizon set before drawing vector PDFs. This does not replace independent replication, but it reduces transcription and selective-plotting risk within the present study.
+
+The protocol also distinguishes reproducibility from generalizability. A reader can reproduce the transformation and metric logic on the released data and code, but the Test period remains one temporal sample from one site. Agreement between three seeds addresses optimization variability, not climate variability. Claims in the following sections are therefore framed as observations for the audited Alice Springs task.
+
+\section{Results}
+
+\subsection{Overall multi-horizon accuracy}
+
+Table~\ref{tab:main} reports the central Test result: Train-range nRMSE for the same H144 origins at four prefixes. ModernTCN is the lowest-error neural model in 18 of the 24 array--horizon--scope combinations, with mean neural-model rank 1.29. iTransformer ranks first five times (mean rank 2.21), the discrete candidate once (3.08), and PatchTST zero times (3.42). This is a neural-only ranking. It must not be read as 18 wins against persistence.
+
+\begin{table*}[t]
+\caption{Test Train-range nRMSE. Neural entries are mean (sample SD) over three seeds; persistence is deterministic. Bold marks the lowest overall value; when persistence wins, the lowest neural value is underlined. Daily persistence is excluded because its eligible sample set differs.}
+\label{tab:main}\centering\scriptsize
+\begin{tabular}{lllccccc}
+\toprule
+Array & Scope & Horizon & Last persistence & Discrete & iTransformer & PatchTST & ModernTCN \\
+\midrule
+Sanyo & Full & H12 & 0.049 & 0.024 (0.006) & 0.038 (0.008) & 0.038 (0.005) & \textbf{0.024 (0.007)} \\
+ & & H48 & 0.186 & 0.098 (0.005) & 0.096 (0.001) & 0.099 (0.005) & \textbf{0.092 (0.003)} \\
+ & & H96 & 0.354 & 0.147 (0.002) & \textbf{0.127 (0.003)} & 0.143 (0.011) & 0.129 (0.006) \\
+ & & H144 & 0.451 & 0.144 (0.002) & 0.130 (0.003) & 0.140 (0.008) & \textbf{0.129 (0.005)} \\
+ & Daylight & H12 & 0.109 & 0.049 (0.010) & 0.060 (0.007) & 0.059 (0.001) & \textbf{0.035 (0.005)} \\
+ & & H48 & 0.339 & 0.197 (0.009) & 0.173 (0.007) & 0.184 (0.014) & \textbf{0.162 (0.007)} \\
+ & & H96 & 0.538 & 0.252 (0.002) & \textbf{0.194 (0.009)} & 0.231 (0.022) & 0.198 (0.009) \\
+ & & H144 & 0.606 & 0.215 (0.004) & \textbf{0.177 (0.004)} & 0.199 (0.014) & 0.178 (0.007) \\
+\midrule
+Hanwha & Full & H12 & 0.059 & 0.030 (0.001) & 0.031 (0.001) & 0.038 (0.004) & \textbf{0.028 (0.001)} \\
+ & & H48 & 0.200 & \textbf{0.088 (0.004)} & 0.090 (0.002) & 0.099 (0.004) & 0.094 (0.003) \\
+ & & H96 & 0.355 & 0.134 (0.008) & 0.135 (0.002) & 0.148 (0.005) & \textbf{0.133 (0.005)} \\
+ & & H144 & 0.439 & 0.132 (0.005) & 0.132 (0.002) & 0.141 (0.006) & \textbf{0.130 (0.003)} \\
+ & Daylight & H12 & 0.111 & 0.055 (0.003) & 0.051 (0.001) & 0.058 (0.008) & \textbf{0.045 (0.005)} \\
+ & & H48 & 0.325 & 0.156 (0.007) & \textbf{0.153 (0.004)} & 0.167 (0.007) & 0.155 (0.009) \\
+ & & H96 & 0.498 & 0.218 (0.014) & 0.212 (0.005) & 0.231 (0.010) & \textbf{0.203 (0.010)} \\
+ & & H144 & 0.561 & 0.197 (0.008) & 0.190 (0.004) & 0.202 (0.010) & \textbf{0.182 (0.005)} \\
+\midrule
+Qcells & Full & H12 & \textbf{0.001} & 0.015 (0.003) & 0.021 (0.003) & 0.025 (0.002) & \underline{0.010 (0.000)} \\
+ & & H48 & 0.104 & 0.085 (0.001) & 0.083 (0.001) & 0.086 (0.003) & \textbf{0.079 (0.001)} \\
+ & & H96 & 0.287 & 0.148 (0.001) & 0.145 (0.005) & 0.149 (0.003) & \textbf{0.128 (0.005)} \\
+ & & H144 & 0.401 & 0.147 (0.003) & 0.144 (0.006) & 0.142 (0.002) & \textbf{0.125 (0.004)} \\
+ & Daylight & H12 & \textbf{0.018} & 0.026 (0.005) & 0.022 (0.001) & 0.024 (0.002) & \underline{0.022 (0.010)} \\
+ & & H48 & 0.321 & 0.257 (0.003) & 0.238 (0.007) & 0.246 (0.014) & \textbf{0.228 (0.008)} \\
+ & & H96 & 0.554 & 0.281 (0.001) & 0.268 (0.011) & 0.274 (0.006) & \textbf{0.233 (0.013)} \\
+ & & H144 & 0.607 & 0.220 (0.004) & 0.210 (0.010) & 0.208 (0.004) & \textbf{0.183 (0.007)} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+The physical-unit RMSE values support the same interpretation. For Sanyo full-timeline H144, ModernTCN achieves 0.782 kW versus 2.729 kW for last-value persistence; for Hanwha the corresponding values are 0.759 and 2.561 kW; and for Qcells they are 0.757 and 2.418 kW. At H12, however, Qcells persistence has RMSE 0.004 kW, compared with 0.060 kW for ModernTCN. This unusually strong short-horizon persistence result is not removed or averaged away.
+
+The three arrays show both common structure and meaningful differences. For Sanyo, ModernTCN leads the neural set at H12, H48, and H144 on the full timeline, while iTransformer is slightly better at H96. The daylight results retain this competition: ModernTCN leads at H12 and H48, whereas iTransformer leads at H96 and H144 by small margins. For Hanwha, the discrete candidate has the lowest full-timeline H48 neural error and iTransformer narrowly leads daylight H48; ModernTCN leads the remaining neural combinations. Qcells has the sharpest horizon transition. Persistence dominates H12, but ModernTCN becomes the best neural and overall method at longer full-timeline horizons and has the lowest daylight neural error from H48 onward.
+
+These values illustrate why physical and normalized errors should appear together. The arrays have similar DC ratings but lack an official common AC-capacity normalization. Physical RMSE is interpretable within each target, whereas Train-range nRMSE supports cautious cross-array comparison using a denominator known at training time. Neither measure licenses comparison with a different site whose instrumentation, clipping, orientation, and target definition may differ.
+
+\begin{figure*}[t]
+\centering\includegraphics[width=0.98\textwidth]{figures/fig2_multihorizon_nrmse.pdf}
+\caption{Test Train-range nRMSE across horizons. Neural curves show three-seed means; last-value persistence is deterministic. Each panel uses the same H144 origins for all prefixes.}
+\label{fig:curves}
+\end{figure*}
+
+\subsection{Full-timeline versus daylight evaluation}
+
+Figure~\ref{fig:curves} shows that daylight filtering changes both scale and, occasionally, ordering. Removing near-zero nighttime target points increases normalized errors because the retained targets are more variable and operationally difficult. For Sanyo H144, ModernTCN range-nRMSE increases from 0.129 full-timeline to 0.178 daylight. Hanwha increases from 0.130 to 0.182, and Qcells from 0.125 to 0.183. The change is therefore not an array-specific anomaly.
+
+Rank changes are also visible. On Sanyo H96, iTransformer is the lowest-error neural model under both scopes, while ModernTCN leads most neighboring horizons. On Hanwha H48, the discrete candidate leads the full timeline, whereas iTransformer narrowly leads daylight. These differences show why a single aggregate score is insufficient. They do not imply that daylight is an alternative deployable selection rule: the mask uses true target power and is only an analysis scope.
+
+\subsection{Cross-technology ranking stability}
+
+The heat map in Fig.~\ref{fig:ranks} makes the conditional ranking explicit. ModernTCN is the most consistent neural model but does not dominate all technology--horizon pairs. The Qcells H12 setting is qualitatively different from the longer horizons: persistence is nearly exact on the full timeline and remains best in daylight. By H48--H144, ModernTCN is the strongest neural model and also outperforms persistence. Thus, a statement such as ``ModernTCN is best for Alice Springs PV'' would be too broad; the defensible statement is that it has the best average neural rank in this controlled benchmark.
+
+\begin{figure}[t]
+\centering\includegraphics[width=0.95\columnwidth]{figures/fig3_rank_heatmap.pdf}
+\caption{RMSE ranks among the four neural models. Persistence is deliberately excluded from this neural-only ranking and is evaluated separately through skill.}
+\label{fig:ranks}
+\end{figure}
+
+Table~\ref{tab:rank} summarizes win count and average rank. The win count totals 24 combinations (three arrays, four horizons, and two scopes). It is descriptive and does not constitute a significance test.
+
+\begin{table}[t]
+\caption{Neural-model ranking summary over 24 array--horizon--scope combinations.}
+\label{tab:rank}\centering\small
+\begin{tabular}{lrr}
+\toprule Model & RMSE wins & Average rank \\
+\midrule
+ModernTCN & 18 & 1.292 \\
+iTransformer & 5 & 2.208 \\
+Discrete candidate & 1 & 3.083 \\
+PatchTST & 0 & 3.417 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Comparison against persistence}
+
+Persistence produces the central cautionary finding. Most long-horizon neural forecasts improve substantially over last-value persistence, but neural performance is not uniformly superior. At Qcells H12, all neural models have negative RMSE skill under both scopes. Because skill is a ratio, the very small persistence error makes this combination influential when skills are averaged. Across all 24 combinations, the mean RMSE skill is negative for every neural model: $-0.066$ for ModernTCN, $-0.444$ for the discrete candidate, $-0.798$ for iTransformer, and $-1.073$ for PatchTST. Each model has two nonpositive combinations, corresponding to Qcells H12 full and daylight. The negative composite mean therefore does not mean that persistence wins most cases; it means that the magnitude of failure on the short-horizon Qcells cases offsets many positive long-horizon skills.
+
+The short-horizon Qcells result was subjected to the same origin, label, and mask checks as every other combination. It is retained as evidence rather than treated as an outlier to remove. Its interpretation remains narrow. A persistence RMSE of 0.004 kW indicates that eligible H12 targets during this Test split changed very little relative to the last observed value. It does not prove that persistence would be equally strong in another season or year. Conversely, the fact that neural models lose this case does not erase their longer-horizon gains. The useful result is the horizon-dependent crossover.
+
+Skill can be unstable when its persistence denominator is close to zero. A small absolute neural error divided by an exceptionally small persistence error yields a large negative skill. We therefore present skill together with physical RMSE, range-nRMSE, and win counts. No single aggregation stands in for the complete pattern. This prevents either a favorable neural win count or an unfavorable macro skill average from becoming the sole narrative.
+
+This distinction matters. Reporting only win counts would overstate neural reliability, while reporting only the macro mean skill would conceal clear long-horizon gains. A complete benchmark should show both. Daily persistence provides supplementary evidence about diurnal repeatability, but its valid origins differ because a 24 h lag is required. It is not included in the primary ranks or the skill denominator.
+
+\subsection{Accuracy--efficiency trade-off}
+
+Table~\ref{tab:eff} and Fig.~4 compare neural efficiency. iTransformer has the lowest batch-one median latency (0.388 ms), PatchTST the highest measured throughput (421,158 samples/s), and ModernTCN the best average accuracy but more parameters (682,896) and lower throughput than the two Transformer baselines. The discrete candidate is small (98,802 parameters) but its trajectory decoding procedure is much slower on the measured hardware, with 28.225 ms median latency. Parameter count alone therefore does not determine runtime.
+
+\begin{table}[t]
+\caption{Unified GPU efficiency measurements. Latency excludes model loading, data loading, disk I/O, and host-to-device transfer. Values are hardware-specific descriptive measurements.}
+\label{tab:eff}\centering\small
+\resizebox{\columnwidth}{!}{\begin{tabular}{lrrrrr}
+\toprule
+Model & Parameters & Median latency (ms) & Mean latency (ms) & Throughput (samples/s) & Peak GPU memory (MB) \\
+\midrule
+Discrete candidate & 98,802 & 28.225 & 29.692 & 8,167 & 108.03 \\
+iTransformer & 176,528 & 0.388 & 0.457 & 326,120 & 17.16 \\
+PatchTST & 146,576 & 0.481 & 0.554 & 421,158 & 15.43 \\
+ModernTCN & 682,896 & 0.602 & 0.729 & 187,467 & 23.60 \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\begin{center}
+\includegraphics[width=0.98\columnwidth]{figures/fig4_accuracy_efficiency.pdf}
+\par\vspace{2pt}\small\textbf{FIG. 4.} Accuracy--efficiency trade-off. The vertical coordinate is the unweighted mean of Test Train-range nRMSE over the 24 array--horizon--scope combinations. The dashed persistence reference has no neural inference latency and is not a Pareto point.
+\end{center}
+
+No model is best on every efficiency dimension. ModernTCN's accuracy advantage may justify its moderate additional latency in offline scheduling, whereas PatchTST or iTransformer may be preferable when throughput dominates. The measurements do not establish performance on embedded controllers, other GPUs, or CPUs.
+
+The throughput ordering differs from batch-one latency because kernels, memory access, and batching affect architectures differently. PatchTST processes the largest measured batch throughput even though iTransformer has lower single-sample latency. The discrete candidate shows the opposite of a common assumption: its low parameter count does not translate to fast inference. A deployment study would also include data preparation, transfer, batching policy, power consumption, and the target device. The present timing isolates model forward execution so architectural overhead can be compared reproducibly.
+
+\section{Discussion}
+
+\subsection{What the results mean}
+
+The results answer the four research questions. First, model ranking is not invariant even when leakage controls and origins are fixed. ModernTCN is the strongest neural model on average, yet iTransformer and the discrete candidate lead specific combinations. Second, horizon and scope materially alter both error scale and rank. Daylight-only errors are consistently higher than full-timeline errors, and the model ordering changes in several cases. Third, complexity does not guarantee skill over persistence. Neural networks are clearly useful at many 4--12 h settings, but the Qcells H12 cases reverse the conclusion and make composite skill negative. Fourth, co-location reduces meteorological confounding but does not produce identical conclusions across PV technologies.
+
+The practical lesson is not to reject neural forecasting. It is to require a same-sample naive reference and report where the learned model adds value. A system operator could reasonably prefer a neural forecast for a 12 h trajectory and persistence for very short stable intervals, but designing such routing is outside this study and would require a new calibration protocol. The current evidence supports benchmark conclusions only.
+
+Negative results improve application decisions when their scope is explicit. In this benchmark, ``neural models do not beat persistence on average'' and ``ModernTCN wins most neural comparisons'' are simultaneously true because they answer different questions. The first compares skill with a naive method and is sensitive to the Qcells H12 denominator; the second compares ranks among learned models. Collapsing them into one headline would discard information needed by practitioners.
+
+The co-located design further shows that technology labels should not be treated as cosmetic dataset names. Different electrical response, data availability, and target dynamics can alter the practical baseline. A method selected on Sanyo alone would miss the Qcells short-horizon reversal. At the same time, the design cannot attribute this difference solely to cell technology because orientation, balance-of-system behavior, and sensor properties are not experimentally randomized. We use technology as a controlled descriptive factor, not a causal treatment.
+
+\subsection{Why complex models fail to consistently beat persistence}
+
+Last-value persistence exploits temporal smoothness without estimating parameters. At a short horizon, especially when a target trajectory is nearly flat or dominated by night, this inductive bias is difficult to beat. A neural model trained to minimize average trajectory loss can introduce small nonzero deviations that are large relative to an almost perfect persistence error. As the horizon grows, the last observation becomes stale and the learned mapping benefits from recent meteorological and temporal context. The crossover is visible for Qcells between H12 and H48.
+
+Multi-output losses also encourage conditional-mean trajectories. Under unresolved cloud motion, alternative future ramps may average into a smooth prediction. Earlier error analysis in this project identified high-change daylight windows as the dominant source of deterministic trajectory error. That finding is consistent with an information limitation: historical ground observations identify difficult conditions but do not reveal future cloud direction. We did not include forecast-time future numerical weather prediction, satellite imagery, or sky imagery, so the benchmark cannot determine whether those inputs would overcome the limitation.
+
+Architecture affects this trade-off, but the data do not justify attributing ModernTCN's ranking to a unique causal mechanism. Large-kernel convolutions may represent multi-scale history efficiently, while iTransformer's cross-variable representation is competitive at several horizons. The discrete candidate and PatchTST produce different rank patterns. These observations motivate controlled follow-up studies, not claims that one architecture is universally suited to PV forecasting.
+
+The absence of future exogenous inputs is consequential. Historical irradiance and power describe the state at forecast origin, but they cannot uniquely determine cloud motion over the next twelve hours. A deterministic squared-error objective then favors an average of plausible futures, producing smooth trajectories during uncertain ramps. More layers or a different decoder cannot create missing future information. This benchmark therefore sets a boundary for history-only deterministic prediction rather than a ceiling for all PV forecasting systems.
+
+That boundary also explains why exploratory project routes are not converted into manuscript contributions. High-frequency irradiance, event heads, probabilistic intervals, and constrained decoders were investigated elsewhere in the development record, but they addressed different questions or failed their predefined screens. Including them as main evidence would blur the clean benchmark and risk selective reporting. Only the audited deterministic benchmark and persistence references define this paper's quantitative evidence base.
+
+\subsection{Implications for PV forecasting evaluation}
+
+Five reporting practices follow from the evidence. First, preprocessing fit boundaries should be stated as explicitly as train/test dates. Second, window timestamps should be checked so that no lookback or target crosses a split. Third, all reported horizons should use either explicitly matched samples or separate sample counts. Fourth, persistence must be evaluated on the same origins and masks as learned models. Fifth, full-timeline and daylight results should be labeled as different estimands, because nighttime prevalence can change apparent performance.
+
+The same discipline should extend to metadata. DC array capacity and measured AC power are not interchangeable. Dividing AC RMSE by a DC nameplate value may look like a standard capacity-normalized metric, but it mixes quantities affected by inverter capacity and losses. Because official AC capacities remain unknown, we use a Train-only target range and label it explicitly. This is less portable than a verified AC-capacity denominator, yet it is auditable and does not use Test information.
+
+Full-timeline metrics are also not inherently inferior to daylight metrics. They answer different operational questions. A full day includes periods in which zero or near-zero output is correct and may be relevant to scheduling; daylight isolates production-period difficulty. The problem arises when the chosen scope is unstated or daylight is defined from each model's prediction. Our mask is fixed from true target power and used only after prediction, so every model sees the same evaluation points.
+
+Seed variability should also be retained. Three seeds are modest, but the sample SDs in Table~\ref{tab:main} show that initialization contributes uncertainty. Choosing the best seed would produce optimistic results. Computational cost deserves similar discipline: parameter count, latency, and throughput measure different properties, and timing without a stated device and boundary is not reproducible.
+
+The controlled cross-technology comparison is informative precisely because it is not cross-site. Shared meteorology reduces one source of variation, allowing technology- and target-specific behavior to become visible. At the same time, shared weather and one location limit external validity. Replication across climates and independently instrumented sites would be necessary before claiming generality.
+
+\section{Limitations}
+
+The study has several limitations. The three systems are co-located at one Alice Springs facility and cover April--August 2018; they do not represent geographic or climatic generalization. Although the modules correspond to three documented technologies, three arrays cannot represent all products within those technologies. Official AC capacities are unknown, so Train-range nRMSE is used instead of capacity-normalized AC error. The denominator is leakage-safe but dataset-dependent.
+
+Only three random seeds are available. Their mean and sample SD describe initialization variability but do not support strong inferential claims. The daylight mask uses true future target power and is evaluation-only; it cannot be used operationally at the forecast origin. The 2022 period examined in later exploratory work has already informed project development and is not introduced here as an untouched confirmation set.
+
+The benchmark uses historical observations but no future exogenous forecast available at issue time. Consequently, it cannot resolve whether operational NWP, satellite cloud motion, or sky images would improve long-horizon ramp prediction. Daily persistence has a different sample set and is supplementary. Efficiency measurements are limited to one laptop GPU and omit data transfer and pipeline overhead. Finally, the four neural architectures are representative rather than exhaustive, and ModernTCN is an existing method rather than an original contribution.
+
+\section{Conclusion}
+
+This leakage-aware benchmark compared four direct multi-output neural models and persistence on three co-located PV technologies. A single H144 model generated 1, 4, 8, and 12 h prefixes under Train-only preprocessing, split-local windows, Validation-only checkpoint selection, and an untouched Test evaluation. ModernTCN obtained the best neural RMSE rank in 18 of 24 array--horizon--scope combinations, but this result did not translate into universal superiority over last-value persistence. Persistence was exceptionally strong for Qcells at H12, whereas neural models produced large gains at most longer horizons. Daylight evaluation increased error and changed some rankings. Unified efficiency measurements further showed that accuracy, parameter count, latency, and throughput favor different models.
+
+The principal conclusion is methodological: credible PV forecasting claims require leakage control, horizon- and scope-specific reporting, same-sample persistence skill, seed variability, and transparent efficiency measurement. Under these controls, negative or conditional findings are as important as win counts. The evidence supports an application benchmark and reproducibility contribution, not a new-architecture or cross-climate claim.
+
+\section*{Data Availability}
+The source PV and meteorological observations are available from the DKA Solar Centre data service and associated official metadata pages.\cite{DKASC2026} The manuscript reports derived aggregate evidence only; the original data remain subject to the provider's terms. Exact split dates, feature definitions, window counts, and artifact provenance are provided in the accompanying repository.
+
+\section*{Code Availability}
+The leakage-aware evaluation code, evidence tables, figure-generation script, and manuscript source are available in the project repository at \url{https://github.com/Zhujiangkun-Yohkoh/PV-forecast}. Large checkpoints and prediction arrays are not included in the manuscript branch.
+
+\section*{Conflict of Interest}
+The authors have no conflicts to disclose.
+
+\section*{Author Contributions}
+% TODO: AUTHOR CONFIRMATION REQUIRED -- replace with the final CRediT statement before submission.
+The final CRediT author-contribution statement requires confirmation by all authors before submission.
+
+\section*{Acknowledgments}
+The authors acknowledge the DKA Solar Centre for making the Alice Springs PV and meteorological observations available.
+% TODO: AUTHOR CONFIRMATION REQUIRED -- insert verified funding agency and grant numbers, if applicable.
+
+\bibliography{references}
+
+\end{document}
