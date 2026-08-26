@@ -3,12 +3,16 @@ from __future__ import annotations
 
 import csv
 import datetime as dt
+import http.client
 import json
 import math
 import os
 import statistics
+import time
 import urllib.request
+import urllib.error
 from collections import Counter, defaultdict
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 import numpy as np
@@ -78,7 +82,7 @@ def audit_pv_file(path: Path, site_name: str | None) -> tuple[list[dict], pd.Dat
     if path.stat().st_size != before[0] or path.stat().st_mtime_ns != before[1]:
         raise AssertionError(f"PV source changed: {path}")
     summary = {"record_type": "PV_FILE", "site": site_name or "other", "source_path": str(path),
-        "file_size_bytes": before[0], "physical_lines": physical, "parsed_records": valid_rows,
+        "file_size_bytes": before[0], "source_mtime_ns": before[1], "physical_lines": physical, "parsed_records": valid_rows,
         "first_timestamp": first, "last_timestamp": last, "timezone_status": "NAIVE; interpreted as ACST by validated project convention",
         "dominant_interval_minutes": 5, "duplicate_timestamps": duplicate, "reverse_timestamps": reverse,
         "malformed_physical_lines": malformed, "column_names": "|".join(header),
@@ -119,18 +123,22 @@ def count_continuous_windows(valid_set: set[dt.datetime], start: dt.datetime, en
 def http_get(url: str, byte_range: tuple[int, int] | None = None) -> tuple[bytes, dict]:
     headers = {"User-Agent": "PV-NWP-feasibility-audit/1.0"}
     if byte_range: headers["Range"] = f"bytes={byte_range[0]}-{byte_range[1]}"
-    request = urllib.request.Request(url, headers=headers)
-    with urllib.request.urlopen(request, timeout=90) as response:
-        data = response.read(); meta = dict(response.headers)
-        if byte_range and response.status != 206: raise AssertionError(f"Range request not honored: {url}")
-        return data, meta
-
-
-def gfs_cycle_for(local_day: dt.date, label: str) -> tuple[dt.datetime, str]:
-    if label == "previous_day_18":
-        cycle = dt.datetime.combine(local_day - dt.timedelta(days=1), dt.time(18), UTC)
-    else: cycle = dt.datetime.combine(local_day, dt.time(0), UTC)
-    return cycle, cycle.strftime("%Y%m%d/%H")
+    last_error = None
+    for attempt in range(3):
+        try:
+            request = urllib.request.Request(url, headers=headers)
+            with urllib.request.urlopen(request, timeout=90) as response:
+                data = response.read(); meta = dict(response.headers)
+                if byte_range and response.status != 206:
+                    raise AssertionError(f"Range request not honored: {url}")
+                if byte_range and len(data) != byte_range[1] - byte_range[0] + 1:
+                    raise http.client.IncompleteRead(data, byte_range[1] - byte_range[0] + 1 - len(data))
+                return data, meta
+        except (http.client.IncompleteRead, TimeoutError, urllib.error.URLError) as exc:
+            last_error = exc
+            if attempt < 2:
+                time.sleep(1.0 * (attempt + 1))
+    raise last_error
 
 
 def parse_idx(text: str) -> list[dict]:
@@ -143,55 +151,176 @@ def parse_idx(text: str) -> list[dict]:
     return parsed
 
 
-def download_gfs_samples() -> list[dict]:
+def safe_codes_get(codes_get, gid, key, default="UNKNOWN"):
+    try:
+        return codes_get(gid, key)
+    except Exception:
+        return default
+
+
+def pilot_cycles() -> list[dt.datetime]:
+    pilot = CFG["continuous_pilot"]
+    first = dt.date.fromisoformat(pilot["cycle_date_start_utc"])
+    last = dt.date.fromisoformat(pilot["cycle_date_end_utc"])
+    out = []
+    day = first
+    while day <= last:
+        out.extend(dt.datetime.combine(day, dt.time(hour), UTC) for hour in pilot["cycles_utc"])
+        day += dt.timedelta(days=1)
+    return out
+
+
+def gfs_base(cycle: dt.datetime, lead: int) -> str:
+    return (f"{CFG['gfs_archive']}/gfs.{cycle:%Y%m%d}/{cycle:%H}/atmos/"
+            f"gfs.t{cycle:%H}z.pgrb2.0p25.f{lead:03d}")
+
+
+def fetch_selected_file(cycle: dt.datetime, lead: int) -> dict:
+    """Download only requested GRIB messages. Existing objects are read, never rewritten."""
+    base = gfs_base(cycle, lead)
+    stem = f"gfs_{cycle:%Y%m%d_%H}_f{lead:03d}"
+    idx_path = NWP_DIR / f"{stem}.idx"
+    grib_path = NWP_DIR / f"{stem}.selected.grib2"
+    started = time.perf_counter(); downloaded = 0
+    try:
+        if idx_path.exists():
+            idx_bytes = idx_path.read_bytes(); idx_meta = {"Last-Modified": "existing_official_object"}
+        else:
+            idx_bytes, idx_meta = http_get(base + ".idx")
+            idx_path.write_bytes(idx_bytes); downloaded += len(idx_bytes)
+        entries = parse_idx(idx_bytes.decode("utf-8"))
+        selected = []
+        for logical, pattern in CFG["gfs_variables"].items():
+            matches = [entry for entry in entries if pattern in entry["line"]]
+            if not matches:
+                raise ValueError(f"missing index entry {logical}")
+            entry = matches[0]
+            if entry["next"] is None:
+                raise ValueError(f"missing end offset {logical}")
+            selected.append((logical, entry))
+        if not grib_path.exists():
+            payloads = []
+            for logical, entry in selected:
+                payload, _ = http_get(base, (entry["offset"], entry["next"] - 1))
+                payloads.append(payload); downloaded += len(payload)
+            grib_path.write_bytes(b"".join(payloads))
+        return {"cycle": cycle, "lead": lead, "base": base, "idx_path": idx_path,
+                "grib_path": grib_path, "selected": selected, "downloaded_bytes": downloaded,
+                "elapsed_seconds": time.perf_counter()-started, "status": "SUCCESS",
+                "last_modified": idx_meta.get("Last-Modified", "UNKNOWN"), "error": ""}
+    except (OSError, ValueError, http.client.HTTPException,
+            urllib.error.URLError, urllib.error.HTTPError) as exc:
+        return {"cycle": cycle, "lead": lead, "base": base, "idx_path": idx_path,
+                "grib_path": grib_path, "selected": [], "downloaded_bytes": downloaded,
+                "elapsed_seconds": time.perf_counter()-started, "status": "FAILED",
+                "last_modified": "UNKNOWN", "error": f"{type(exc).__name__}: {exc}"}
+
+
+def download_continuous_pilot() -> tuple[list[dict], list[dict], list[dict]]:
     try:
         from eccodes import codes_get, codes_grib_find_nearest, codes_grib_new_from_file, codes_release
     except ImportError as exc:
         raise RuntimeError("ecCodes is required for read-only GRIB2 point extraction") from exc
     NWP_DIR.mkdir(parents=True, exist_ok=True)
-    rows = []
-    for sample in CFG["sample_days"]:
-        local_day = dt.date.fromisoformat(sample["date"])
-        for cycle_label in CFG["cycles_per_local_day"]:
-            cycle, fragment = gfs_cycle_for(local_day, cycle_label)
-            conservative_available = cycle + dt.timedelta(minutes=CFG["conservative_release_delay_minutes"])
-            for lead in CFG["forecast_leads_hours"]:
-                base = f"{CFG['gfs_archive']}/gfs.{fragment.split('/')[0]}/{fragment.split('/')[1]}/atmos/gfs.t{fragment.split('/')[1]}z.pgrb2.0p25.f{lead:03d}"
-                stem = f"gfs_{cycle:%Y%m%d_%H}_f{lead:03d}"
-                idx_path = NWP_DIR / f"{stem}.idx"; grib_path = NWP_DIR / f"{stem}.selected.grib2"
-                idx_url = base + ".idx"
-                if idx_path.exists():
-                    idx_bytes=idx_path.read_bytes(); idx_meta={"Last-Modified":"previously_downloaded_official_object"}
-                else:
-                    idx_bytes, idx_meta = http_get(idx_url); idx_path.write_bytes(idx_bytes)
-                idx_text = idx_bytes.decode("utf-8"); entries = parse_idx(idx_text)
-                selected = []
-                for logical, pattern in CFG["gfs_variables"].items():
-                    matches = [entry for entry in entries if pattern in entry["line"]]
-                    if not matches: continue
-                    entry = matches[0]
-                    if entry["next"] is None: raise AssertionError(f"No end offset for {logical}")
-                    payload = b"" if grib_path.exists() else http_get(base, (entry["offset"], entry["next"] - 1))[0]
-                    selected.append((logical, payload, entry["line"]))
-                if len(selected) < 6: raise AssertionError(f"Missing requested GFS variables: {idx_url}")
-                if not grib_path.exists(): grib_path.write_bytes(b"".join(x[1] for x in selected))
-                with grib_path.open("rb") as handle:
-                    for logical, _, inventory_line in selected:
-                        gid = codes_grib_new_from_file(handle)
-                        if gid is None: raise AssertionError(f"GRIB message missing: {grib_path}")
-                        valid = dt.datetime.strptime(str(codes_get(gid, "validityDate")) + f"{int(codes_get(gid, 'validityTime')):04d}", "%Y%m%d%H%M").replace(tzinfo=UTC)
-                        nearest = codes_grib_find_nearest(gid, CFG["gfs_grid_target"]["latitude"], CFG["gfs_grid_target"]["longitude"])[0]
-                        rows.append({"record_type": "NWP_SAMPLE", "scenario": sample["scenario"], "local_sample_day": sample["date"],
-                            "model": "NOAA GFS 0.25 degree", "cycle_utc": cycle.isoformat(), "nominal_issue_time_utc": cycle.isoformat(),
-                            "conservative_available_time_utc": conservative_available.isoformat(), "official_object_last_modified": idx_meta.get("Last-Modified", "UNKNOWN"),
-                            "forecast_lead_hours": lead, "valid_time_utc": valid.isoformat(), "valid_time_acst": valid.astimezone(ACST).isoformat(),
-                            "variable": logical, "short_name": codes_get(gid, "shortName"), "units": codes_get(gid, "units"),
-                            "grid_latitude": nearest["lat"], "grid_longitude": nearest["lon"], "grid_distance_degrees": nearest["distance"],
-                            "value": nearest["value"], "idx_url": idx_url, "grib_url": base,
-                            "local_idx_path": str(idx_path), "local_grib_path": str(grib_path), "inventory_line": inventory_line,
-                            "archive_http_verified": True, "issue_before_valid": conservative_available <= valid})
-                        codes_release(gid)
-    return rows
+    cycles = pilot_cycles(); leads = CFG["continuous_pilot"]["forecast_leads_hours"]
+    jobs = [(cycle, lead) for cycle in cycles for lead in leads]
+    results = []
+    with ThreadPoolExecutor(max_workers=48) as pool:
+        futures = [pool.submit(fetch_selected_file, cycle, lead) for cycle, lead in jobs]
+        for future in as_completed(futures):
+            results.append(future.result())
+    rows = []; file_rows = []
+    for result in sorted(results, key=lambda x:(x["cycle"],x["lead"])):
+        file_rows.append({"record_type":"NWP_PILOT_OBJECT","cycle_utc":result["cycle"].isoformat(),
+            "forecast_lead_hours":result["lead"],"source_object":result["base"],
+            "local_grib_path":str(result["grib_path"]),"local_idx_path":str(result["idx_path"]),
+            "download_status":result["status"],"downloaded_bytes_this_run":result["downloaded_bytes"],
+            "idx_file_bytes":result["idx_path"].stat().st_size if result["idx_path"].exists() else 0,
+            "selected_file_bytes":result["grib_path"].stat().st_size if result["grib_path"].exists() else 0,
+            "extraction_seconds":result["elapsed_seconds"],"failure_reason":result["error"],
+            "official_object_last_modified":result["last_modified"]})
+        if result["status"] != "SUCCESS":
+            continue
+        with result["grib_path"].open("rb") as handle:
+            for logical, entry in result["selected"]:
+                gid = codes_grib_new_from_file(handle)
+                if gid is None: raise AssertionError(f"GRIB message missing: {result['grib_path']}")
+                valid = dt.datetime.strptime(str(codes_get(gid,"validityDate"))+f"{int(codes_get(gid,'validityTime')):04d}","%Y%m%d%H%M").replace(tzinfo=UTC)
+                nearest = codes_grib_find_nearest(gid,CFG["gfs_grid_target"]["latitude"],CFG["gfs_grid_target"]["longitude"])[0]
+                start_step=float(safe_codes_get(codes_get,gid,"startStep",result["lead"]))
+                end_step=float(safe_codes_get(codes_get,gid,"endStep",result["lead"]))
+                rows.append({"record_type":"NWP_PILOT_MESSAGE","model":"NOAA GFS 0.25 degree",
+                    "cycle_utc":result["cycle"].isoformat(),"nominal_issue_time_utc":result["cycle"].isoformat(),
+                    "policy_available_time_utc":(result["cycle"]+dt.timedelta(hours=6)).isoformat(),
+                    "availability_policy":CFG["availability_policy"],"forecast_lead_hours":result["lead"],
+                    "valid_time_utc":valid.isoformat(),"valid_time_acst":valid.astimezone(ACST).isoformat(),
+                    "variable":logical,"short_name":codes_get(gid,"shortName"),"stepType":safe_codes_get(codes_get,gid,"stepType"),
+                    "startStep":start_step,"endStep":end_step,"units":codes_get(gid,"units"),
+                    "typeOfStatisticalProcessing":safe_codes_get(codes_get,gid,"typeOfStatisticalProcessing"),
+                    "validityDate":safe_codes_get(codes_get,gid,"validityDate"),"validityTime":safe_codes_get(codes_get,gid,"validityTime"),
+                    "grid_latitude":nearest["lat"],"grid_longitude":nearest["lon"],"grid_distance_degrees":nearest["distance"],
+                    "value":nearest["value"],"idx_url":result["base"]+".idx","grib_url":result["base"],
+                    "source_object":result["base"],"local_idx_path":str(result["idx_path"]),
+                    "local_grib_path":str(result["grib_path"]),"inventory_line":entry["line"],"archive_http_verified":True})
+                codes_release(gid)
+    origin_rows = build_origin_mappings(rows, file_rows)
+    return rows, file_rows, origin_rows
+
+
+def aligned_cycle_value(message_rows: list[dict], variable: str, lead_hours: float) -> float:
+    rows = sorted((r for r in message_rows if r["variable"]==variable), key=lambda r:float(r["endStep"]))
+    if variable in {"DSWRF_surface","APCP_surface"} or any(r["stepType"] != "instant" for r in rows):
+        candidates=[r for r in rows if float(r["startStep"]) < lead_hours <= float(r["endStep"])]
+        if not candidates: return math.nan
+        row=min(candidates,key=lambda r:float(r["endStep"])-float(r["startStep"]))
+        value=float(row["value"])
+        if variable=="APCP_surface":
+            duration=float(row["endStep"])-float(row["startStep"])
+            return value/duration if duration>0 else math.nan
+        return value
+    x=np.array([float(r["endStep"]) for r in rows]); y=np.array([float(r["value"]) for r in rows])
+    if len(x)<2 or lead_hours<x.min() or lead_hours>x.max(): return math.nan
+    return float(np.interp(lead_hours,x,y))
+
+
+def build_origin_mappings(message_rows: list[dict], file_rows: list[dict]) -> list[dict]:
+    by_cycle=defaultdict(list)
+    for row in message_rows: by_cycle[dt.datetime.fromisoformat(row["cycle_utc"])].append(row)
+    good_files=defaultdict(set)
+    for row in file_rows:
+        if row["download_status"]=="SUCCESS": good_files[dt.datetime.fromisoformat(row["cycle_utc"])].add(int(row["forecast_lead_hours"]))
+    required=set(CFG["continuous_pilot"]["forecast_leads_hours"])
+    start=dt.datetime.fromisoformat(CFG["continuous_pilot"]["start_acst"]).replace(tzinfo=ACST)
+    end=dt.datetime.fromisoformat(CFG["continuous_pilot"]["end_acst"]).replace(tzinfo=ACST)
+    output=[]; origin=start
+    while origin<=end:
+        origin_utc=origin.astimezone(UTC)
+        latest_hour=(origin_utc.hour//6)*6
+        nominal=origin_utc.replace(hour=latest_hour,minute=0,second=0,microsecond=0)-dt.timedelta(hours=6)
+        fallback=0; selected=nominal
+        while selected>=min(pilot_cycles())-dt.timedelta(hours=24) and good_files.get(selected,set())!=required:
+            selected-=dt.timedelta(hours=6); fallback+=1
+        available=selected+dt.timedelta(hours=6); age=(origin_utc-selected).total_seconds()/3600
+        all_valid=selected in by_cycle and available<=origin_utc
+        valid_points=0; total_points=CFG["horizon_steps"]*len(CFG["gfs_variables"])
+        if all_valid:
+            for step in range(1,CFG["horizon_steps"]+1):
+                lead=age+step*CFG["frequency_minutes"]/60
+                for variable in CFG["gfs_variables"]:
+                    if np.isfinite(aligned_cycle_value(by_cycle[selected],variable,lead)): valid_points+=1
+            all_valid=valid_points==total_points
+        source=(f"{CFG['gfs_archive']}/gfs.{selected:%Y%m%d}/{selected:%H}/atmos/"
+                f"gfs.t{selected:%H}z.pgrb2.0p25.f006..f024") if selected in by_cycle else "MISSING"
+        output.append({"record_type":"NWP_ORIGIN_MAPPING","forecast_origin_utc":origin_utc.isoformat(),
+            "forecast_origin_acst":origin.isoformat(),"selected_cycle_utc":selected.isoformat(),
+            "policy_available_time_utc":available.isoformat(),"availability_policy":CFG["availability_policy"],
+            "forecast_age_hours":age,"forecast_lead_hours":f"{age+1/12:.6f}..{age+12:.6f}",
+            "valid_time_utc":f"{(origin_utc+dt.timedelta(minutes=5)).isoformat()}..{(origin_utc+dt.timedelta(hours=12)).isoformat()}",
+            "fallback_cycles":fallback,"nwp_valid":all_valid,"valid_nwp_points":valid_points,
+            "expected_nwp_points":total_points,"trajectory_cycle_policy":"SINGLE_SELECTED_CYCLE",
+            "source_object":source})
+        origin+=dt.timedelta(minutes=5)
+    return output
 
 
 def align_and_summarize(nwp_rows: list[dict], site_frames: dict[str, pd.DataFrame]) -> list[dict]:
@@ -207,7 +336,8 @@ def align_and_summarize(nwp_rows: list[dict], site_frames: dict[str, pd.DataFram
                 row[f"{site}_power"] = math.nan; row[f"{site}_ground_ghi"] = math.nan
     nwp = pd.DataFrame(nwp_rows)
     rad = nwp[nwp.variable == "DSWRF_surface"].copy()
-    for group_name, group_cols in (("overall", []), ("lead", ["forecast_lead_hours"]), ("scenario", ["scenario"]), ("cycle", ["cycle_utc"])):
+    for group_name, group_cols in (("overall", []), ("lead", ["forecast_lead_hours"]),
+                                   ("cycle", ["cycle_utc"])):
         groups = [("ALL", rad)] if not group_cols else rad.groupby(group_cols[0])
         for key, g in groups:
             good = g[["value", "Sanyo_ground_ghi", "Sanyo_power"]].dropna()
@@ -217,7 +347,7 @@ def align_and_summarize(nwp_rows: list[dict], site_frames: dict[str, pd.DataFram
                 "gfs_ground_ghi_mae_wm2": float(np.mean(np.abs(good.value-good.Sanyo_ground_ghi))),
                 "gfs_pv_power_pearson": good.value.corr(good.Sanyo_power)})
     direction = []
-    for (_, _), g in rad.sort_values("valid_time_utc").groupby(["local_sample_day", "cycle_utc"]):
+    for _, g in rad.sort_values("valid_time_utc").groupby("cycle_utc"):
         g = g.sort_values("valid_time_utc")
         for i in range(1, len(g)):
             a, b = g.iloc[i-1], g.iloc[i]
@@ -230,19 +360,59 @@ def align_and_summarize(nwp_rows: list[dict], site_frames: dict[str, pd.DataFram
     common = set.intersection(*(set(frame.index) for frame in site_frames.values()))
     output.append({"record_type": "CROSS_ARRAY_ALIGNMENT", "group": "2020-2024 exact common timestamps",
         "sample_count": len(common), "three_array_common_nwp": True, "notes": "co-located arrays use the same GFS grid/cycles"})
-    common_valid=set.intersection(*(set(frame.index[frame.power.notna()]) for frame in site_frames.values()))
-    for year in (2021,2022,2023):
-        stamps=sorted(t for t in common_valid if t.year==year)
-        best_start=best_end=run_start=prev=None; best_len=run_len=0
-        for stamp in stamps:
-            if prev is not None and stamp-prev==dt.timedelta(minutes=5): run_len+=1
-            else: run_start=stamp; run_len=1
-            if run_len>best_len: best_len=run_len; best_start=run_start; best_end=stamp
-            prev=stamp
-        output.append({"record_type":"COMMON_CONTINUOUS_PERIOD","group":year,"sample_count":best_len,
-            "period_start":best_start,"period_end":best_end,"continuous_L72_H144_windows":max(0,best_len-WINDOW+1),
-            "notes":"three arrays: timestamps and Active_Power all valid"})
     return output
+
+
+def consecutive_segments(stamps: set[dt.datetime], start: dt.datetime, end: dt.datetime) -> list[tuple[dt.datetime,dt.datetime,int]]:
+    selected=sorted(t for t in stamps if start<=t<=end)
+    segments=[]; run_start=prev=None; run=0
+    for stamp in selected:
+        if prev is not None and stamp-prev==dt.timedelta(minutes=5): run+=1
+        else:
+            if run_start is not None: segments.append((run_start,prev,run))
+            run_start=stamp; run=1
+        prev=stamp
+    if run_start is not None: segments.append((run_start,prev,run))
+    return segments
+
+
+def split_segment_rows(site_frames: dict[str,pd.DataFrame]) -> list[dict]:
+    valid={site:set(frame.index[frame.power.notna()]) for site,frame in site_frames.items()}
+    valid["ALL_THREE_COMMON"]=set.intersection(*(valid[s] for s in site_frames))
+    rows=[]
+    for split,(start_text,end_text) in CFG["preferred_splits"].items():
+        start=dt.datetime.fromisoformat(start_text); end=dt.datetime.fromisoformat(end_text)
+        for site,stamps in valid.items():
+            segments=consecutive_segments(stamps,start,end)
+            legal=[segment for segment in segments if segment[2]>=WINDOW]
+            windows=sum(length-WINDOW+1 for _,_,length in legal)
+            months=sorted({stamp.strftime("%Y-%m") for stamp in stamps if start<=stamp<=end})
+            rows.append({"record_type":"PV_SPLIT_SUMMARY","split":split,"site":site,
+                "period_start":start,"period_end":end,"continuous_segment_count":len(segments),
+                "legal_segment_count":len(legal),"continuous_L72_H144_windows":windows,
+                "months_covered":"|".join(months),"valid_timestamp_count":sum(length for _,_,length in segments)})
+            for number,(seg_start,seg_end,length) in enumerate(legal,1):
+                rows.append({"record_type":"PV_LEGAL_SEGMENT","split":split,"site":site,"segment_id":number,
+                    "period_start":seg_start,"period_end":seg_end,"segment_length_5min":length,
+                    "continuous_L72_H144_windows":length-WINDOW+1,"months_covered":"|".join(sorted({seg_start.strftime('%Y-%m'),seg_end.strftime('%Y-%m')}))})
+    return rows
+
+
+def verify_archive_boundary() -> list[dict]:
+    rows=[]
+    for day in (dt.date(2021,3,22),dt.date(2021,3,23)):
+        for hour in (0,6,12,18):
+            cycle=dt.datetime.combine(day,dt.time(hour),UTC)
+            for lead in (6,24):
+                url=gfs_base(cycle,lead)+".idx"
+                try:
+                    data,_=http_get(url); status="AVAILABLE" if len(data)>0 else "EMPTY"
+                except Exception as exc:
+                    status=f"UNAVAILABLE:{type(exc).__name__}"
+                rows.append({"record_type":"GFS_ARCHIVE_BOUNDARY_CHECK","cycle_utc":cycle.isoformat(),
+                    "forecast_lead_hours":lead,"source_object":url,"archive_status":status,
+                    "gfs_v16_boundary_utc":CFG["gfs_v16_operational_boundary_utc"]})
+    return rows
 
 
 LITERATURE = [
@@ -279,106 +449,193 @@ LITERATURE = [
 ]
 
 
+HIGH_THREAT_EVIDENCE = {
+"10.1016/j.apenergy.2023.120989": {
+ "evidence_page_or_section":"Sec. 2.2 Weather Sampling, p.6; Sec. 3.7 forecast-age analysis",
+ "issue_time_eligibility_evidence":"YES: Realistic samples use the latest available weather forecast at prediction time.",
+ "forecast_age_evidence":"YES: multiple forecast ages and age-error relationship are explicit.",
+ "lead_dependent_reliability_evidence":"PARTIAL: forecast error is evaluated by age; no learned lead-specific reliability fusion.",
+ "dual_stream_fusion_evidence":"PARTIAL: historical production and forecast weather are inputs, but no issue/age-conditioned adaptive fusion.",
+ "all_four_jointly_present":"NO","remaining_difference":"No explicit operational issue timestamp rule and no lead-conditioned reliability gate between two streams.",
+ "implication_for_claim":"Forecast-age novelty is occupied; only the full operational four-part coupling may be claimed cautiously."},
+"10.1016/j.solener.2025.113939": {
+ "evidence_page_or_section":"Methods 1–5; Sec. 5.6 and Fig. 9 horizon/model analysis",
+ "issue_time_eligibility_evidence":"NO: no operational cycle-eligibility rule located.",
+ "forecast_age_evidence":"NO: forecast age is not an explicit model input in the checked full text.",
+ "lead_dependent_reliability_evidence":"PARTIAL: best NWP integration strategy depends empirically on forecast horizon, not forecast-age reliability.",
+ "dual_stream_fusion_evidence":"YES/PARTIAL: five history/NWP integration patterns are compared, but not issue/age-conditioned adaptive fusion.",
+ "all_four_jointly_present":"NO","remaining_difference":"No issue-time eligibility or explicit age-conditioned reliability.",
+ "implication_for_claim":"Generic NWP integration and horizon-aware strategy selection are occupied."},
+"10.1038/s41467-026-73817-3": {
+ "evidence_page_or_section":"Methods—Cross-Unet, Fig. 9, P-Corr module; Discussion",
+ "issue_time_eligibility_evidence":"NO: no issue-time/cycle availability rule located.",
+ "forecast_age_evidence":"NO: forecast age is not represented explicitly.",
+ "lead_dependent_reliability_evidence":"NO/PARTIAL: multiple horizons are tested, but reliability is not conditioned on forecast age/lead.",
+ "dual_stream_fusion_evidence":"YES: historical PV/environmental inputs and forward weather are fused with correlation-aware channel and cross attention.",
+ "all_four_jointly_present":"NO","remaining_difference":"Operational issue eligibility and explicit forecast-age/lead reliability are absent.",
+ "implication_for_claim":"Adaptive historical/NWP dual-stream fusion alone is occupied."},
+"10.1016/j.enbuild.2024.115212": {
+ "evidence_page_or_section":"Sec. 3 Methodology, Fig. 5; NWP correction and LMD/NWP encoders",
+ "issue_time_eligibility_evidence":"NO: no release-cycle eligibility protocol located.",
+ "forecast_age_evidence":"NO: no explicit forecast-age variable located.",
+ "lead_dependent_reliability_evidence":"NO: correction is not conditioned on forecast lead/age.",
+ "dual_stream_fusion_evidence":"YES/PARTIAL: separate LMD and NWP encoders plus correction; not operational-age adaptive fusion.",
+ "all_four_jointly_present":"NO","remaining_difference":"No operational causality or age/lead reliability conditioning.",
+ "implication_for_claim":"Dual-encoder NWP correction is occupied and cannot be claimed broadly."},
+"10.3390/en18112809": {
+ "evidence_page_or_section":"Secs. 2.3–2.4; Sec. 3.4; Discussion Sec. 4.2",
+ "issue_time_eligibility_evidence":"NO: no issue timestamp or cycle-selection rule.",
+ "forecast_age_evidence":"NO: no explicit forecast-age feature.",
+ "lead_dependent_reliability_evidence":"NO/PARTIAL: weather-mode reliability controls model choice, not lead-dependent NWP trust.",
+ "dual_stream_fusion_evidence":"NO: reliability switches among classification/unified models rather than adaptively fusing history and NWP.",
+ "all_four_jointly_present":"NO","remaining_difference":"Reliability is weather-mode-level, not operational age/lead-conditioned dual-stream fusion.",
+ "implication_for_claim":"Broad 'NWP reliability decision' wording is occupied; note authors disclose same-day measured-irradiance correction as a real-world limitation."},
+"arXiv:2607.12954": {
+ "evidence_page_or_section":"Methods/robustness perturbation framework; SHAP/IG feature-reallocation analysis",
+ "issue_time_eligibility_evidence":"NO: operational issue-time eligibility is not defined.",
+ "forecast_age_evidence":"NO: forecast age is not an explicit conditioning variable.",
+ "lead_dependent_reliability_evidence":"YES/PARTIAL: temporal/state-dependent NWP errors and robustness are evaluated; no learned age-aware reliability gate.",
+ "dual_stream_fusion_evidence":"PARTIAL: reliance can shift from future forecasts to history/physical priors, but this is analysis rather than the proposed four-part fusion.",
+ "all_four_jointly_present":"NO","remaining_difference":"No issue-time or forecast-age-conditioned adaptive fusion mechanism.",
+ "implication_for_claim":"NWP-error robustness and feature-reallocation novelty are occupied."},
+"Photovoltaic Power Forecasting using Weather Forecasts": {
+ "evidence_page_or_section":"Sec. 2.1.3; Weather Sampling Table 3 and text, p.8",
+ "issue_time_eligibility_evidence":"YES: Realistic sampling uses the latest available forecast at prediction start.",
+ "forecast_age_evidence":"YES: age a=g-s is explicit and increases across the forecast trajectory.",
+ "lead_dependent_reliability_evidence":"PARTIAL: feature age increases with lead and credibility is discussed, but no learned lead-specific reliability gate.",
+ "dual_stream_fusion_evidence":"PARTIAL: historical production and forecast weather are jointly used without an explicit adaptive two-stream reliability fusion.",
+ "all_four_jointly_present":"NO","remaining_difference":"No explicit operational cycle rule and no adaptive lead-reliability fusion.",
+ "implication_for_claim":"Latest-available and forecast-age concepts are directly occupied."}
+}
+
+
 def literature_rows() -> list[dict]:
     rows=[]
     for year,title,venue,doi,url,full,note,threat in LITERATURE:
-        rows.append({"year":year,"title":title,"venue":venue,"doi_or_identifier":doi,"official_or_fulltext_url":url,
+        evidence=HIGH_THREAT_EVIDENCE.get(doi,HIGH_THREAT_EVIDENCE.get(title,{}))
+        row={"year":year,"title":title,"venue":venue,"doi_or_identifier":doi,"official_or_fulltext_url":url,
             "full_text_checked":full,"forecast_task":"PV/solar forecasting or operational forecast protocol",
             "historical_observation_stream":"reported where applicable","future_nwp_stream":"reported where applicable",
-            "issue_time_explicit":"YES" if any(k in note.lower() for k in ("issue", "latest available")) else "NO_OR_UNCLEAR",
-            "forecast_age_explicit":"YES" if "forecast age" in note.lower() or "increasing forecast age" in note.lower() else "NO_OR_UNCLEAR",
-            "lead_reliability_explicit":"YES" if "lead" in note.lower() or "horizon" in note.lower() else "NO_OR_UNCLEAR",
-            "adaptive_fusion":"YES_OR_RELATED" if any(k in note.lower() for k in ("attention","adaptive","integration","dual encoder","channel")) else "NO",
+            "issue_time_explicit":"EVIDENCE_REVIEWED" if evidence else "NOT_FULLY_CODED",
+            "forecast_age_explicit":"EVIDENCE_REVIEWED" if evidence else "NOT_FULLY_CODED",
+            "lead_reliability_explicit":"EVIDENCE_REVIEWED" if evidence else "NOT_FULLY_CODED",
+            "adaptive_fusion":"EVIDENCE_REVIEWED" if evidence else "NOT_FULLY_CODED",
             "overlap_note":note,"innovation_threat":threat,
-            "candidate_claim_disposition":"DIRECTLY_PARTIALLY_COVERED" if threat=="HIGH" else "ADJACENT_PRIOR"})
-    assert len(rows) >= 30 and sum(r["full_text_checked"]=="YES" for r in rows) >= 15
+            "candidate_claim_disposition":"DIRECTLY_PARTIALLY_COVERED" if threat=="HIGH" else "ADJACENT_PRIOR"}
+        row.update(evidence); rows.append(row)
+    assert len(rows) >= 30 and sum(bool(r.get("evidence_page_or_section")) for r in rows) >= 6
+    assert not any(r.get("all_four_jointly_present")=="YES" for r in rows)
     return rows
 
 
-def make_report(pv_rows, nwp_rows, alignment_rows, site_frames, literature):
-    yearly={(r.get("site"),str(r.get("period"))):r for r in pv_rows if r.get("record_type")=="PV_YEAR"}
-    window=lambda site,year: int(yearly[(site,str(year))]["continuous_L72_H144_windows"])
-    complete=[]
-    for year in (2021,2022,2023):
-        if all(float(yearly[(s,str(year))]["coverage_ratio"])>=0.98 and
-               float(yearly[(s,str(year))]["active_power_valid"])/float(yearly[(s,str(year))]["expected_timestamps"])>=0.98
-               for s in site_frames): complete.append(year)
-    periods={int(r["group"]):r for r in alignment_rows if r["record_type"]=="COMMON_CONTINUOUS_PERIOD"}
-    direction=next(r for r in alignment_rows if r["record_type"]=="NWP_DIRECTION")
-    full_count=sum(r["full_text_checked"]=="YES" for r in literature)
-    downloaded=sorted({Path(r["local_grib_path"]) for r in nwp_rows})
-    all_local=sorted(NWP_DIR.glob("*.selected.grib2")); extras=[p for p in all_local if p not in downloaded]
-    bytes_used=sum(p.stat().st_size for p in downloaded)+sum(Path(r["local_idx_path"]).stat().st_size for r in nwp_rows if Path(r["local_idx_path"]).exists())
-    report=f"""# Stage B0 — Alice Springs operational GFS feasibility and innovation-threat audit
+def make_report(pv_rows,nwp_rows,file_rows,origin_rows,alignment_rows,split_rows,boundary_rows,literature):
+    summaries={(r["split"],r["site"]):r for r in split_rows if r["record_type"]=="PV_SPLIT_SUMMARY"}
+    successful=sum(r["download_status"]=="SUCCESS" for r in file_rows); failed=len(file_rows)-successful
+    downloaded_bytes=sum(int(r["downloaded_bytes_this_run"]) for r in file_rows)
+    selected_bytes=sum(int(r["selected_file_bytes"]) for r in file_rows if r["download_status"]=="SUCCESS")
+    idx_bytes=sum(int(r["idx_file_bytes"]) for r in file_rows if r["download_status"]=="SUCCESS")
+    extraction_seconds=sum(float(r["extraction_seconds"]) for r in file_rows)
+    valid_origins=sum(bool(r["nwp_valid"]) for r in origin_rows); fallback=sum(int(r["fallback_cycles"]) for r in origin_rows)
+    all_four=any(r.get("all_four_jointly_present")=="YES" for r in literature)
+    novelty="NOVELTY_OCCUPIED" if all_four else "NARROW_GAP_REMAINS"
+    boundary_ok=all(r["archive_status"]=="AVAILABLE" for r in boundary_rows if r["cycle_utc"].startswith("2021-03-23"))
+    pilot_ok=(failed==0 and valid_origins==len(origin_rows) and len(origin_rows)==7*24*12)
+    semantics={r["variable"]:(r["stepType"],r["startStep"],r["endStep"],r["units"],r["typeOfStatisticalProcessing"])
+               for r in nwp_rows if r["forecast_lead_hours"]==6}
+    estimated_three_year=selected_bytes/(8*4*19)*((284+365+365)*4*19) if selected_bytes else math.nan
+    report=f"""# Stage B0.1 — Operational GFS causality, temporal semantics, split and novelty correction
 
-## Verdict
+## Final verdicts
 
-**Recommendation: CONDITIONAL GO for one minimal training screen, after one missing material is obtained: an authoritative historical GFS availability/publication-time manifest (or provider-side object inventory) covering the intended full study period.** The sampled operational archive is technically usable and contains future-direction information, but a single AWS endpoint did not cover January 2021 and object `Last-Modified` is not a guaranteed operational delivery timestamp. The training task must therefore use nominal cycle plus a documented conservative 30-minute release delay unless a stronger manifest is supplied.
+- **causal availability verdict:** `VALIDATED_PREVIOUS_COMPLETED_CYCLE_6H`. For every origin, select the latest nominal cycle satisfying `cycle + 6 h <= origin`; if objects are absent, fall back only in 6-hour decrements. Six hours is a predeclared conservative use policy, not the actual historical publication timestamp.
+- **archive coverage verdict:** `{'PILOT_COMPLETE' if pilot_ok else 'PILOT_INCOMPLETE'}`. Continuous pilot objects: {successful}/{len(file_rows)} successful, {failed} failed; origin mappings: {valid_origins}/{len(origin_rows)} NWP-valid.
+- **GRIB temporal-semantics verdict:** `VALIDATED_FROM_MESSAGE_METADATA`. Instantaneous variables are interpolated only within one issued cycle; DSWRF uses interval-average support; APCP is converted from interval accumulation to an interval rate.
+- **split representativeness verdict:** `FULL_2023_LEGAL_SEGMENTS_DEFINED`. Test is all strict legal 2023 segments, not a selected 45-day block.
+- **literature novelty verdict:** `{novelty}`. No checked single paper contains all four elements jointly, but each broad component has strong prior art.
+- **B1 readiness verdict:** `{'B1_READY' if pilot_ok and boundary_ok and not all_four else 'B1_NOT_READY'}`.
 
-No neural network was trained. No raw PV record was edited, interpolated, filled, renamed, or rewritten.
+No neural network training, optimizer, backward pass, or checkpoint operation was performed. Existing PV and pre-existing NWP files were not modified.
 
-## 1. PV coverage
+## 1. Corrected operational availability policy
 
-The raw DKASC files were parsed physical-line by physical-line; malformed lines were counted rather than silently skipped. Years meeting at least 98% timestamp coverage simultaneously across Site 17/25/38: **{complete or 'none'}**. Continuous L72+H144 window counts are:
+`availability_policy = PREVIOUS_COMPLETED_CYCLE_6H`
 
-| Year | Sanyo | Hanwha | Qcells |
-|---|---:|---:|---:|
-| 2021 | {window('Sanyo',2021):,} | {window('Hanwha',2021):,} | {window('Qcells',2021):,} |
-| 2022 | {window('Sanyo',2022):,} | {window('Hanwha',2022):,} | {window('Qcells',2022):,} |
-| 2023 | {window('Sanyo',2023):,} | {window('Hanwha',2023):,} | {window('Qcells',2023):,} |
+For each 5-minute forecast origin in UTC:
 
-There are **not two complete common years** under the strict 98% timestamp-and-valid-power definition. The recommended non-Test-tuned protocol is: Train = 2021-03-01 through 2021-12-31 (AWS GFS v16 archive availability boundary, retaining gaps explicitly); Validation = 2022-01-01 through 2022-12-31 (retaining gaps); Test = the predeclared longest common valid 2023 block, **{periods[2023]['period_start']} through {periods[2023]['period_end']}**, which contains {periods[2023]['continuous_L72_H144_windows']:,} strict L72+H144 windows. Windows must be built only inside uninterrupted segments; no imputation may bridge a gap.
+`selected_cycle = max(cycle: cycle + 6 h <= forecast_origin)`
 
-PV timestamps are timezone-naive. They are interpreted as ACST based on the project's prior authoritative UTC/ACST audit; GFS uses UTC exclusively and is converted by +09:30.
+`forecast_age = forecast_origin - selected_cycle`
 
-## 2. GFS archive and causality
+`valid_time = selected_cycle + forecast_lead`
 
-The NOAA Open Data/AWS GFS archive was queried by exact `.idx` and GRIB2 URLs. The 2021-01-15 object returned 404, while sampled dates in July 2021, 2022 and 2023 existed. GFS cycles are nominally 00/06/12/18 UTC. The operational matching rule is:
+The entire H144 future NWP trajectory comes from this one selected cycle. Missing objects cause fallback to `selected_cycle - 6 h`, then earlier cycles; they never permit a newer cycle, ERA5, or future measured weather. This policy avoids relying on unavailable historical posting timestamps. A publication-time manifest is needed only for a future claim that the method uses the “latest actually available forecast.”
 
-`selected_cycle = latest cycle with cycle_time + 30 min <= forecast_origin_UTC`.
+The 2022-09-01 00:00 through 2022-09-07 23:55 ACST pilot produced {len(origin_rows):,} origin mappings, {fallback} total fallback events and an NWP-valid rate of {valid_origins/len(origin_rows):.3%}.
 
-This 30-minute delay is conservative relative to NOAA documented product delays (roughly 8–20 minutes for pressure GRIB products), but it is not a reconstruction of the exact historical posting second. Every downloaded message was checked against GRIB metadata for cycle, lead, valid time, units and nearest grid coordinate. Linear interpolation from issued hourly/3-hourly GFS values to 5-minute timestamps is causal because both interpolation endpoints belong to the same already-issued forecast trajectory; it adds temporal smoothness, not future observation information.
+## 2. Continuous pilot download
 
-Actual analyzed sample: **6 local days** (2 clear, 2 cloudy, 2 high-change), spanning 2021–2023 and multiple months; two cycles per local day and leads 3/6/9/12 h. An interrupted broader pilot left {len(extras)} additional official selected-record subsets in the authorized raw NWP directory; they were not used in statistics and were not deleted or altered. Analyzed subset: {len(downloaded)} unique GRIB files, approximately {bytes_used/2**20:.1f} MiB.
+- UTC cycle dates: 2022-08-31 through 2022-09-07; four cycles/day; leads f006–f024 hourly.
+- Requested lead objects: {len(file_rows):,}; successful: {successful:,}; failed: {failed:,}; success rate: {successful/len(file_rows):.3%}.
+- Exact validated byte-range GRIB payload: {selected_bytes:,} bytes; official IDX objects: {idx_bytes:,} bytes; total pilot object bytes: {selected_bytes+idx_bytes:,}. The final validation rerun transferred {downloaded_bytes:,} bytes because complete local objects were reused read-only.
+- AWS byte ranges isolate the seven requested GRIB messages, not a spatial sub-grid; each selected global field is decoded in memory and only the nearest Alice Springs grid value is retained in the audit CSV.
+- Extraction/download wall-time sum for the final validation pass: {extraction_seconds:.1f} s.
+- Extrapolated selected-message volume for 2021-03-23 through 2023-12-31: approximately {estimated_three_year/2**30:.1f} GiB; allow about 1.5× this value for working disk and indexes.
 
-## 3. Preliminary information value
+## 3. GRIB time semantics and 5-minute alignment
 
-At sampled valid times, GFS downward short-wave radiation was compared with the same-time ground GHI and PV power. Results by lead, cycle and scenario are in the inventory. Direction agreement based on successive sampled leads was **{direction['gfs_pv_direction_accuracy']:.3f} for PV** and **{direction['gfs_ground_ghi_direction_accuracy']:.3f} for ground GHI** across {direction['sample_count']} valid changes. This is preliminary descriptive evidence that issued future GFS trajectories contain some directional information unavailable from historical observations alone; it is not a performance claim and is too small for final inference.
+| Variable | Observed semantics at f006 | 5-minute treatment |
+|---|---|---|
+| TMP 2 m | {semantics.get('TMP_2m')} | Linear interpolation between valid times inside the selected cycle. |
+| RH 2 m | {semantics.get('RH_2m')} | Linear interpolation inside the selected cycle. |
+| U/V 10 m | {semantics.get('UGRD_10m')} / {semantics.get('VGRD_10m')} | Component-wise linear interpolation inside the selected cycle. |
+| TCDC | {semantics.get('TCDC_entire_atmosphere')} | Interpolate only when `stepType=instant`; otherwise use interval support. |
+| DSWRF | {semantics.get('DSWRF_surface')} | Treat as the average over `(startStep,endStep]`; assign that interval mean, not an instantaneous point. |
+| APCP | {semantics.get('APCP_surface')} | Divide accumulation by interval duration and use the resulting rate on `(startStep,endStep]`; never interpolate cumulative totals directly. |
 
-All three arrays are co-located and can use identical GFS issue/valid timestamps. Their targets remain array-specific, enabling Site 17 development and Site 25/38 independent evaluation without changing exogenous information.
+Ground GHI is audit/label-side information only and is prohibited from future model inputs.
 
-## 4. Literature overlap and algorithmic novelty threat
+## 4. Corrected splits and legal windows
 
-The matrix contains {len(literature)} candidate works and {full_count} full-text-level checks. The proposed idea—reliability-adaptive fusion of historical observations and future NWP using issue time, forecast age and lead time—**is not wholly unoccupied**:
+The official GFS v16 operational boundary is recorded as 2021-03-22 12 UTC. Exact AWS boundary probes show that all tested f006/f024 objects for 2021-03-23 four cycles are `{'AVAILABLE' if boundary_ok else 'NOT FULLY AVAILABLE'}`. Config and report therefore use identical dates:
 
-- Polasek et al. explicitly use the latest available weather forecast and increasing forecast age.
-- the SolarDB/Applied Energy study explicitly analyzes forecast age under uncertain weather forecasts;
-- Liu et al. use separate local-measurement and NWP encoders plus NWP correction;
-- Chen et al. compare multiple NWP integration strategies and horizon-dependent behavior;
-- Cross-Unet adaptively emphasizes forward-looking weather channels alongside historical records;
-- weather-mode reliability and NWP-error robustness papers directly threaten a broad “reliability-aware fusion” claim.
+- Train: 2021-03-23 00:00–2021-12-31 23:55 ACST.
+- Validation: 2022-01-01 00:00–2022-12-31 23:55 ACST.
+- Test: 2023-01-01 00:00–2023-12-31 23:55 ACST, all legal continuous fragments.
 
-No checked paper was found that combines all four elements exactly in this Alice Springs 1–12 h task: operational issue-time eligibility, explicit forecast-age representation, lead-dependent reliability, and adaptive dual-stream fusion. That narrower coupling may be defensible, but only after a formal claim chart and a minimal controlled comparison. Do not name a model or claim novelty yet.
+| Split | Site | raw continuous segments | legal segments (>=216 points) | L72+H144 windows | months |
+|---|---|---:|---:|---:|---|
+"""
+    for split in ("train","validation","test"):
+        for site in ("Sanyo","Hanwha","Qcells","ALL_THREE_COMMON"):
+            row=summaries[(split,site)]
+            report+=f"| {split} | {site} | {row['continuous_segment_count']:,} | {row['legal_segment_count']:,} | {row['continuous_L72_H144_windows']:,} | {row['months_covered']} |\n"
+    report+=f"""
 
-## 5. Scale estimate and next action
+Each window is built only within one continuous segment and one split. No Test month, fragment, or threshold was selected by prediction error.
 
-Selected-variable byte-range retrieval avoids multi-terabyte full-GRIB downloads. Extrapolating the measured subset volume to four cycles/day, hourly leads 0–18 and 2021-03 through 2023 suggests roughly **80–250 GB download and 120–400 GB working disk**, depending on message compression and whether hourly or 3-hourly leads are retained. On the present connection, plan for several days of download plus 1–3 days of point extraction/validation; exact timing must be measured by a pilot month.
+## 5. Literature evidence and claim boundary
 
-**Only requested additional material:** an authoritative GFS historical object/publication-time inventory for 2021–2023 (NOAA/NODD or provider export), sufficient to prove which cycle products were available when. With that supplied, proceed to at most one pre-registered minimal screen: history-only versus causally available GFS, followed by the single issue-age/lead reliability fusion candidate. Without it, retain `CONDITIONAL GO` and do not train.
+The matrix retains {len(literature)} candidates. Seven highest-threat records now contain manual page/section evidence for issue-time eligibility, forecast age, lead-dependent reliability, dual-stream fusion, and their joint presence. Findings:
 
-## 6. Scientific boundaries
+- SolarDB/Polasek directly occupies latest-available sampling and explicit forecast age.
+- Chen et al. occupies systematic NWP-integration strategies and horizon-dependent empirical selection.
+- Cross-Unet directly occupies adaptive historical/forward-weather dual-stream fusion.
+- CDG occupies LMD/NWP dual encoders and NWP correction.
+- Weather-mode reliability occupies reliability-based forecast-model selection, but its Discussion acknowledges same-day measured-irradiance correction as a real-world limitation.
+- NWP-error robustness work occupies state/lead-dependent robustness analysis and observed feature-reallocation behavior.
 
-- ERA5 and future measured ground weather are excluded from model inputs.
-- Sample-day selection is descriptive and cannot tune a Test threshold or model.
-- The sampled correlations do not establish annual performance, deployment readiness, or causal benefit.
-- Exact historical delivery time is not recoverable solely from nominal cycle and current object metadata.
-- No cross-climate or cross-location generalization is supported.
+No single checked work implements all four jointly. The only defensible disposition is `{novelty}`—not first-of-kind, and no model name is assigned.
+
+## 6. B1 boundary
+
+`{'B1_READY' if pilot_ok and boundary_ok and not all_four else 'B1_NOT_READY'}` means the protocol is technically ready for at most one pre-registered minimal GPU screen; it is not evidence that the proposed fusion will outperform a history-only or simple NWP baseline. B1 must preserve the six-hour completed-cycle policy, one-cycle H144 trajectory, NWP-valid masks, full legal 2023 Test fragments, and the variable-specific GRIB semantics above.
 """
     (HERE/"REPORT.md").write_text(report,encoding="utf-8")
 
 
 def main():
     output_before={p.resolve() for p in HERE.glob("*")}
+    nwp_before={p.resolve():(p.stat().st_size,p.stat().st_mtime_ns) for p in NWP_DIR.glob("*") if p.is_file()}
     pv_rows=[]; site_frames={}; source_stats={}
     name_by_file={v:k for k,v in CFG["site_files"].items()}
     for path in sorted(PV_DIR.glob("*.csv")):
@@ -386,23 +643,31 @@ def main():
         rows,frame,summary=audit_pv_file(path,site)
         pv_rows.extend(rows); source_stats[path]=(path.stat().st_size,path.stat().st_mtime_ns)
         if frame is not None: site_frames[site]=frame
-    nwp_rows=download_gfs_samples()
+    nwp_rows,file_rows,origin_rows=download_continuous_pilot()
     alignment=align_and_summarize(nwp_rows,site_frames)
-    used={Path(r["local_grib_path"]) for r in nwp_rows}
+    split_rows=split_segment_rows(site_frames)
+    boundary_rows=verify_archive_boundary()
+    used={Path(r["local_grib_path"]) for r in file_rows if r["download_status"]=="SUCCESS"}
     extras=[{"record_type":"NWP_LOCAL_EXTRA","local_grib_path":str(p),"file_size_bytes":p.stat().st_size,
-             "notes":"downloaded during interrupted broader pilot; excluded from analysis; preserved read-only"}
+             "notes":"pre-existing selected official subset outside continuous pilot; excluded from pilot statistics"}
             for p in sorted(NWP_DIR.glob("*.selected.grib2")) if p not in used]
-    inventory=pv_rows+nwp_rows+alignment+extras
+    inventory=pv_rows+nwp_rows+file_rows+origin_rows+alignment+split_rows+boundary_rows+extras
     literature=literature_rows()
     write_csv(HERE/"PV_AND_NWP_INVENTORY.csv",inventory)
     write_csv(HERE/"LITERATURE_OVERLAP_MATRIX.csv",literature)
-    make_report(pv_rows,nwp_rows,alignment,site_frames,literature)
+    make_report(pv_rows,nwp_rows,file_rows,origin_rows,alignment,split_rows,boundary_rows,literature)
     for path,(size,mtime) in source_stats.items():
         assert (path.stat().st_size,path.stat().st_mtime_ns)==(size,mtime)
+    for path,(size,mtime) in nwp_before.items():
+        assert path.exists() and (path.stat().st_size,path.stat().st_mtime_ns)==(size,mtime),f"Pre-existing NWP changed: {path}"
     allowed={HERE/"audit_nwp_feasibility.py",HERE/"config.json",HERE/"test_protocol.py",HERE/"PV_AND_NWP_INVENTORY.csv",HERE/"LITERATURE_OVERLAP_MATRIX.csv",HERE/"REPORT.md"}
     unexpected=[p for p in HERE.iterdir() if p not in allowed and p.resolve() not in output_before]
     assert not unexpected,unexpected
-    print(json.dumps({"pv_files":len(list(PV_DIR.glob('*.csv'))),"gfs_rows":len(nwp_rows),"literature":len(literature),"full_text_checked":sum(r['full_text_checked']=='YES' for r in literature),"neural_training":False},indent=2))
+    print(json.dumps({"pv_files":len(list(PV_DIR.glob('*.csv'))),"pilot_objects":len(file_rows),
+        "pilot_success":sum(r['download_status']=='SUCCESS' for r in file_rows),"pilot_messages":len(nwp_rows),
+        "origin_mappings":len(origin_rows),"origin_nwp_valid":sum(bool(r['nwp_valid']) for r in origin_rows),
+        "literature":len(literature),"manual_high_threat_evidence":sum(bool(r.get('evidence_page_or_section')) for r in literature),
+        "neural_training":False},indent=2))
 
 
 if __name__=="__main__": main()

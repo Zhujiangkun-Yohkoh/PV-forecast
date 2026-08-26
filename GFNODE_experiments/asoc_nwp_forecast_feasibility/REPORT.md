@@ -1,64 +1,93 @@
-# Stage B0 — Alice Springs operational GFS feasibility and innovation-threat audit
+# Stage B0.1 — Operational GFS causality, temporal semantics, split and novelty correction
 
-## Verdict
+## Final verdicts
 
-**Recommendation: CONDITIONAL GO for one minimal training screen, after one missing material is obtained: an authoritative historical GFS availability/publication-time manifest (or provider-side object inventory) covering the intended full study period.** The sampled operational archive is technically usable and contains future-direction information, but a single AWS endpoint did not cover January 2021 and object `Last-Modified` is not a guaranteed operational delivery timestamp. The training task must therefore use nominal cycle plus a documented conservative 30-minute release delay unless a stronger manifest is supplied.
+- **causal availability verdict:** `VALIDATED_PREVIOUS_COMPLETED_CYCLE_6H`. For every origin, select the latest nominal cycle satisfying `cycle + 6 h <= origin`; if objects are absent, fall back only in 6-hour decrements. Six hours is a predeclared conservative use policy, not the actual historical publication timestamp.
+- **archive coverage verdict:** `PILOT_COMPLETE`. Continuous pilot objects: 608/608 successful, 0 failed; origin mappings: 2016/2016 NWP-valid.
+- **GRIB temporal-semantics verdict:** `VALIDATED_FROM_MESSAGE_METADATA`. Instantaneous variables are interpolated only within one issued cycle; DSWRF uses interval-average support; APCP is converted from interval accumulation to an interval rate.
+- **split representativeness verdict:** `FULL_2023_LEGAL_SEGMENTS_DEFINED`. Test is all strict legal 2023 segments, not a selected 45-day block.
+- **literature novelty verdict:** `NARROW_GAP_REMAINS`. No checked single paper contains all four elements jointly, but each broad component has strong prior art.
+- **B1 readiness verdict:** `B1_READY`.
 
-No neural network was trained. No raw PV record was edited, interpolated, filled, renamed, or rewritten.
+No neural network training, optimizer, backward pass, or checkpoint operation was performed. Existing PV and pre-existing NWP files were not modified.
 
-## 1. PV coverage
+## 1. Corrected operational availability policy
 
-The raw DKASC files were parsed physical-line by physical-line; malformed lines were counted rather than silently skipped. Years meeting at least 98% timestamp coverage simultaneously across Site 17/25/38: **none**. Continuous L72+H144 window counts are:
+`availability_policy = PREVIOUS_COMPLETED_CYCLE_6H`
 
-| Year | Sanyo | Hanwha | Qcells |
-|---|---:|---:|---:|
-| 2021 | 96,640 | 95,826 | 95,609 |
-| 2022 | 100,310 | 97,901 | 97,901 |
-| 2023 | 72,047 | 71,456 | 71,609 |
+For each 5-minute forecast origin in UTC:
 
-There are **not two complete common years** under the strict 98% timestamp-and-valid-power definition. The recommended non-Test-tuned protocol is: Train = 2021-03-01 through 2021-12-31 (AWS GFS v16 archive availability boundary, retaining gaps explicitly); Validation = 2022-01-01 through 2022-12-31 (retaining gaps); Test = the predeclared longest common valid 2023 block, **2023-08-23 03:15:00 through 2023-10-07 12:10:00**, which contains 12,853 strict L72+H144 windows. Windows must be built only inside uninterrupted segments; no imputation may bridge a gap.
+`selected_cycle = max(cycle: cycle + 6 h <= forecast_origin)`
 
-PV timestamps are timezone-naive. They are interpreted as ACST based on the project's prior authoritative UTC/ACST audit; GFS uses UTC exclusively and is converted by +09:30.
+`forecast_age = forecast_origin - selected_cycle`
 
-## 2. GFS archive and causality
+`valid_time = selected_cycle + forecast_lead`
 
-The NOAA Open Data/AWS GFS archive was queried by exact `.idx` and GRIB2 URLs. The 2021-01-15 object returned 404, while sampled dates in July 2021, 2022 and 2023 existed. GFS cycles are nominally 00/06/12/18 UTC. The operational matching rule is:
+The entire H144 future NWP trajectory comes from this one selected cycle. Missing objects cause fallback to `selected_cycle - 6 h`, then earlier cycles; they never permit a newer cycle, ERA5, or future measured weather. This policy avoids relying on unavailable historical posting timestamps. A publication-time manifest is needed only for a future claim that the method uses the “latest actually available forecast.”
 
-`selected_cycle = latest cycle with cycle_time + 30 min <= forecast_origin_UTC`.
+The 2022-09-01 00:00 through 2022-09-07 23:55 ACST pilot produced 2,016 origin mappings, 0 total fallback events and an NWP-valid rate of 100.000%.
 
-This 30-minute delay is conservative relative to NOAA documented product delays (roughly 8–20 minutes for pressure GRIB products), but it is not a reconstruction of the exact historical posting second. Every downloaded message was checked against GRIB metadata for cycle, lead, valid time, units and nearest grid coordinate. Linear interpolation from issued hourly/3-hourly GFS values to 5-minute timestamps is causal because both interpolation endpoints belong to the same already-issued forecast trajectory; it adds temporal smoothness, not future observation information.
+## 2. Continuous pilot download
 
-Actual analyzed sample: **6 local days** (2 clear, 2 cloudy, 2 high-change), spanning 2021–2023 and multiple months; two cycles per local day and leads 3/6/9/12 h. An interrupted broader pilot left 0 additional official selected-record subsets in the authorized raw NWP directory; they were not used in statistics and were not deleted or altered. Analyzed subset: 48 unique GRIB files, approximately 254.5 MiB.
+- UTC cycle dates: 2022-08-31 through 2022-09-07; four cycles/day; leads f006–f024 hourly.
+- Requested lead objects: 608; successful: 608; failed: 0; success rate: 100.000%.
+- Exact validated byte-range GRIB payload: 3,163,949,390 bytes; official IDX objects: 24,992,652 bytes; total pilot object bytes: 3,188,942,042. The final validation rerun transferred 0 bytes because complete local objects were reused read-only.
+- AWS byte ranges isolate the seven requested GRIB messages, not a spatial sub-grid; each selected global field is decoded in memory and only the nearest Alice Springs grid value is retained in the audit CSV.
+- Extraction/download wall-time sum for the final validation pass: 21.1 s.
+- Extrapolated selected-message volume for 2021-03-23 through 2023-12-31: approximately 373.5 GiB; allow about 1.5× this value for working disk and indexes.
 
-## 3. Preliminary information value
+## 3. GRIB time semantics and 5-minute alignment
 
-At sampled valid times, GFS downward short-wave radiation was compared with the same-time ground GHI and PV power. Results by lead, cycle and scenario are in the inventory. Direction agreement based on successive sampled leads was **0.667 for PV** and **0.722 for ground GHI** across 36 valid changes. This is preliminary descriptive evidence that issued future GFS trajectories contain some directional information unavailable from historical observations alone; it is not a performance claim and is too small for final inference.
+| Variable | Observed semantics at f006 | 5-minute treatment |
+|---|---|---|
+| TMP 2 m | ('instant', 6.0, 6.0, 'K', 'UNKNOWN') | Linear interpolation between valid times inside the selected cycle. |
+| RH 2 m | ('instant', 6.0, 6.0, '%', 'UNKNOWN') | Linear interpolation inside the selected cycle. |
+| U/V 10 m | ('instant', 6.0, 6.0, 'm s**-1', 'UNKNOWN') / ('instant', 6.0, 6.0, 'm s**-1', 'UNKNOWN') | Component-wise linear interpolation inside the selected cycle. |
+| TCDC | ('instant', 6.0, 6.0, '%', 'UNKNOWN') | Interpolate only when `stepType=instant`; otherwise use interval support. |
+| DSWRF | ('avg', 0.0, 6.0, 'W m**-2', 0) | Treat as the average over `(startStep,endStep]`; assign that interval mean, not an instantaneous point. |
+| APCP | ('accum', 0.0, 6.0, 'kg m**-2', 1) | Divide accumulation by interval duration and use the resulting rate on `(startStep,endStep]`; never interpolate cumulative totals directly. |
 
-All three arrays are co-located and can use identical GFS issue/valid timestamps. Their targets remain array-specific, enabling Site 17 development and Site 25/38 independent evaluation without changing exogenous information.
+Ground GHI is audit/label-side information only and is prohibited from future model inputs.
 
-## 4. Literature overlap and algorithmic novelty threat
+## 4. Corrected splits and legal windows
 
-The matrix contains 30 candidate works and 17 full-text-level checks. The proposed idea—reliability-adaptive fusion of historical observations and future NWP using issue time, forecast age and lead time—**is not wholly unoccupied**:
+The official GFS v16 operational boundary is recorded as 2021-03-22 12 UTC. Exact AWS boundary probes show that all tested f006/f024 objects for 2021-03-23 four cycles are `AVAILABLE`. Config and report therefore use identical dates:
 
-- Polasek et al. explicitly use the latest available weather forecast and increasing forecast age.
-- the SolarDB/Applied Energy study explicitly analyzes forecast age under uncertain weather forecasts;
-- Liu et al. use separate local-measurement and NWP encoders plus NWP correction;
-- Chen et al. compare multiple NWP integration strategies and horizon-dependent behavior;
-- Cross-Unet adaptively emphasizes forward-looking weather channels alongside historical records;
-- weather-mode reliability and NWP-error robustness papers directly threaten a broad “reliability-aware fusion” claim.
+- Train: 2021-03-23 00:00–2021-12-31 23:55 ACST.
+- Validation: 2022-01-01 00:00–2022-12-31 23:55 ACST.
+- Test: 2023-01-01 00:00–2023-12-31 23:55 ACST, all legal continuous fragments.
 
-No checked paper was found that combines all four elements exactly in this Alice Springs 1–12 h task: operational issue-time eligibility, explicit forecast-age representation, lead-dependent reliability, and adaptive dual-stream fusion. That narrower coupling may be defensible, but only after a formal claim chart and a minimal controlled comparison. Do not name a model or claim novelty yet.
+| Split | Site | raw continuous segments | legal segments (>=216 points) | L72+H144 windows | months |
+|---|---|---:|---:|---:|---|
+| train | Sanyo | 17 | 15 | 78,000 | 2021-03|2021-04|2021-05|2021-06|2021-07|2021-08|2021-09|2021-10|2021-11|2021-12 |
+| train | Hanwha | 15 | 12 | 77,186 | 2021-03|2021-04|2021-05|2021-06|2021-07|2021-08|2021-09|2021-10|2021-11|2021-12 |
+| train | Qcells | 16 | 13 | 76,969 | 2021-03|2021-04|2021-05|2021-06|2021-07|2021-08|2021-09|2021-10|2021-11|2021-12 |
+| train | ALL_THREE_COMMON | 18 | 15 | 76,536 | 2021-03|2021-04|2021-05|2021-06|2021-07|2021-08|2021-09|2021-10|2021-11|2021-12 |
+| validation | Sanyo | 12 | 12 | 100,310 | 2022-01|2022-02|2022-03|2022-04|2022-05|2022-06|2022-07|2022-08|2022-09|2022-10|2022-11|2022-12 |
+| validation | Hanwha | 13 | 12 | 97,901 | 2022-01|2022-02|2022-03|2022-04|2022-05|2022-06|2022-07|2022-08|2022-09|2022-10|2022-11|2022-12 |
+| validation | Qcells | 13 | 12 | 97,901 | 2022-01|2022-02|2022-03|2022-04|2022-05|2022-06|2022-07|2022-08|2022-09|2022-10|2022-11|2022-12 |
+| validation | ALL_THREE_COMMON | 15 | 13 | 97,678 | 2022-01|2022-02|2022-03|2022-04|2022-05|2022-06|2022-07|2022-08|2022-09|2022-10|2022-11|2022-12 |
+| test | Sanyo | 2,773 | 34 | 72,047 | 2023-01|2023-02|2023-03|2023-04|2023-05|2023-06|2023-07|2023-08|2023-09|2023-10|2023-11|2023-12 |
+| test | Hanwha | 2,642 | 29 | 71,456 | 2023-01|2023-02|2023-03|2023-04|2023-05|2023-06|2023-07|2023-08|2023-09|2023-10|2023-11|2023-12 |
+| test | Qcells | 2,639 | 29 | 71,609 | 2023-01|2023-02|2023-03|2023-04|2023-05|2023-06|2023-07|2023-08|2023-09|2023-10|2023-11|2023-12 |
+| test | ALL_THREE_COMMON | 4,284 | 35 | 69,875 | 2023-01|2023-02|2023-03|2023-04|2023-05|2023-06|2023-07|2023-08|2023-09|2023-10|2023-11|2023-12 |
 
-## 5. Scale estimate and next action
 
-Selected-variable byte-range retrieval avoids multi-terabyte full-GRIB downloads. Extrapolating the measured subset volume to four cycles/day, hourly leads 0–18 and 2021-03 through 2023 suggests roughly **80–250 GB download and 120–400 GB working disk**, depending on message compression and whether hourly or 3-hourly leads are retained. On the present connection, plan for several days of download plus 1–3 days of point extraction/validation; exact timing must be measured by a pilot month.
+Each window is built only within one continuous segment and one split. No Test month, fragment, or threshold was selected by prediction error.
 
-**Only requested additional material:** an authoritative GFS historical object/publication-time inventory for 2021–2023 (NOAA/NODD or provider export), sufficient to prove which cycle products were available when. With that supplied, proceed to at most one pre-registered minimal screen: history-only versus causally available GFS, followed by the single issue-age/lead reliability fusion candidate. Without it, retain `CONDITIONAL GO` and do not train.
+## 5. Literature evidence and claim boundary
 
-## 6. Scientific boundaries
+The matrix retains 30 candidates. Seven highest-threat records now contain manual page/section evidence for issue-time eligibility, forecast age, lead-dependent reliability, dual-stream fusion, and their joint presence. Findings:
 
-- ERA5 and future measured ground weather are excluded from model inputs.
-- Sample-day selection is descriptive and cannot tune a Test threshold or model.
-- The sampled correlations do not establish annual performance, deployment readiness, or causal benefit.
-- Exact historical delivery time is not recoverable solely from nominal cycle and current object metadata.
-- No cross-climate or cross-location generalization is supported.
+- SolarDB/Polasek directly occupies latest-available sampling and explicit forecast age.
+- Chen et al. occupies systematic NWP-integration strategies and horizon-dependent empirical selection.
+- Cross-Unet directly occupies adaptive historical/forward-weather dual-stream fusion.
+- CDG occupies LMD/NWP dual encoders and NWP correction.
+- Weather-mode reliability occupies reliability-based forecast-model selection, but its Discussion acknowledges same-day measured-irradiance correction as a real-world limitation.
+- NWP-error robustness work occupies state/lead-dependent robustness analysis and observed feature-reallocation behavior.
+
+No single checked work implements all four jointly. The only defensible disposition is `NARROW_GAP_REMAINS`—not first-of-kind, and no model name is assigned.
+
+## 6. B1 boundary
+
+`B1_READY` means the protocol is technically ready for at most one pre-registered minimal GPU screen; it is not evidence that the proposed fusion will outperform a history-only or simple NWP baseline. B1 must preserve the six-hour completed-cycle policy, one-cycle H144 trajectory, NWP-valid masks, full legal 2023 Test fragments, and the variable-specific GRIB semantics above.
