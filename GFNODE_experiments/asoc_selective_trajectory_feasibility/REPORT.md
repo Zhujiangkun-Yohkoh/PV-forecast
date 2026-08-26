@@ -1,120 +1,131 @@
-# Scheme C1-S0 — Forecastability-Aware Risk-Controlled Selective PV Trajectory Forecasting
+# Scheme C1-S0R — Scope-Matched Selective PV Calibration Correction
 
-## Final decision
+## Corrected screening decision
 
-**C1_NO_GO_SIGNAL_WEAK**
+**C1_GO — screening evidence only.** After correcting the calibration population, the C1 screen satisfies the preregistered daylight H12 checks. This does **not** establish a publishable method and does not authorize further training. It means only that the corrected feasibility screen should be reviewed by the supervisor before deciding whether to establish a strict Train/Model-Validation/Risk-Calibration/Test protocol.
 
-The screen found substantial oracle headroom and a strong past-only error-ranking signal, but the preregistered 80% acceptance threshold calibrated on the later half of Validation transferred to only **58.75% ± 0.26% daylight coverage** on Test. This is outside the required 70%–90% interval for all three seeds. The accepted-set RMSE reduction is therefore obtained with materially more abstention than the advertised 80% operating point and cannot be treated as risk-controlled 80%-coverage performance. Under the prespecified decision rules, C1 is closed; no C1 v2/v3 or formal four-segment experiment is recommended.
+No deep model was trained or fine-tuned in C1-S0R. Existing best checkpoints were used only under `torch.inference_mode()` to reconstruct Validation predictions; the nine preregistered CPU `HistGradientBoostingRegressor` risk estimators were refit with unchanged parameters.
 
-## Scope, artifacts, and fairness
+## Confirmed C1-S0 implementation error
 
-- Task: Site 17 Sanyo, 2022, 5-minute grid, lookback 72, direct H12 (60-minute) trajectory; evaluated at H3/H6/H12.
-- Deep forecast: existing `MEAN_ONLY / TRAJECTORY_ONLY ModernTCN`, seeds 42/43/44. No deep model was trained or fine-tuned.
-- Prepared source: `C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PVforecast16/GFNODE_experiments/asoc_multirate_information_screen/results/prepared_data.npz`.
-- Test sources: `.../results/MEAN_ONLY/{42,43,44}/test_predictions.npz`.
-- Checkpoints: `.../results/MEAN_ONLY/{42,43,44}/best_validation.pt`, best epochs 15/13/17.
-- Validation predictions were absent and were reconstructed in memory from the existing best checkpoints under `torch.inference_mode()`; no new checkpoint or prediction artifact was saved.
-- The 17,485 Validation origins were sorted and split without shuffling into 8,742 `RISK_FIT` and 8,743 `RISK_CALIBRATION` origins. Test contained 17,401 origins, including 8,972 origin-daylight cases.
-- Predictions, labels, origins, and task configuration were checked seed-by-seed. Test labels and origins were element-identical across all three seeds. ModernTCN and Last-value Persistence always used exactly the same accepted origins.
-- The original deep checkpoint had already used all Validation data for checkpoint selection. This makes C1-S0 a feasibility screen, not a confirmatory selective-forecasting experiment. A successful screen would have required a future Train/Model-Validation/Risk-Calibration/Test design; the screen did not pass.
+The original code calculated every risk threshold from all 8,743 `RISK_CALIBRATION` windows and then evaluated daylight coverage. Thus the previously reported “80% daylight” threshold was actually an 80% **full-timeline** threshold. Nighttime low-risk observations changed the score distribution, so applying that threshold to daylight windows yielded only **58.75% mean Test daylight coverage** (58.99%, 58.48%, 58.78% by seed). It was not valid to describe those results as a nominal 80% daylight operating point.
 
-The Train target range used for normalized trajectory loss was **5.993634 kW**. High-error labels used the seed- and horizon-specific 80th percentile of `RISK_FIT` normalized trajectory loss; H12 thresholds were 0.038867, 0.044241, and 0.048093 for seeds 42, 43, and 44. The causal high-change proxy threshold was the Train 90th percentile of past-12-step maximum absolute PV change, **0.691913 kW**.
+C1-S0R constructs a calibration-membership mask and intersects it with the matching Validation scope before taking each quantile. Full thresholds use all `RISK_CALIBRATION` windows; daylight thresholds use only the 4,260 origin-daylight windows in `RISK_CALIBRATION`. Test scores never enter threshold calculation. Daylight remains causal and unchanged: observed power at forecast origin greater than **0.063 kW**.
 
-## Fixed risk estimators and causal features
+The correction changes the official H12 daylight result from **58.75% ± 0.26%** coverage to **78.09% ± 1.52%**. The old result is retained here only to document the corrected error and is no longer a primary result.
 
-Nine CPU risk regressors were fit: one fixed `HistGradientBoostingRegressor` for each seed and H3/H6/H12. All parameters match `config.json`; no search or post-result feature changes were made. The target was `log1p(L_h)`.
+## Artifacts, data split, and fairness
 
-Features used only information available at forecast origin: clock/calendar terms; causal origin-daylight status; past PV statistics at 12/36/72 steps; separate MB0/MB1/MB2 past-12 mean, dispersion, variation, and valid-ratio features; and forecast-derived disagreement/trajectory-shape features. The MB channels were not averaged. Two prespecified simple scores were evaluated: past-12 PV maximum absolute change and ModernTCN–Persistence mean absolute disagreement.
+- Task: Site 17 Sanyo, 2022, 5-minute grid, lookback 72, direct H12 trajectory, evaluated at H3/H6/H12.
+- Source experiment: `C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PVforecast16/GFNODE_experiments/asoc_multirate_information_screen`.
+- Prepared data: `results/prepared_data.npz` under that source experiment.
+- Existing Test predictions: `results/MEAN_ONLY/{42,43,44}/test_predictions.npz`.
+- Existing best checkpoints: `results/MEAN_ONLY/{42,43,44}/best_validation.pt`; best epochs 15, 13, and 17.
+- Validation: 17,485 time-ordered origins; first 8,742 are `RISK_FIT`, final 8,743 are `RISK_CALIBRATION`.
+- Test: 17,401 origins, including 8,972 origin-daylight windows.
+- Three seeds have element-identical Test labels and origins. ModernTCN and Persistence use identical accepted masks.
+- Train target range for normalized trajectory loss: **5.993634 kW**. Train-only high-change threshold: **0.691913 kW**.
 
-## Oracle headroom
+The frozen deep checkpoint previously used the complete original Validation split for checkpoint selection. Therefore this remains a feasibility screen. A later confirmatory study would require a newly established four-part protocol; C1-S0R itself does not provide that confirmation.
 
-At exact 80% Test daylight coverage, oracle selection reduced H12 RMSE by **44.32% ± 0.07%** across seeds. Unselected ModernTCN H12 daylight RMSE was 0.6687/0.6765/0.6803 kW; oracle accepted RMSE was 0.3722/0.3763/0.3793 kW. The corresponding matched Persistence RMSE was 0.6705/0.6715/0.6730 kW. Thus the `C1_NO_GO_NO_HEADROOM` condition is not applicable.
+## Scope-matched thresholds and realized coverage
 
-The oracle is a diagnostic upper bound based on future realized loss. It is neither deployable nor comparable to a fixed calibration threshold without matching realized coverage.
+At target coverage 0.8, the H12 thresholds and realized coverage were:
 
-## Risk-ranking ability
+| Seed | Full threshold | Full calibration coverage | Full Test coverage | Daylight threshold | Daylight calibration coverage | Daylight Test coverage |
+|---:|---:|---:|---:|---:|---:|---:|
+| 42 | 0.088077 | 79.995% | 78.858% | 0.144693 | 80.000% | 76.906% |
+| 43 | 0.086900 | 79.995% | 78.593% | 0.143789 | 80.000% | 77.552% |
+| 44 | 0.085438 | 79.995% | 78.748% | 0.146248 | 80.000% | 79.804% |
 
-For Test daylight H12, the full risk model achieved:
+The full and daylight masks and thresholds are materially different. All three corrected daylight Test coverages lie in the preregistered [70%, 90%] interval. Calibration coverage differs from its target only by empirical-quantile discreteness/ties.
+
+For the full risk model, the scope-matched H12 daylight operating points were:
+
+| Target coverage | Test coverage mean ± SD | Accepted RMSE, kW | RMSE reduction | Matched Persistence RMSE, kW | High-error acceptance | High-change acceptance |
+|---:|---:|---:|---:|---:|---:|---:|
+| 50% | 50.99% ± 1.36% | 0.2801 ± 0.0175 | 58.52% ± 2.35% | 0.6054 ± 0.0059 | 21.61% | 10.22% |
+| 70% | 70.01% ± 0.88% | 0.4313 ± 0.0113 | 36.12% ± 1.14% | 0.7041 ± 0.0034 | 48.19% | 33.11% |
+| 80% | 78.09% ± 1.52% | 0.5037 ± 0.0181 | 25.41% ± 2.09% | 0.7674 ± 0.0090 | 61.91% | 48.25% |
+| 90% | 87.03% ± 2.27% | 0.5802 ± 0.0200 | 14.07% ± 2.22% | 0.8366 ± 0.0093 | 77.50% | 67.55% |
+
+`high_error_acceptance_rate` is the fraction of actual Test high-error windows within the scope that are nevertheless accepted. It is not precision, false discovery rate, or calibration error.
+
+## Corrected H12 daylight results by seed
+
+| Seed | Test coverage | Accepted count | Unselected RMSE, kW | Accepted RMSE, kW | RMSE reduction | Accepted MAE, kW | Matched Persistence RMSE, kW |
+|---:|---:|---:|---:|---:|---:|---:|---:|
+| 42 | 76.906% | 6,900 | 0.6687 | 0.4881 | 27.01% | 0.2948 | 0.7598 |
+| 43 | 77.552% | 6,958 | 0.6765 | 0.4995 | 26.16% | 0.2969 | 0.7649 |
+| 44 | 79.804% | 7,160 | 0.6803 | 0.5236 | 23.04% | 0.3033 | 0.7774 |
+| Mean ± SD | 78.087% ± 1.521% | — | 0.6752 ± 0.0059 | 0.5037 ± 0.0181 | 25.41% ± 2.09% | 0.2983 ± 0.0044 | 0.7674 ± 0.0090 |
+
+ModernTCN is better than Last-value Persistence on the identical accepted daylight origins in 3/3 seeds. This comparison prevents the selective gain from being attributed solely to accepting trivially persistent windows.
+
+## Risk ranking and simple causal challenges
+
+H12 daylight ranking metrics for the full risk model were:
 
 | Metric | Mean ± sample SD | Seed 42 | Seed 43 | Seed 44 |
 |---|---:|---:|---:|---:|
-| Spearman with actual normalized loss | 0.7947 ± 0.0124 | 0.7805 | 0.8008 | 0.8029 |
-| AUROC for fixed high-error event | 0.9040 ± 0.0275 | 0.8724 | 0.9185 | 0.9213 |
+| Spearman | 0.7947 ± 0.0124 | 0.7805 | 0.8008 | 0.8029 |
+| AUROC | 0.9040 ± 0.0275 | 0.8724 | 0.9185 | 0.9213 |
 | AUPRC | 0.9272 ± 0.0037 | 0.9262 | 0.9313 | 0.9242 |
-| Risk–coverage AUC (lower better) | 0.04063 ± 0.00145 | 0.04189 | 0.04096 | 0.03904 |
+| Risk–coverage AUC, lower better | 0.04063 ± 0.00145 | 0.04189 | 0.04096 | 0.03904 |
 
-The signal is directionally stable in 3/3 seeds and exceeds the prespecified Spearman/AUROC requirements. H3/H6/H12 daylight Spearman means were 0.7466/0.7750/0.7947; AUROC means were 0.8705/0.8887/0.9040.
+At their own scope-matched 80% daylight thresholds:
 
-Relative to simple causal scores at H12 daylight:
+| Risk method | Test coverage | Accepted RMSE, kW | RMSE reduction |
+|---|---:|---:|---:|
+| Full risk model | 78.09% ± 1.52% | 0.5037 ± 0.0181 | 25.41% ± 2.09% |
+| Recent variation | 85.08% ± 0.00% | 0.5669 ± 0.0055 | 16.04% ± 0.09% |
+| Model–Persistence disagreement | 86.81% ± 0.38% | 0.6136 ± 0.0149 | 9.13% ± 1.74% |
 
-| Method | Spearman | AUROC | Risk–coverage AUC | 80%-threshold accepted RMSE (kW) | Actual coverage |
-|---|---:|---:|---:|---:|---:|
-| Full risk model | 0.7947 | 0.9040 | 0.04063 | 0.3335 | 58.75% |
-| Recent variation | 0.6620 | 0.8345 | 0.04694 | 0.4466 | 64.42% |
-| Model–Persistence disagreement | 0.2282 | 0.5986 | 0.06810 | 0.6132 | 69.91% |
+The full estimator improves risk–coverage AUC by **13.45%** and accepted RMSE by **11.16%** relative to the best simple causal score; both exceed the required 5% incremental criterion. The realized coverages differ across methods, so accepted-RMSE comparison must be read together with risk–coverage AUC rather than as a perfectly coverage-matched head-to-head test.
 
-The full model improves risk–coverage AUC by **13.45%** and accepted RMSE by **25.32%** relative to the better simple challenge. Its complexity therefore has empirical ranking value. That value does not rescue the failed coverage-transfer requirement.
+## Oracle headroom
 
-## Fixed calibration thresholds: 50/70/80/90%
+At exact 80% Test daylight coverage, oracle selection reduces H12 RMSE by **44.32% ± 0.07%** across seeds. This remains only a future-loss upper bound and is not deployable. It establishes headroom but does not substitute for calibrated selection.
 
-The following H12 daylight results use thresholds computed only on `RISK_CALIBRATION`; Test was not re-ranked to force a desired coverage.
+## Corrected natural-day cluster bootstrap
 
-| Calibration quantile | Test coverage mean ± SD | Accepted RMSE kW | RMSE reduction vs full | Matched Persistence RMSE kW | False-safe rate | High-change acceptance |
-|---:|---:|---:|---:|---:|---:|---:|
-| 50% | 5.72% ± 2.86% | 0.1030 ± 0.0241 | 84.77% ± 3.48% | 0.3396 ± 0.0952 | 0.24% | 0.00% |
-| 70% | 40.65% ± 0.79% | 0.2295 ± 0.0030 | 66.00% ± 0.74% | 0.5758 ± 0.0160 | 12.43% | 3.64% |
-| 80% | 58.75% ± 0.26% | 0.3335 ± 0.0042 | 50.60% ± 0.76% | 0.6307 ± 0.0037 | 30.82% | 16.98% |
-| 90% | 77.56% ± 1.34% | 0.4996 ± 0.0171 | 26.02% ± 1.93% | 0.7643 ± 0.0078 | 61.00% | 47.13% |
+The old implementation sampled only days containing accepted windows and compared against a fixed full-sample RMSE. C1-S0R instead samples with replacement from **all 61 Test daylight natural days**, keeps the fixed acceptance mask, and recomputes unselected RMSE, accepted RMSE, improvement, Persistence skill, and coverage within every replicate. No replicate recalibrates a threshold; no replicate lacked accepted observations.
 
-The nominal-to-realized coverage shift is large and monotone: the threshold transports poorly from September–October calibration to November–December daylight conditions. At the prespecified 80% threshold the actual coverages were 58.99%, 58.48%, and 58.78%. Therefore the apparently large 50.60% RMSE reduction is not evidence of an 80%-coverage system.
+| Seed | Accepted RMSE reduction, mean [95% CI] | Matched Persistence skill, mean [95% CI] | Realized coverage, mean [95% CI] |
+|---:|---:|---:|---:|
+| 42 | 26.83% [21.77%, 32.14%] | 35.73% [31.52%, 40.20%] | 76.86% [71.86%, 81.68%] |
+| 43 | 25.94% [20.75%, 30.95%] | 34.68% [30.43%, 39.61%] | 77.56% [72.48%, 82.35%] |
+| 44 | 22.90% [17.84%, 27.92%] | 32.79% [27.75%, 37.94%] | 79.83% [75.10%, 84.53%] |
 
-On the full timeline, the same 80% threshold yielded 78.73% ± 0.13% coverage and 56.38% ± 0.56% RMSE reduction. The daylight failure is obscured by abundant low-risk nighttime origins, illustrating why full-timeline selective metrics alone are unsafe for PV claims.
+The intervals support positive selective improvement and positive matched-Persistence skill in all seeds, while also showing the uncertainty induced by day-level temporal clustering.
 
-## Matched Persistence and block-bootstrap uncertainty
+## Prespecified decision checks
 
-At the fixed 80% calibration threshold and the identical accepted daylight origins, ModernTCN H12 RMSE was 0.3320/0.3383/0.3303 kW, while Persistence RMSE was 0.6267/0.6339/0.6316 kW. ModernTCN is better in 3/3 seeds. The matched comparison rules out the interpretation that the accepted subset merely makes Persistence equally sufficient.
+| Check | Corrected result | Status |
+|---|---:|---|
+| Three H12 daylight Test coverages in [0.70, 0.90] | 0.7691 / 0.7755 / 0.7980 | Pass |
+| Mean accepted-RMSE reduction at least 10% | 25.41% | Pass |
+| At least 2/3 seeds improve | 3/3 | Pass |
+| Mean Spearman at least 0.50 | 0.7947 | Pass |
+| Mean AUROC at least 0.75 | 0.9040 | Pass |
+| ModernTCN no worse than matched Persistence in at least 2/3 seeds | 3/3 | Pass |
+| Full estimator at least 5% better than best simple score by AURC or accepted RMSE | 13.45% AURC; 11.16% RMSE | Pass |
 
-Natural-day moving-block bootstrap (1,000 replicates per seed) gave:
+Accordingly, the prior `C1_NO_GO_SIGNAL_WEAK` conclusion is **withdrawn for this implementation error** and replaced with `C1_GO` at screening level. The permitted wording is: **C1 screening passes after correcting calibration scope; supervisor review is required before deciding whether to enter a strict four-part formal protocol.**
 
-- accepted-set RMSE reduction versus unselected ModernTCN: seed 42 50.18% [44.31, 55.85], seed 43 49.79% [43.05, 55.73], seed 44 51.36% [44.76, 57.65];
-- matched-Persistence skill: seed 42 46.86% [41.17, 52.30], seed 43 46.44% [40.84, 52.38], seed 44 47.71% [41.25, 53.79].
+## Literature boundary
 
-These intervals quantify the accepted subset actually produced by the fixed thresholds. They do not repair its coverage shortfall.
+`LITERATURE_OVERLAP_MATRIX.csv` was not changed because the correction is statistical, not methodological. The prior novelty conclusion remains: no reviewed single paper triggered the exact `NOVELTY_BLOCKED` combination, but the gap is narrow because selective time-series forecasting, bounded abstention, PV confidence forecasting, and time-series conformal risk control already exist. No claim of inventing selective forecasting is defensible at this stage.
 
-## Literature overlap and novelty threat
+## Tests and implementation checks
 
-Fifteen high-threat works were checked at method level. No single paper in the matrix simultaneously contains all of: PV multi-horizon trajectories, a past-only difficulty score, explicit forecast-level acceptance, calibrated risk/coverage control, and a matched-coverage Persistence plus daylight/high-change audit. Accordingly, the exact blocking rule `NOVELTY_BLOCKED` is **not** triggered.
+- **7/7 focused regression tests passed** in `test_protocol.py`: scope-specific threshold sources, distinct masks, in-scope calibration coverage, Test exclusion from quantiles, paired bootstrap recomputation, and all-day sampling frame.
+- **13/13 runtime array checks passed**: no deep-training API, fit/calibration isolation, scope-matched masks, actual calibration coverage checks, Test isolation, causal feature timestamps, artifact identity, distinct masks, all-day bootstrap frame, output confinement, source-file immutability, and required metric fields.
+- `metrics.csv` contains 4,013 data rows and was re-imported successfully for structural verification.
+- No optimizer, backward pass, training epoch, new checkpoint, or deep-model weight update occurred.
 
-However, the algorithmic gap is narrow and high risk:
+## Reviewer interpretation
 
-- *Bounded-Abstention Multi-horizon Time-series Forecasting* (2026) already formalizes full/partial/interval abstention, conditional-risk selection, and calibration-set coverage constraints for structured horizons ([arXiv](https://arxiv.org/abs/2602.04714), Sections 2–4).
-- *Selective Time Series Forecasting via Metalearning* (2026) already predicts empirical forecast-error percentiles from recent-lag structural features to reject difficult forecasts ([arXiv](https://arxiv.org/abs/2606.23448)).
-- PV confidence and conformal forecasting are established separately, including confidence-based separation of solar irradiance forecasts and conformal PV intervals ([IET](https://doi.org/10.1049/iet-rpg.2018.5354), [Solar Energy Advances](https://doi.org/10.1016/j.seja.2024.100059)).
-- Time-series/non-exchangeable conformal calibration and general conformal risk control are also established ([NeurIPS 2021](https://papers.neurips.cc/paper_files/paper/2021/hash/312f1ba2a72318edaaa995a67835fad5-Abstract.html), [ICLR 2024](https://openreview.net/forum?id=33XGfHLtZg), [arXiv 2310.01262](https://arxiv.org/abs/2310.01262)).
+Selective forecasting can still manufacture an attractive error number by rejecting difficult cases. The corrected result is credible only because it reports realized coverage, rejected-set behavior, high-error acceptance, an all-day paired bootstrap, and matched Persistence on the exact accepted origins. Even so, the 2022 Test period has already been used for this feasibility decision, and the original deep checkpoint used the full Validation period. These facts prevent confirmatory or publication-level claims.
 
-Thus the defensible difference would have been an application-specific combination and a stringent matched operational audit—not a broad claim of inventing selective multi-horizon forecasting. Since the empirical screen fails the preregistered coverage requirement, that narrow difference is not worth formal model development.
-
-## Protocol self-checks
-
-All **12/12** ordinary checks passed:
-
-1. no deep-model training, optimizer, backward, or gradient update call;
-2. risk estimators fit only on `RISK_FIT`;
-3. acceptance thresholds computed only on `RISK_CALIBRATION`;
-4. Test labels absent from fitting, feature selection, and threshold calculation;
-5. every risk feature ends at or before forecast origin;
-6. ModernTCN and Persistence share labels, origins, and accepted masks;
-7. Test labels/origins are identical across seeds;
-8. full and daylight masks are distinct;
-9. bootstrap unit is natural day;
-10. all outputs remain in the C1 directory;
-11. all source artifact sizes and modification times are unchanged;
-12. both CSVs are readable and the metric CSV includes fields required to recompute primary summaries.
-
-GPU use was limited to no-gradient checkpoint inference on an NVIDIA GeForce RTX 3060 Laptop GPU. The nine risk estimators ran on CPU. There were no deep-model training runs.
-
-## Reviewer interpretation and route closure
-
-Selective evaluation can manufacture impressive-looking error reductions by rejecting exactly those windows where the forecaster fails. The proper question is not whether accepted RMSE is lower—it almost inevitably is under a useful ranking—but whether coverage is calibrated, operationally stable, and paired with disclosure of rejected cases and a same-sample baseline. Here, ranking is strong, yet the 80% calibration threshold rejects about 41% of daylight Test origins. Reporting only its 50.60% RMSE reduction would materially overstate practical reliability.
-
-The final conclusion is therefore **C1_NO_GO_SIGNAL_WEAK**, specifically a failure of out-of-period coverage transfer under the fixed calibration rule, not absence of oracle headroom or absence of all forecastability signal. C1 should not enter a formal four-part protocol, C1 v2/v3, conformal recalibration variant, or new model development. The unique next recommendation is to close C1 and keep selective-risk findings as an internal limitation analysis; Scheme A and other worktrees remain untouched.
+The next action is **not** to train immediately. The supervisor should first decide whether the corrected screening evidence justifies one preregistered formal study with genuinely separated Model-Validation and Risk-Calibration periods plus a previously untouched Test period. Scheme A, master, the original worktree, source artifacts, and the literature matrix remain unchanged.

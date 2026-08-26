@@ -1,5 +1,5 @@
 {
-  "study_id": "C1-S0",
+  "study_id": "C1-S0R",
   "site": "Site 17 Sanyo",
   "source_experiment": "C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PVforecast16/GFNODE_experiments/asoc_multirate_information_screen",
   "prepared_artifact": "C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PVforecast16/GFNODE_experiments/asoc_multirate_information_screen/results/prepared_data.npz",
@@ -13,6 +13,7 @@
   "risk_fit_fraction": 0.5,
   "high_error_quantile": 0.8,
   "calibration_acceptance_quantiles": [0.5, 0.7, 0.8, 0.9],
+  "calibration_scope_policy": "scope_matched_validation_calibration_subset",
   "risk_estimator": {
     "class": "sklearn.ensemble.HistGradientBoostingRegressor",
     "loss": "squared_error",
@@ -30,7 +31,7 @@
     "MODEL_PERSISTENCE_DISAGREEMENT"
   ],
   "bootstrap": {
-    "unit": "natural_day",
+    "unit": "natural_day_cluster",
     "replicates": 1000,
     "confidence_level": 0.95,
     "random_seed": 20260826

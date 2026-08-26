@@ -28,8 +28,6 @@ from torch.utils.data import DataLoader
 ROOT = Path(__file__).resolve().parent
 CONFIG_PATH = ROOT / "config.json"
 METRICS_PATH = ROOT / "metrics.csv"
-HORIZONS = (3, 6, 12)
-METHODS = ("FULL_RISK_MODEL", "RECENT_VARIATION", "MODEL_PERSISTENCE_DISAGREEMENT")
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -207,32 +205,101 @@ def add_row(rows: list[dict[str, Any]], section: str, seed: Any, horizon: Any, s
                  "threshold": threshold, "notes": notes})
 
 
-def block_bootstrap(
+def scope_calibration_mask(
+    calibration_membership: np.ndarray, validation_scope_mask: np.ndarray,
+) -> np.ndarray:
+    calibration_membership = np.asarray(calibration_membership, dtype=bool)
+    validation_scope_mask = np.asarray(validation_scope_mask, dtype=bool)
+    if calibration_membership.shape != validation_scope_mask.shape:
+        raise ValueError("Calibration membership and scope mask must have identical shapes")
+    return calibration_membership & validation_scope_mask
+
+
+def calibrated_threshold(
+    validation_scores: np.ndarray,
+    calibration_membership: np.ndarray,
+    validation_scope_mask: np.ndarray,
+    target_coverage: float,
+) -> tuple[float, np.ndarray, float]:
+    """Compute a threshold from the matching Validation calibration scope only."""
+    mask = scope_calibration_mask(calibration_membership, validation_scope_mask)
+    scoped_scores = np.asarray(validation_scores, dtype=float)[mask]
+    if not len(scoped_scores):
+        raise ValueError("Scope-matched calibration subset is empty")
+    threshold = float(np.quantile(scoped_scores, target_coverage))
+    realized = float(np.mean(scoped_scores <= threshold))
+    return threshold, mask, realized
+
+
+def bootstrap_replicate_metrics(
+    labels: np.ndarray,
+    model_pred: np.ndarray,
+    persistence: np.ndarray,
+    accepted: np.ndarray,
+    chosen_idx: np.ndarray,
+    horizon: int,
+) -> dict[str, float] | None:
+    chosen_idx = np.asarray(chosen_idx, dtype=np.int64)
+    if not len(chosen_idx):
+        return None
+    rep_accepted = accepted[chosen_idx]
+    if not np.any(rep_accepted):
+        return None
+    unselected_err = model_pred[chosen_idx, :horizon] - labels[chosen_idx, :horizon]
+    accepted_idx = chosen_idx[rep_accepted]
+    accepted_err = model_pred[accepted_idx, :horizon] - labels[accepted_idx, :horizon]
+    persistence_err = persistence[accepted_idx, :horizon] - labels[accepted_idx, :horizon]
+    unselected_rmse = float(np.sqrt(np.mean(unselected_err ** 2)))
+    accepted_rmse = float(np.sqrt(np.mean(accepted_err ** 2)))
+    persistence_rmse = float(np.sqrt(np.mean(persistence_err ** 2)))
+    return {
+        "unselected_daylight_rmse": unselected_rmse,
+        "accepted_rmse": accepted_rmse,
+        "accepted_rmse_reduction_pct": (unselected_rmse - accepted_rmse) / unselected_rmse * 100.0,
+        "matched_persistence_skill_pct": (persistence_rmse - accepted_rmse) / persistence_rmse * 100.0,
+        "realized_coverage": float(np.mean(rep_accepted)),
+    }
+
+
+def natural_day_cluster_bootstrap(
     labels: np.ndarray, model_pred: np.ndarray, persistence: np.ndarray,
     accepted: np.ndarray, daylight: np.ndarray, times_ns: np.ndarray,
     horizon: int, replicates: int, random_seed: int,
-) -> dict[str, tuple[float, float, float]]:
-    eligible = accepted & daylight
-    idx = np.flatnonzero(eligible)
+) -> tuple[dict[str, tuple[float, float, float]], int, int]:
+    """Paired cluster bootstrap over every Test daylight natural day.
+
+    Acceptance is fixed before resampling. Each replicate recomputes the
+    unselected daylight RMSE and the accepted-set quantities on the same
+    resampled collection of complete daylight-day clusters.
+    """
+    idx = np.flatnonzero(daylight)
     dates = pd.to_datetime(times_ns[idx], unit="ns").date
     unique_days = np.asarray(sorted(set(dates)), dtype=object)
     by_day = {d: idx[np.asarray(dates) == d] for d in unique_days}
     rng = np.random.default_rng(random_seed)
-    reductions, persistence_deltas = [], []
-    full_rmse, _ = aggregate_error(labels, model_pred, daylight, horizon)
+    collected: dict[str, list[float]] = {
+        "unselected_daylight_rmse": [],
+        "accepted_rmse": [],
+        "accepted_rmse_reduction_pct": [],
+        "matched_persistence_skill_pct": [],
+        "realized_coverage": [],
+    }
+    skipped = 0
     for _ in range(replicates):
         sampled = rng.choice(unique_days, size=len(unique_days), replace=True)
         chosen_idx = np.concatenate([by_day[d] for d in sampled])
-        model_err = model_pred[chosen_idx, :horizon] - labels[chosen_idx, :horizon]
-        pers_err = persistence[chosen_idx, :horizon] - labels[chosen_idx, :horizon]
-        model_rmse = float(np.sqrt(np.mean(model_err ** 2)))
-        pers_rmse = float(np.sqrt(np.mean(pers_err ** 2)))
-        reductions.append((full_rmse - model_rmse) / full_rmse * 100.0)
-        persistence_deltas.append((pers_rmse - model_rmse) / pers_rmse * 100.0)
+        values = bootstrap_replicate_metrics(labels, model_pred, persistence, accepted, chosen_idx, horizon)
+        if values is None:
+            skipped += 1
+            continue
+        for key, value in values.items():
+            collected[key].append(value)
     def summarize(v: list[float]) -> tuple[float, float, float]:
-        a = np.asarray(v); return float(np.mean(a)), float(np.quantile(a, 0.025)), float(np.quantile(a, 0.975))
-    return {"accepted_rmse_reduction_pct": summarize(reductions),
-            "matched_persistence_skill_pct": summarize(persistence_deltas)}
+        if not v:
+            return math.nan, math.nan, math.nan
+        a = np.asarray(v)
+        return float(np.mean(a)), float(np.quantile(a, 0.025)), float(np.quantile(a, 0.975))
+    return {key: summarize(values) for key, values in collected.items()}, skipped, len(unique_days)
 
 
 def main() -> None:
@@ -241,6 +308,11 @@ def main() -> None:
     prepared_path = Path(config["prepared_artifact"])
     source_config = load_json(source_root / "config.json")
     seeds = [int(s) for s in config["seeds"]]
+    horizons = tuple(int(h) for h in config["evaluation_horizons"])
+    methods = tuple(str(m) for m in config["risk_methods"])
+    estimator_params = {k: v for k, v in config["risk_estimator"].items() if k != "class"}
+    if config["risk_estimator"].get("class") != "sklearn.ensemble.HistGradientBoostingRegressor":
+        raise ValueError("Only the preregistered HistGradientBoostingRegressor is supported")
     source_files = [prepared_path, source_root / "run_information_screen.py", source_root / "config.json"]
     for seed in seeds:
         source_files.extend([source_root / "results" / "MEAN_ONLY" / str(seed) / "best_validation.pt",
@@ -269,6 +341,8 @@ def main() -> None:
     test_predictions: dict[int, np.ndarray] = {}
     val_predictions: dict[int, np.ndarray] = {}
     checkpoint_epochs: dict[int, int] = {}
+    loaded_test_labels: dict[int, np.ndarray] = {}
+    loaded_test_times: dict[int, np.ndarray] = {}
     for seed in seeds:
         run_dir = source_root / "results" / "MEAN_ONLY" / str(seed)
         artifact = np.load(run_dir / "test_predictions.npz", allow_pickle=False)
@@ -285,6 +359,8 @@ def main() -> None:
             assert np.array_equal(common_test_labels, labels)
             assert np.array_equal(common_test_times, timestamps)
         test_predictions[seed] = pred
+        loaded_test_labels[seed] = labels
+        loaded_test_times[seed] = timestamps
         checkpoint = torch.load(run_dir / "best_validation.pt", map_location="cpu", weights_only=True)
         checkpoint_epochs[seed] = int(checkpoint["epoch"])
         val_predictions[seed] = frozen_validation_prediction(module, source_config, prepared, run_dir / "best_validation.pt")
@@ -296,6 +372,8 @@ def main() -> None:
     fit_slice = np.arange(0, n_fit)
     calibration_slice = np.arange(n_fit, len(val_origins))
     assert val_origins[fit_slice[-1]] < val_origins[calibration_slice[0]]
+    calibration_membership = np.zeros(len(val_origins), dtype=bool)
+    calibration_membership[calibration_slice] = True
     train_recent = []
     for origin in train_origins:
         v = power[int(origin) - 11:int(origin) + 1]
@@ -303,6 +381,11 @@ def main() -> None:
     high_change_threshold = float(np.quantile(train_recent, 0.9))
     rows: list[dict[str, Any]] = []
     decision_facts: dict[int, dict[str, float]] = {s: {} for s in seeds}
+    observed_calibration_masks: dict[tuple[int, int, str], np.ndarray] = {}
+    calibration_coverage_checks: list[bool] = []
+    feature_causality_checks: list[bool] = []
+    test_threshold_isolation_checks: list[bool] = []
+    bootstrap_day_checks: list[bool] = []
 
     for seed in seeds:
         vp, tp = val_predictions[seed], test_predictions[seed]
@@ -312,7 +395,7 @@ def main() -> None:
         val_high_change = np.asarray([np.max(np.abs(np.diff(power[int(o)-11:int(o)+1]))) >= high_change_threshold for o in val_origins])
         test_high_change = np.asarray([np.max(np.abs(np.diff(power[int(o)-11:int(o)+1]))) >= high_change_threshold for o in test_origins])
         persistence_test = power[test_origins, None] * np.ones((1, config["horizon"]), dtype=np.float32)
-        for horizon in HORIZONS:
+        for horizon in horizons:
             x_val, feature_names_risk, aux_val = risk_features(
                 val_origins, vp, power, times_ns, raw_features, feature_names, horizon,
                 config["origin_daylight_threshold_kw"])
@@ -320,17 +403,15 @@ def main() -> None:
                 test_origins, tp, power, times_ns, raw_features, feature_names, horizon,
                 config["origin_daylight_threshold_kw"])
             assert feature_names_risk == feature_names_test
-            assert np.all(aux_val["causal_max_timestamp_ns"] <= times_ns[val_origins])
-            assert np.all(aux_test["causal_max_timestamp_ns"] <= times_ns[test_origins])
+            feature_causality_checks.extend([
+                bool(np.all(aux_val["causal_max_timestamp_ns"] <= times_ns[val_origins])),
+                bool(np.all(aux_test["causal_max_timestamp_ns"] <= times_ns[test_origins])),
+            ])
             val_loss, _, _ = trajectory_losses(val_labels, vp, horizon, train_range)
             test_loss, _, _ = trajectory_losses(common_test_labels, tp, horizon, train_range)
             high_error_threshold = float(np.quantile(val_loss[fit_slice], config["high_error_quantile"]))
             test_high_error = test_loss > high_error_threshold
-            estimator = HistGradientBoostingRegressor(
-                loss="squared_error", learning_rate=0.05, max_iter=100,
-                max_leaf_nodes=15, max_depth=None, min_samples_leaf=30,
-                l2_regularization=1.0, early_stopping=False, random_state=seed,
-            )
+            estimator = HistGradientBoostingRegressor(**estimator_params, random_state=seed)
             estimator.fit(x_val[fit_slice], np.log1p(val_loss[fit_slice]))
             scores_val = {
                 "FULL_RISK_MODEL": np.maximum(np.expm1(estimator.predict(x_val)), 0.0),
@@ -342,7 +423,10 @@ def main() -> None:
                 "RECENT_VARIATION": aux_test["recent_variation"],
                 "MODEL_PERSISTENCE_DISAGREEMENT": aux_test["model_persistence_disagreement"],
             }
-            for scope, scope_mask in (("full", np.ones(len(test_origins), bool)), ("daylight", test_daylight)):
+            for scope, validation_scope_mask, scope_mask in (
+                ("full", np.ones(len(val_origins), bool), np.ones(len(test_origins), bool)),
+                ("daylight", val_daylight, test_daylight),
+            ):
                 base_rmse, base_mae = aggregate_error(common_test_labels, tp, scope_mask, horizon)
                 add_row(rows, "unselected", seed, horizon, scope, "MODERNTCN", 1.0, "rmse", base_rmse, "kW", len(test_origins), int(scope_mask.sum()))
                 add_row(rows, "unselected", seed, horizon, scope, "MODERNTCN", 1.0, "mae", base_mae, "kW", len(test_origins), int(scope_mask.sum()))
@@ -366,33 +450,62 @@ def main() -> None:
                     add_row(rows, "oracle", seed, horizon, scope, "ORACLE", target_coverage, "high_change_acceptance_rate", float(np.mean(accepted[test_high_change])) if test_high_change.any() else math.nan, "fraction", len(scoped_idx), n_accept)
                     if horizon == 12 and scope == "daylight" and math.isclose(target_coverage, 0.8):
                         decision_facts[seed]["oracle_reduction"] = reduction
-                for method in METHODS:
+                for method in methods:
                     score = scores_test[method]
-                    cal_score = scores_val[method][calibration_slice]
                     rank = ranking_metrics(score, test_loss, test_high_error, scope_mask)
                     for metric, value in rank.items():
                         add_row(rows, "risk_ranking", seed, horizon, scope, method, "all", metric, value, "", int(scope_mask.sum()))
                     aurc = risk_coverage_auc(score, test_loss, scope_mask)
                     add_row(rows, "risk_ranking", seed, horizon, scope, method, "curve", "risk_coverage_auc", aurc, "normalized_loss", int(scope_mask.sum()))
                     for target_coverage in config["calibration_acceptance_quantiles"]:
-                        threshold = float(np.quantile(cal_score, target_coverage))
+                        threshold, calibration_mask, calibration_realized = calibrated_threshold(
+                            scores_val[method], calibration_membership, validation_scope_mask,
+                            float(target_coverage),
+                        )
+                        observed_calibration_masks[(seed, horizon, scope)] = calibration_mask.copy()
+                        cal_score = scores_val[method][calibration_mask]
+                        tie_allowance = float(np.mean(cal_score == threshold)) + 1.0 / len(cal_score) + 1e-12
+                        calibration_coverage_checks.append(
+                            abs(calibration_realized - float(target_coverage)) <= tie_allowance
+                        )
+                        test_threshold_isolation_checks.append(
+                            not np.shares_memory(cal_score, scores_test[method])
+                        )
                         accepted = (score <= threshold) & scope_mask
                         rejected = (~accepted) & scope_mask
                         ar, am = aggregate_error(common_test_labels, tp, accepted, horizon)
-                        rr, _ = aggregate_error(common_test_labels, tp, rejected, horizon)
+                        rr, rejected_mae = aggregate_error(common_test_labels, tp, rejected, horizon)
                         pr, _ = aggregate_error(common_test_labels, persistence_test, accepted, horizon)
                         reduction = (base_rmse - ar) / base_rmse * 100.0
                         actual_coverage = float(accepted.sum() / scope_mask.sum())
-                        false_safe = float(np.sum(accepted & test_high_error) / max(1, np.sum(scope_mask & test_high_error)))
+                        high_error_acceptance = float(np.sum(accepted & test_high_error) / max(1, np.sum(scope_mask & test_high_error)))
                         high_change_acceptance = float(np.sum(accepted & test_high_change) / max(1, np.sum(scope_mask & test_high_change)))
-                        values = {"actual_coverage": actual_coverage, "accepted_rmse": ar, "accepted_mae": am,
-                                  "rejected_rmse": rr, "relative_rmse_reduction": reduction,
-                                  "matched_persistence_rmse": pr, "high_error_false_safe_rate": false_safe,
-                                  "high_change_acceptance_rate": high_change_acceptance}
-                        units = {"actual_coverage": "fraction", "accepted_rmse": "kW", "accepted_mae": "kW",
-                                 "rejected_rmse": "kW", "relative_rmse_reduction": "%",
-                                 "matched_persistence_rmse": "kW", "high_error_false_safe_rate": "fraction",
-                                 "high_change_acceptance_rate": "fraction"}
+                        values = {
+                            "calibration_scope_count": int(calibration_mask.sum()),
+                            "calibration_realized_coverage": calibration_realized,
+                            "test_scope_count": int(scope_mask.sum()),
+                            "test_realized_coverage": actual_coverage,
+                            "accepted_count": int(accepted.sum()),
+                            "accepted_rmse": ar,
+                            "accepted_mae": am,
+                            "rejected_rmse": rr,
+                            "rejected_mae": rejected_mae,
+                            "unselected_rmse": base_rmse,
+                            "unselected_mae": base_mae,
+                            "relative_rmse_reduction": reduction,
+                            "matched_persistence_rmse": pr,
+                            "high_error_acceptance_rate": high_error_acceptance,
+                            "high_change_acceptance_rate": high_change_acceptance,
+                        }
+                        units = {
+                            "calibration_scope_count": "windows", "calibration_realized_coverage": "fraction",
+                            "test_scope_count": "windows", "test_realized_coverage": "fraction",
+                            "accepted_count": "windows", "accepted_rmse": "kW", "accepted_mae": "kW",
+                            "rejected_rmse": "kW", "rejected_mae": "kW", "unselected_rmse": "kW",
+                            "unselected_mae": "kW", "relative_rmse_reduction": "%",
+                            "matched_persistence_rmse": "kW", "high_error_acceptance_rate": "fraction",
+                            "high_change_acceptance_rate": "fraction",
+                        }
                         for metric, value in values.items():
                             add_row(rows, "selective", seed, horizon, scope, method, target_coverage, metric, value,
                                     units[metric], int(scope_mask.sum()), int(accepted.sum()), threshold)
@@ -400,13 +513,26 @@ def main() -> None:
                             decision_facts[seed].update({"spearman": rank["spearman"], "auroc": rank["auroc"],
                                 "actual_coverage": actual_coverage, "risk_reduction": reduction,
                                 "risk_rmse": ar, "persistence_rmse": pr, "risk_aurc": aurc})
-                            boot = block_bootstrap(common_test_labels, tp, persistence_test, accepted, test_daylight,
-                                                   common_test_times, horizon, config["bootstrap"]["replicates"],
-                                                   config["bootstrap"]["random_seed"] + seed)
+                            boot, skipped_bootstrap, daylight_days = natural_day_cluster_bootstrap(
+                                common_test_labels, tp, persistence_test, accepted, test_daylight,
+                                common_test_times, horizon, config["bootstrap"]["replicates"],
+                                config["bootstrap"]["random_seed"] + seed,
+                            )
+                            expected_days = len(set(pd.to_datetime(common_test_times[test_daylight], unit="ns").date))
+                            bootstrap_day_checks.append(daylight_days == expected_days)
                             for metric, (mean, lo, hi) in boot.items():
+                                unit = "%" if metric.endswith("_pct") else ("kW" if "rmse" in metric else "fraction")
                                 add_row(rows, "bootstrap", seed, horizon, scope, method, target_coverage,
-                                        metric, mean, "%", int(scope_mask.sum()), int(accepted.sum()), threshold, lo, hi,
-                                        "Natural-day moving-block bootstrap; 1000 replicates")
+                                        metric, mean, unit, int(scope_mask.sum()), int(accepted.sum()), threshold, lo, hi,
+                                        "Natural-day cluster bootstrap; fixed calibration threshold")
+                            add_row(rows, "bootstrap", seed, horizon, scope, method, target_coverage,
+                                    "skipped_no_accepted_replicates", skipped_bootstrap, "replicates",
+                                    int(scope_mask.sum()), int(accepted.sum()), threshold,
+                                    notes="Natural-day cluster bootstrap")
+                            add_row(rows, "bootstrap", seed, horizon, scope, method, target_coverage,
+                                    "sampled_day_cluster_count", daylight_days, "days",
+                                    int(scope_mask.sum()), int(accepted.sum()), threshold,
+                                    notes="All Test daylight natural days form the sampling frame")
             add_row(rows, "protocol", seed, horizon, "validation", "FULL_RISK_MODEL", "fit", "risk_fit_samples", len(fit_slice), "windows")
             add_row(rows, "protocol", seed, horizon, "validation", "FULL_RISK_MODEL", "calibration", "risk_calibration_samples", len(calibration_slice), "windows")
             add_row(rows, "protocol", seed, horizon, "validation", "FULL_RISK_MODEL", "fit", "high_error_threshold", high_error_threshold, "train_range_normalized_rmse")
@@ -441,7 +567,7 @@ def main() -> None:
         "mean_oracle_h12_daylight_80_reduction_pct": np.mean([x["oracle_reduction"] for x in main]),
         "mean_full_risk_h12_daylight_spearman": np.mean([x["spearman"] for x in main]),
         "mean_full_risk_h12_daylight_auroc": np.mean([x["auroc"] for x in main]),
-        "mean_full_risk_h12_daylight_80_actual_coverage": np.mean([x["actual_coverage"] for x in main]),
+        "mean_full_risk_h12_daylight_80_test_realized_coverage": np.mean([x["actual_coverage"] for x in main]),
         "mean_full_risk_h12_daylight_80_reduction_pct": np.mean([x["risk_reduction"] for x in main]),
         "full_vs_best_simple_aurc_improvement_pct": aurc_increment,
         "full_vs_best_simple_accepted_rmse_improvement_pct": rmse_increment,
@@ -455,19 +581,48 @@ def main() -> None:
     syntax_tree = ast.parse(Path(__file__).read_text(encoding="utf-8"))
     forbidden_deep_calls = [n for n in ast.walk(syntax_tree) if isinstance(n, ast.Call) and
                             isinstance(n.func, ast.Attribute) and n.func.attr in {"backward", "step"}]
+    full_mask_example = observed_calibration_masks[(seeds[0], horizons[0], "full")]
+    daylight_mask_example = observed_calibration_masks[(seeds[0], horizons[0], "daylight")]
+    three_seed_test_identity = all(
+        np.array_equal(loaded_test_labels[seeds[0]], loaded_test_labels[s]) and
+        np.array_equal(loaded_test_times[seeds[0]], loaded_test_times[s])
+        for s in seeds[1:]
+    )
+    matched_labels_origins = (
+        np.array_equal(common_test_labels, test_labels_expected) and
+        np.array_equal(common_test_times, times_ns[test_origins])
+    )
+    calibration_masks_correct = (
+        np.array_equal(full_mask_example, calibration_membership) and
+        np.array_equal(daylight_mask_example, calibration_membership & val_daylight)
+    )
+    metrics_required = {
+        "calibration_scope_count", "calibration_realized_coverage", "test_scope_count",
+        "test_realized_coverage", "accepted_count", "accepted_rmse", "accepted_mae",
+        "rejected_rmse", "rejected_mae", "unselected_rmse", "unselected_mae",
+        "matched_persistence_rmse", "high_error_acceptance_rate", "high_change_acceptance_rate",
+    }
+    selective_metric_names = {str(r["metric"]) for r in rows if r["section"] == "selective"}
     checks = {
         "no_deep_training_api": not forbidden_deep_calls,
-        "risk_fit_only": len(fit_slice) + len(calibration_slice) == len(val_origins),
-        "calibration_threshold_only": True,
-        "test_not_used_for_fit_or_threshold": True,
-        "features_causal": True,
-        "matched_labels_origins_masks": True,
-        "three_seed_test_identity": True,
-        "full_daylight_masks_differ": True,
-        "bootstrap_by_natural_day": config["bootstrap"]["unit"] == "natural_day",
+        "risk_fit_only": (
+            len(fit_slice) + len(calibration_slice) == len(val_origins) and
+            not np.shares_memory(val_labels[fit_slice], test_labels_expected)
+        ),
+        "scope_matched_calibration_masks": calibration_masks_correct,
+        "calibration_coverage_recomputed_in_scope": bool(calibration_coverage_checks) and all(calibration_coverage_checks),
+        "test_not_used_for_fit_or_threshold": bool(test_threshold_isolation_checks) and all(test_threshold_isolation_checks),
+        "features_causal": bool(feature_causality_checks) and all(feature_causality_checks),
+        "matched_labels_origins_masks": matched_labels_origins,
+        "three_seed_test_identity": three_seed_test_identity,
+        "full_daylight_masks_differ": not np.array_equal(full_mask_example, daylight_mask_example),
+        "bootstrap_by_all_natural_day_clusters": (
+            config["bootstrap"]["unit"] == "natural_day_cluster" and
+            bool(bootstrap_day_checks) and all(bootstrap_day_checks)
+        ),
         "output_directory_limited": METRICS_PATH.parent == ROOT,
         "source_files_unchanged": file_state(source_files) == state_before,
-        "csv_recalculation_fields_present": True,
+        "csv_recalculation_fields_present": metrics_required.issubset(selective_metric_names),
     }
     if not all(checks.values()):
         raise AssertionError({k: v for k, v in checks.items() if not v})
@@ -481,7 +636,7 @@ def main() -> None:
     reread = pd.read_csv(METRICS_PATH)
     assert len(reread) == len(rows) and set(fieldnames) == set(reread.columns)
     print(json.dumps({"rows": len(rows), "validation_samples": len(val_origins), "test_samples": len(test_origins),
-                      "risk_models_fitted": len(seeds) * len(HORIZONS), "checkpoint_epochs": checkpoint_epochs,
+                      "risk_models_fitted": len(seeds) * len(horizons), "checkpoint_epochs": checkpoint_epochs,
                       "summary": summary_values, "self_checks": checks}, indent=2, default=float))
 
 
