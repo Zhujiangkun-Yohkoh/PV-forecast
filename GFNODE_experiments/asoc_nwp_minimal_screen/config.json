@@ -1,0 +1,89 @@
+{
+  "experiment": "Stage B1 causal GFS minimal performance screen",
+  "site": "DKASC Site 17 Sanyo",
+  "pv_file": "C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PV_improve_v1/原始Dataset/5min pv active power data/17 Sanyo.csv",
+  "gfs_archive": "https://noaa-gfs-bdp-pds.s3.amazonaws.com",
+  "gfs_product": "pgrb2.1p00",
+  "gfs_resolution_degrees": 1.0,
+  "gfs_point": {"latitude": -24.0, "longitude": 134.0},
+  "availability_policy": "PREVIOUS_COMPLETED_CYCLE_6H",
+  "availability_delay_hours": 6,
+  "utc_to_acst_minutes": 570,
+  "splits": {
+    "train": ["2021-03-23 00:00:00", "2022-01-01 00:00:00"],
+    "validation": ["2022-01-01 00:00:00", "2023-01-01 00:00:00"],
+    "sealed_test": ["2023-01-01 00:00:00", "2024-01-01 00:00:00"]
+  },
+  "lookback": 72,
+  "horizon": 144,
+  "frequency_minutes": 5,
+  "horizons": [12, 48, 96, 144],
+  "history_features": [
+    "Active_Energy_Delivered_Received",
+    "Current_Phase_Average",
+    "Active_Power",
+    "Performance_Ratio",
+    "Wind_Speed",
+    "Weather_Temperature_Celsius",
+    "Weather_Relative_Humidity",
+    "Global_Horizontal_Radiation",
+    "Diffuse_Horizontal_Radiation",
+    "Wind_Direction",
+    "Weather_Daily_Rainfall",
+    "Radiation_Global_Tilted",
+    "Radiation_Diffuse_Tilted"
+  ],
+  "target_column": "Active_Power",
+  "ground_ghi_column": "Global_Horizontal_Radiation",
+  "daylight_ghi_threshold_wm2": 20.0,
+  "high_change_quantile": 0.9,
+  "nwp_variables": {
+    "DSWRF_surface": ":DSWRF:surface:",
+    "TCDC_entire_atmosphere": ":TCDC:entire atmosphere:"
+  },
+  "nwp_forecast_leads_hours": [6, 9, 12, 15, 18, 21, 24],
+  "nwp_lead_step_hours": 3,
+  "nwp_alignment": {
+    "DSWRF_surface": "piecewise interval-average over (startStep,endStep]",
+    "TCDC_entire_atmosphere": "linear interpolation only when GRIB stepType=instant; otherwise interval support"
+  },
+  "download": {"workers": 48, "attempts": 3, "timeout_seconds": 90, "monthly_resume": true},
+  "models": ["HISTORY_ONLY", "RAW_NWP", "AGE_LEAD_RELIABILITY"],
+  "seeds": [42, 43, 44],
+  "model": {
+    "channels": 64,
+    "layers": 4,
+    "kernel_size": 5,
+    "dropout": 0.0,
+    "nwp_hidden": 16,
+    "reliability_hidden": 8
+  },
+  "training": {
+    "batch_size": 256,
+    "learning_rate": 0.001,
+    "weight_decay": 0.00001,
+    "max_epochs": 25,
+    "patience": 5,
+    "min_delta": 1e-8,
+    "gradient_clip": 1.0,
+    "num_workers": 0,
+    "optimizer": "AdamW",
+    "loss": "target-scaled trajectory MSE",
+    "checkpoint_metric": "validation target-scaled MSE"
+  },
+  "reliability_prior": {
+    "age_bin_hours": 1,
+    "lead_bin_hours": 1,
+    "error": "Train-only mean absolute DSWRF minus ground GHI",
+    "mapping": "exp(-cell_mae / train_global_mae)"
+  },
+  "decision_thresholds": {
+    "raw_h144_improvement_pct": 2.0,
+    "reliability_h144_improvement_pct": 1.0,
+    "maximum_any_horizon_degradation_pct": 1.0,
+    "minimum_improved_horizons": 3,
+    "required_seed_consistency": 3,
+    "maximum_parameter_increase_pct": 10.0
+  }
+}
+
