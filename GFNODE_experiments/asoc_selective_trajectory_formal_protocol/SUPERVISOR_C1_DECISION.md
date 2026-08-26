@@ -55,4 +55,3 @@ Once those two files pass read-only validation, the formal deep matrix is fixed 
 Preserve the formal protocol and Draft PR, obtain the two missing irradiance years, and run a final read-only data/protocol confirmation. Do not start GPU training before that confirmation. If the data pass, the next authorized action can be the single preregistered nine-run experiment. If the Final-Test criteria fail, close C1 without redesign; Scheme A remains the fallback.
 
 No neural network or risk estimator was trained in S1. No candidate Final-Test C1 prediction error was accessed.
-

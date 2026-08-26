@@ -125,4 +125,3 @@ Only if every condition passes may manuscript writing and necessary ablation be 
 ## Execution authorization
 
 The protocol design is authorized, but GPU execution is **`NOT_AUTHORIZED_UNTIL_DATA_AND_PROTOCOL_CONFIRMED`**. The blocking evidence is the missing full-year 2021 second-level source needed for consistent base training and the corrupt/incomplete local 2023 second-level source needed for Final Test. After the two authoritative exports are supplied, they must pass read-only structure, UTC/ACST, channel, missingness, and segmented-alignment checks before any training begins.
-
