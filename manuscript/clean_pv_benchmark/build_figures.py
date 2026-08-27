@@ -36,12 +36,13 @@ def marker(c, x, y, model, radius=3):
 
 def load():
     d=pd.read_csv(EVIDENCE)
-    assert len(d)==6648 and set(MODELS).issubset(d.model)
+    assert len(d)==11328 and set(MODELS).issubset(d.model)
+    assert "supplementary_daily_matched" in set(d.analysis)
     assert {12,48,96,144}.issubset(set(d.horizon_steps.dropna().astype(int)))
     return d
 
 def figure_protocol():
-    c=Canvas(str(OUT/"fig1_leakage_free_protocol.pdf"),pagesize=(510,238))
+    c=Canvas(str(OUT/"fig1_leakage_free_protocol.pdf"),pagesize=(510,238),initialFontName="Arial")
     boxes=[(12,180,112,"Raw 5-min timeline\nnight retained","#E5E5E5"),(142,180,105,"Train\nfit preprocessing","#D9EAD3"),(270,180,108,"Validation\nselect checkpoints","#FFF2CC"),(402,180,96,"Test\nevaluation only","#CFE2F3")]
     for x,y,w,label,color in boxes:
         c.setFillColor(HexColor(color)); c.setStrokeColor(black); c.rect(x,y,w,38,fill=1,stroke=1)
@@ -73,7 +74,7 @@ def panel(c,q,x,y,w,h,title,ymax):
 
 def figure_curves(d):
     q=d[(d.analysis=="primary_horizon_specific")&(d.metric=="range_nRMSE")&d.model.isin(MODELS)&d.statistic.isin(["mean","deterministic"])]
-    c=Canvas(str(OUT/"fig2_multihorizon_nrmse.pdf"),pagesize=(510,342))
+    c=Canvas(str(OUT/"fig2_multihorizon_nrmse.pdf"),pagesize=(510,342),initialFontName="Arial")
     for col,dataset in enumerate(["Sanyo","Hanwha","Qcells"]):
         for row,(scope,label) in enumerate([("regular_full_timeline","Full timeline"),("daylight","Daylight")]): panel(c,q[(q.dataset==dataset)&(q.scope==scope)],4+col*169,166-row*147,164,142,f"{dataset} -- {label}",.66 if row else .46)
     for i,model in enumerate(MODELS):
@@ -89,7 +90,7 @@ def figure_rank_heatmap(d):
         for scope,short in [("regular_full_timeline","Full"),("daylight","Day")]:
             for h in [12,48,96,144]:
                 z=q[(q.dataset==dataset)&(q.scope==scope)&(q.horizon_steps==h)].set_index("model"); labels.append(f"{dataset} {short} H{h}"); rows.append([z.loc[m,"rank"] for m in MODELS])
-    c=Canvas(str(OUT/"fig3_rank_heatmap.pdf"),pagesize=(480,510)); x0,cw,ch=132,67,18
+    c=Canvas(str(OUT/"fig3_rank_heatmap.pdf"),pagesize=(480,510),initialFontName="Arial"); x0,cw,ch=132,67,18
     text(c,240,493,"Primary RMSE rank including Last-value Persistence (1 = best)",9.2,"middle",True)
     for j,model in enumerate(MODELS): text(c,x0+j*cw+cw/2,466,SHORT[model],5.6,"middle")
     for i,(label,row) in enumerate(zip(labels,rows)):
@@ -105,16 +106,17 @@ def figure_pareto(d):
     par=meta[meta.metric=="parameter_count"].groupby("model",as_index=False).value.mean().rename(columns={"value":"params"})
     p=err.merge(lat,on="model").merge(par,on="model")
     persistence=d[(d.analysis=="primary_horizon_specific")&(d.metric=="range_nRMSE")&(d.statistic=="deterministic")&(d.model==MODELS[0])].value.mean()
-    c=Canvas(str(OUT/"fig4_accuracy_efficiency.pdf"),pagesize=(420,300)); x0,y0,w,h=62,52,320,200; c.rect(x0,y0,w,h,fill=0,stroke=1); xmin,xmax=math.log10(.35),math.log10(45); ymin,ymax=.10,.35
+    c=Canvas(str(OUT/"fig4_accuracy_efficiency.pdf"),pagesize=(510,330),initialFontName="Arial"); x0,y0,w,h=72,62,400,220; c.rect(x0,y0,w,h,fill=0,stroke=1); xmin,xmax=math.log10(.35),math.log10(45); ymin,ymax=.10,.35
     py=y0+h*(persistence-ymin)/(ymax-ymin); c.setDash(4,3); c.line(x0,py,x0+w,py); c.setDash(); text(c,x0+w-3,py+4,"Last-value persistence macro error",6.3,"end")
     maxp=p.params.max()
     for _,r in p.iterrows():
-        xx=x0+w*(math.log10(r.latency)-xmin)/(xmax-xmin); yy=y0+h*(r.error-ymin)/(ymax-ymin); radius=3+6*math.sqrt(r.params/maxp)
-        marker(c,xx,yy,r.model,radius); dx=-7 if r.model==MODELS[1] else 7; text(c,xx+dx,yy+radius+3,SHORT[r.model],6.2,"end" if dx<0 else "start")
+        xx=x0+w*(math.log10(r.latency)-xmin)/(xmax-xmin); yy=y0+h*(r.error-ymin)/(ymax-ymin); radius=9*math.sqrt(r.params/maxp)
+        c.setFillColor(HexColor(COLORS[r.model])); c.setStrokeColor(black); c.circle(xx,yy,radius,fill=1,stroke=1)
+        dx=-7 if r.model==MODELS[1] else 7; text(c,xx+dx,yy+radius+3,SHORT[r.model],6.8,"end" if dx<0 else "start")
     for tick in [.4,1,3,10,30]: text(c,x0+w*(math.log10(tick)-xmin)/(xmax-xmin),y0-13,tick,6,"middle")
     for tick in [.12,.16,.20,.24,.28,.32]: text(c,x0-7,y0+h*(tick-ymin)/(ymax-ymin)-2,f"{tick:.2f}",6,"end")
-    text(c,210,280,"Corrected accuracy--efficiency trade-off",9.4,"middle",True); text(c,222,25,"Mean batch-one GPU latency (ms, log scale)",7,"middle")
-    c.saveState(); c.translate(16,154); c.rotate(90); text(c,0,0,"Macro mean Train-range nRMSE",7,"middle"); c.restoreState(); text(c,222,9,"Marker area is exactly proportional to parameter count",6.2,"middle")
+    text(c,255,312,"Corrected accuracy--efficiency trade-off",10.2,"middle",True); text(c,270,30,"Mean batch-one GPU latency (ms, log scale)",7.5,"middle")
+    c.saveState(); c.translate(18,172); c.rotate(90); text(c,0,0,"Macro mean Train-range nRMSE",7.5,"middle"); c.restoreState(); text(c,270,11,"Circular marker area is exactly proportional to parameter count",6.8,"middle")
     c.showPage(); c.save()
 
 def main():
