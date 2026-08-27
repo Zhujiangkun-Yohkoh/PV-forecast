@@ -1,71 +1,79 @@
-# Scheme C1-S4 — annual source and executable-readiness review
+# Scheme C1 final closeout
 
-## Two independent verdicts
+## Final status
 
-- Data: **`C1_FORMAL_DATA_FAIL`**.
-- Implementation: **`C1_FORMAL_IMPLEMENTATION_READY_FOR_GPU_REVIEW`** after 28 synthetic production-function tests and 7 real-array tests pass.
-- GPU execution: **NOT AUTHORIZED / not performed (0/9)**.
-- Scientific method outcome: **NOT EVALUATED**.
+**C1_ROUTE_CLOSED_DATA_UNAVAILABLE**
 
-## Official-source finding
+- Data readiness: `C1_FORMAL_DATA_FAIL`
+- Termination reason: `REQUIRED_FULL_YEAR_1_SECOND_DATA_UNAVAILABLE_OR_UNCONFIRMED`
+- Scientific method outcome: `NOT_EVALUATED`
+- Implementation status: `C1_FORMAL_IMPLEMENTATION_NOT_VALIDATED_AND_NO_LONGER_REQUIRED`
+- GPU training performed: no
+- Completed runs: 0/9
+- Future GPU execution authorized: no
 
-For both 2021 and 2023 the defensible source verdict is **`OFFICIAL_FULL_YEAR_UNAVAILABLE_OR_UNCONFIRMED`**. The official DKASC NT Solar Resource page lists Alice Springs annual 5-minute and 5-second downloads for both years and states that the Class-A stations collect high-resolution data. The official Fulcrum3D interface separately exposes a user-selected date range and a 1-second irradiance download. Neither public page guarantees that a requested 1-second export contains every second of a calendar year, documents an annual 1-second row limit, or explains these two malformed exports. Therefore portal availability is not evidence of complete 1-second annual coverage. The present files support download/export failure or wrong selection as possibilities, but do not distinguish them from true upstream gaps.
+Scheme C1 is closed because the preregistered complete-year one-second irradiance inputs cannot be obtained or confirmed from the current official source. This is a data-executability conclusion, not evidence that selective risk control or the base forecaster succeeds or fails.
 
-Official pages checked 2026-08-28: https://www.dkasolarcentre.com.au/download?location=nt-solar-resource and https://nt-solar-resource.fulcrum3d.com/download . The DKASC page defines System Status (0=OK, 1=issue), but the selected CSV headers contain no status field.
+## Read-only source facts
 
-## Explicit sources and annual union
+All time semantics use the authoritative UTC field. No Local field was substituted, and no interpolation, year substitution, manual repair, or raw-file rewrite was performed.
 
-|Year|Files|Bytes|Unique seconds|First UTC|Last UTC|Missing|Duplicate|Out-of-year|Structure|
-|---:|---:|---:|---:|---|---|---:|---:|---:|---|
-|2021|1|1,726,481,334|18,403,200|2021-06-02 00:00:00|2021-12-31 23:59:59|13,132,800|0|0|columns 0; glued 0; truncated 0; Data Error 0|
-|2022|1|3,011,901,400|31,536,000|2022-01-01 00:00:00|2022-12-31 23:59:59|0|0|0|columns 0; glued 0; truncated 0; Data Error 0|
-|2023|1|1,774,300,567|167,952|2023-01-01 00:00:01|2023-01-02 22:39:12|31,368,048|0|18,489,565|columns 212; glued 1; truncated 211; Data Error 211|
+| Year | Selected source | Bytes | Target-year unique seconds | UTC range represented | Missing target-year seconds | Structural/cross-year findings |
+|---|---|---:|---:|---|---:|---|
+| 2021 | `C:\Users\Zhujiangkun-Yohkoh\Desktop\光伏项目_最新\PV_improve_v1\原始Dataset\高分辨率气象数据集\C1_fresh_downloads\2021\fsm1m_7111_ekistica-alice-springs-ekistica-alice-springs_irradiancedata_1sec_2021.csv` | 1,726,481,334 | 18,403,200 | 2021-06-02 00:00:00 to 2021-12-31 23:59:59 UTC | 13,132,800 | No structural anomaly detected, but January through 1 June are absent. |
+| 2022 | `C:\Users\Zhujiangkun-Yohkoh\Desktop\光伏项目_最新\PV_improve_v1\GFNODE_experiments\asoc_multirate_redownload_validation\fsm1m_7111_ekistica-alice-springs-ekistica-alice-springs_irradiancedata_1sec_2022.csv` | 3,011,901,400 | 31,536,000 | 2022-01-01 00:00:00 to 2022-12-31 23:59:59 UTC | 0 | Complete verified reference year. |
+| 2023 | `C:\Users\Zhujiangkun-Yohkoh\Desktop\光伏项目_最新\PV_improve_v1\原始Dataset\高分辨率气象数据集\C1_fresh_downloads\2023\fsm1m_7111_ekistica-alice-springs-ekistica-alice-springs_irradiancedata_1sec_2023.csv` | 1,774,300,567 | 167,952 | Target-year records from 2023-01-01 00:00:01 to 2023-01-02 22:39:12 UTC | 31,368,048 | 18,489,565 out-of-year records; 212 column anomalies, including 1 glued and 211 truncated/Data Error records; later content includes 2024/2025. |
 
-2021 contains only 2021-06-02 through year-end. The 2023 source begins one second late, ends its target-year coverage on 2023-01-02, then contains 2024/2025 rows and structural damage. The excluded older damaged 2023 file was not used. The 2022 authoritative redownload remains complete.
+The one-second channel audit recorded these missing-value counts and five-minute-bin states:
 
-All years use `Timestamp_UTC`; ACST is derived as UTC+09:30. MB0/MB1/MB2 remain separate in W/m². No interpolation, repair, Excel rewrite, or concatenated raw copy was made. Config now accepts an explicit list of one or more annual/monthly files; ordering and overlap checks use actual UTC records.
+- 2021: MB0/MB1/MB2 missing values 781,177 / 781,579 / 781,759; 58,711 strict three-channel bins, 2,633 partially missing bins, 43,776 empty bins.
+- 2022: MB0/MB1/MB2 missing values 3,992 / 3,236 / 3,320; 99,211 strict bins, 5,909 partially missing bins, 0 empty bins.
+- 2023: MB0/MB1/MB2 missing values 59 / 58 / 42; 464 strict bins, 96 partially missing bins, 104,560 empty bins.
 
-## Five-minute quality
+The official download page does not establish guaranteed complete-year one-second coverage. The user repeated the official downloads, but the resulting 2021 and 2023 files retained the same unusable coverage pattern. Consequently, completeness is unavailable or unconfirmed rather than safely repairable.
 
-|Year|MB0 missing|MB1 missing|MB2 missing|Strict complete bins|Partial bins|Empty bins|
-|---:|---:|---:|---:|---:|---:|---:|
-|2021|781,177|781,579|781,759|58,711|2,633|43,776|
-|2022|3,992|3,236|3,320|99,211|5,909|0|
-|2023|59|58|42|464|96|104,560|
+## Five-stage window evidence
 
-Right-closed `(t-5 min,t]` aggregation is fixed. Partial numeric missingness is retained through channel mean, valid fraction and valid mask; zero-timestamp bins interrupt windows.
+The strict five-stage protocol produced the following three-array common legal origins before model execution:
 
-## Frozen primary population
+| Stage | Expected calendar origins | Common legal origins | Strict 300/300 origins | First legal origin | Last legal origin | Coverage |
+|---|---:|---:|---:|---|---|---|
+| BASE_TRAIN | 105,037 | 58,122 | 54,067 | 2021-06-02 15:25 ACST | 2021-12-31 22:55 ACST | Months 6–12; spring, summer, winter |
+| BASE_MODEL_VALIDATION | 34,477 | 31,750 | 31,315 | 2022-01-01 05:55 ACST | 2022-04-30 22:55 ACST | Months 1–4 |
+| RISK_FIT | 35,341 | 32,509 | 31,676 | 2022-05-01 05:55 ACST | 2022-08-31 22:55 ACST | Months 5–8 |
+| RISK_CALIBRATION | 35,053 | 34,969 | 2,300 | 2022-09-01 05:55 ACST | 2022-12-31 22:55 ACST | Months 9–12 |
+| FINAL_TEST | 105,037 | 604 | **0** | 2023-01-01 05:55 ACST | 2023-01-03 08:10 ACST | January only; summer only |
 
-All seven success conditions use exactly **H12 + THREE_ARRAY_COMMON + mask-available + PRIMARY_DAYLIGHT_COMMON**. Strict 300/300 three-channel completeness is only a data-quality sensitivity population and cannot select the main result.
+The preregistered BASE_TRAIN and FINAL_TEST full-year requirements are therefore not met. In particular, FINAL_TEST has zero strict three-channel-complete origins and cannot support the preregistered annual confirmation.
 
-## Five-stage common origins
+## Unexecuted implementation limitations
 
-|Stage|Expected|Formal common|Strict 300/300|First|Last|Segments|Months|Seasons|
-|---|---:|---:|---:|---|---|---:|---|---|
-|BASE_TRAIN|105,037|58,122|54,067|2021-06-02T15:25|2021-12-31T22:55|13|6;7;8;9;10;11;12|spring;summer;winter|
-|BASE_MODEL_VALIDATION|34,477|31,750|31,315|2022-01-01T05:55|2022-04-30T22:55|7|1;2;3;4|autumn;summer|
-|RISK_FIT|35,341|32,509|31,676|2022-05-01T05:55|2022-08-31T22:55|6|5;6;7;8|autumn;winter|
-|RISK_CALIBRATION|35,053|34,969|2,300|2022-09-01T05:55|2022-12-31T22:55|2|9;10;11;12|spring;summer|
-|FINAL_TEST|105,037|604|0|2023-01-01T05:55|2023-01-03T08:10|1|1|summer|
+The S4 implementation passed only local synthetic fixtures. It was never validated by a production training-and-evaluation execution, and it is no longer required because the data condition permanently blocks this project route. Known limitations are retained to prevent the code from being mistaken for GPU-ready software:
 
-## Implementation review
+- The production Dataset yields `[B,72,14]`, while the current `Conv1d` path requires an explicit conversion to `[B,14,72]`.
+- The random seed must be set before model initialization.
+- The Final-Test payload is not yet truly delayed in materialization.
+- Bootstrap computation is not connected to the formal execution chain.
+- Formal metric persistence has not been completely validated.
 
-The READY path is complete and guarded rather than an unimplemented exception. It directly prepares five-stage named loaders from the compact audit state and provides 14-channel causal construction; BASE_TRAIN-only median/scalers/target range; the frozen 4-layer 64-channel depthwise/pointwise TCN and 9-run matrix; AdamW loop and strict validation-RMSE checkpoint replacement; matched last-value Persistence; the fixed risk features and HistGradientBoostingRegressor; RISK_FIT-only fitting; same-scope `method=higher` calibration; delayed Final-Test loader creation; stable-origin AURC; fixed-mask 7-day moving-block and day-cluster resampling; and programmatic seven-condition evaluation. This stage called none of the real fitting/training functions.
+These limitations are not repaired in this closeout and do not constitute evidence about scientific method performance.
 
-State fields are factual: raw Final-Test availability metadata was inspected; model predictions, errors, risk scores, coverage and AURC were not generated or accessed. NOT_RUN rows are execution status, not performance metrics.
+## Execution and integrity statement
 
-## Tests and source protection
+- No GPU, CPU, or synthetic training was executed in this closeout.
+- No optimizer, backward pass, risk-model fit, checkpoint creation, Final-Test prediction, prediction-error access, coverage calculation, or AURC calculation occurred.
+- Performance metrics are unavailable; all nine preregistered runs remain `NOT_RUN`.
+- Selected PV and irradiance source byte sizes and `mtime_ns` remained unchanged during the closeout checks.
+- No raw source was interpolated, repaired, combined with a substitute year, or rewritten.
 
-- Synthetic/fixture: 28/28 passed; 0 skipped.
-- Real arrays: 7/7 passed; 0 skipped.
-- Selected PV and irradiance source size/mtime_ns unchanged: **True**.
-- Real optimizer/backward/epoch: **No**.
-- Real risk-model fitting: **No**.
-- Final-Test performance access: **No**.
+## Closure interpretation
 
-Local `results/` contains only compact review artifacts and remains untracked; it is not a clean-worktree claim and will not be committed.
+1. C1 closure is a data-executability conclusion.
+2. It is not a failure result for the risk-control method.
+3. It is not a failure result for the base trajectory forecaster.
+4. It cannot be used as a method-performance comparison in a manuscript.
+5. Re-downloading the same one-second source is not recommended.
+6. If complete official annual data become available in the future, the work would require a newly proposed and preregistered study; this closed execution must not simply be resumed.
+7. Current research resources return to the Scheme A manuscript submission.
 
-## Conclusion
-
-Data remains **`C1_FORMAL_DATA_FAIL`**, so no GPU authorization follows. Implementation is **`C1_FORMAL_IMPLEMENTATION_READY_FOR_GPU_REVIEW`**, but that does not override missing annual data. The only defensible next action is to obtain officially exported 1-second 2021 and 2023 blocks whose explicit UTC union passes the frozen annual criteria; no alternative year, interpolation, model revision, or C1 v2/v3 is proposed.
+No further C1 training, repair, or variant development is authorized.

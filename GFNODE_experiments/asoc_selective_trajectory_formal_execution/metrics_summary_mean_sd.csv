@@ -1,2 +1,2 @@
-﻿decision,completed_runs,expected_runs,gpu_training,note
-C1_FORMAL_DATA_FAIL,0,9,False,Formal metrics unavailable because preregistered data readiness failed before training.
+completed_runs,expected_runs,scientific_metrics_available,method_evaluated,note
+0,9,false,false,route closed because required data were unavailable
