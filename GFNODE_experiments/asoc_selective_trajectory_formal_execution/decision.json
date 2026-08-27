@@ -1,6 +1,10 @@
 {
   "decision": "C1_FORMAL_DATA_FAIL",
+  "data_readiness": "C1_FORMAL_DATA_FAIL",
   "data_ready": false,
+  "implementation_readiness": "C1_FORMAL_IMPLEMENTATION_READY_FOR_GPU_REVIEW",
+  "gpu_execution_status": "NOT_AUTHORIZED_C1_S4",
+  "scientific_method_outcome": "NOT_EVALUATED",
   "gpu_training_performed": false,
   "completed_runs": 0,
   "expected_runs": 9,
@@ -10,6 +14,9 @@
     "no_structural_anomaly_in_fresh_years",
     "base_train_and_final_test_cover_12_months_four_seasons"
   ],
-  "final_test_performance_accessed": false,
-  "method_success_conditions_evaluated": false
+  "raw_final_test_availability_metadata_accessed": true,
+  "final_test_model_predictions_generated": false,
+  "final_test_prediction_errors_accessed": false,
+  "final_test_risk_scores_accessed": false,
+  "final_test_coverage_or_aurc_accessed": false
 }
