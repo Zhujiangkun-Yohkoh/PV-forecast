@@ -10,6 +10,7 @@
 | `COVER_LETTER_DRAFT.md` | Four-author and two-corresponding-author draft; exclusive-submission status recorded | Final signature and all-author approval required |
 | `SUBMISSION_METADATA_CHECKLIST.md` | Author-facing checklist | Internal preparation file, not a manuscript attachment |
 | `AUTHOR_AND_DECLARATIONS_DRAFT.md` | Consolidated source for author metadata and declaration drafts | Internal preparation file; transfer only after confirmation |
+| `AUTHOR_SIGNOFF_CHECKLIST.md` | Itemized author-owned confirmation record | Internal preparation file; retain until every declaration is confirmed |
 
 ## Final upload set after author approval
 

@@ -87,7 +87,7 @@ def figure_protocol():
         for i, line in enumerate(label.split("\n")): txt(c, x+34, 283-i*11, line, 7, "middle", i == 0)
     c.setFillColor(HexColor("#D9EAD3")); c.roundRect(314, 262, 153, 35, 4, fill=1, stroke=1)
     txt(c, 390.5, 283, "Shared weather context", 7, "middle", True)
-    txt(c, 390.5, 272, "Array-specific power + missingness", 6.5, "middle")
+    txt(c, 390.5, 272, "Array-specific power + missingness", 8, "middle")
     for x, _ in arrays: arrow(c, x+68, 279, 314, 279)
 
     c.setFillColor(HexColor("#FAF5E8")); c.roundRect(12, 139, 486, 92, 6, fill=1, stroke=1)
@@ -99,9 +99,9 @@ def figure_protocol():
     for x, w, label, color in blocks:
         c.setFillColor(HexColor(color)); c.rect(x, y-14, w, 28, fill=1, stroke=1)
         for i, line in enumerate(label.split("\n")): txt(c, x+w/2, y+3-i*10, line, 6.4, "middle", i == 0)
-    txt(c, 42, 148, "L72 = 6 h past-only input", 6.7)
-    txt(c, 470, 148, "H144 = 12 h target", 6.7, "end")
-    txt(c, 255, 124, "No window crosses a split; power after the forecast origin is never an input.", 7.2, "middle", True)
+    txt(c, 42, 148, "17-D causal input; L = 72 (6 h)", 8)
+    txt(c, 470, 148, "forecast origin  |  H = 144 (12 h)", 8, "end")
+    txt(c, 255, 124, "Train-only preprocessing; split-local windows; no post-origin power input.", 8, "middle", True)
 
     c.setFillColor(HexColor("#F4EEF8")); c.roundRect(12, 22, 486, 102, 6, fill=1, stroke=1)
     txt(c, 25, 108, "C  EVALUATION LAYER", 8, bold=True, color=HexColor("#5B2C6F"))
@@ -110,7 +110,7 @@ def figure_protocol():
     for x, w, label in zip(xs, ws, labels):
         c.setFillColor(white); c.roundRect(x, 67, w, 29, 4, fill=1, stroke=1)
         for i, line in enumerate(label.split("\n")): txt(c, x+w/2, 84-i*9, line, 6.5, "middle", i == 0)
-    txt(c, 255, 48, "Common origins, labels, and point masks at H12 / H48 / H96 / H144 and Full / Daylight scopes", 6.8, "middle")
+    txt(c, 255, 48, "Three-array intersection of origins and masks; common labels at H12 / H48 / H96 / H144", 8, "middle")
     txt(c, 255, 30, "ONLY THE FORECASTER CHANGES; EVALUATION SUPPORT REMAINS MATCHED.", 8, "middle", True, HexColor("#5B2C6F"))
     c.showPage(); c.save()
 
@@ -119,7 +119,7 @@ def combo_order():
     return [(ds, h, sc, label) for ds in DATASETS for h in HORIZONS for sc, label in SCOPES]
 
 
-def best_neural(q):
+def posthoc_neural_envelope(q):
     q = q[q.model.isin(NEURAL)].copy()
     idx = q.groupby(["dataset", "horizon_steps", "scope"])["value"].idxmin()
     return q.loc[idx].set_index(["dataset", "horizon_steps", "scope"])
@@ -128,36 +128,45 @@ def best_neural(q):
 def figure_baseline_reversal(d):
     primary = d[(d.analysis == "primary_horizon_specific") & (d.metric == "RMSE") & d.statistic.isin(["mean", "deterministic"])]
     daily = d[(d.analysis == "supplementary_daily_matched") & (d.metric == "RMSE") & d.statistic.isin(["mean", "deterministic"])]
-    best_primary, best_daily = best_neural(primary), best_neural(daily)
+    envelope_primary = posthoc_neural_envelope(primary)
+    envelope_daily = posthoc_neural_envelope(daily)
     last = primary[primary.model == LAST].set_index(["dataset", "horizon_steps", "scope"])
     day = daily[daily.model == DAILY].set_index(["dataset", "horizon_steps", "scope"])
     combos = combo_order()
-    skills_last, skills_daily = [], []
+    ratios_last, ratios_daily = [], []
     for ds, h, sc, _ in combos:
         key = (ds, h, sc)
-        skills_last.append(1-best_primary.loc[key, "value"]/last.loc[key, "value"])
-        skills_daily.append(1-best_daily.loc[key, "value"]/day.loc[key, "value"])
+        ratios_last.append(envelope_primary.loc[key, "value"] / last.loc[key, "value"])
+        ratios_daily.append(envelope_daily.loc[key, "value"] / day.loc[key, "value"])
 
     c = Canvas(str(OUT/"fig2_persistence_reversal.pdf"), pagesize=(510, 600), initialFontName="Arial")
     txt(c, 255, 583, "The baseline choice reverses the practical conclusion", 10, "middle", True)
-    x0, w = 122, 365
-    panels = [(320, "A  Best neural vs Last-value Persistence", skills_last, (-0.05, .82)),
-              (38, "B  Best neural vs Daily Persistence (matched points)", skills_daily, (-1.5, .35))]
-    for pidx, (y0, title, vals, (lo, hi)) in enumerate(panels):
+    x0, w = 132, 350
+    all_ratios = np.asarray(ratios_last + ratios_daily, dtype=float)
+    assert np.all(np.isfinite(all_ratios)) and np.all(all_ratios > 0)
+    lo = 10 ** (math.floor(math.log10(all_ratios.min()) * 4) / 4 - 0.10)
+    hi = 10 ** (math.ceil(math.log10(all_ratios.max()) * 4) / 4 + 0.10)
+    panels = [(320, "A  Envelope / Last-value Persistence", ratios_last),
+              (38, "B  Envelope / Daily Persistence (matched points)", ratios_daily)]
+    for pidx, (y0, title, vals) in enumerate(panels):
         hgt = 235; txt(c, 16, y0+hgt-2, title, 8, bold=True)
-        zero = x0+w*(0-lo)/(hi-lo)
-        c.setStrokeColor(HexColor("#666666")); c.setDash(3,2); c.line(zero, y0, zero, y0+hgt-18); c.setDash()
+        x_ref = x0 + w * (0 - math.log10(lo)) / (math.log10(hi) - math.log10(lo))
+        c.setStrokeColor(HexColor("#666666")); c.setDash(3,2); c.line(x_ref, y0, x_ref, y0+hgt-18); c.setDash()
         for i, ((ds, hz, sc, slabel), value) in enumerate(zip(combos, vals)):
             yy = y0+hgt-31-i*8.25
             txt(c, x0-5, yy-2.6, f"{ds} H{hz} {slabel}", 8, "end")
-            xx = x0+w*(value-lo)/(hi-lo)
-            color = HexColor("#0072B2") if value >= 0 else HexColor("#D55E00")
-            c.setStrokeColor(color); c.setLineWidth(1.5); c.line(zero, yy, xx, yy)
+            xx = x0 + w * (math.log10(value) - math.log10(lo)) / (math.log10(hi) - math.log10(lo))
+            color = HexColor("#0072B2") if value < 1 else HexColor("#D55E00")
+            c.setStrokeColor(color); c.setLineWidth(1.5); c.line(x_ref, yy, xx, yy)
             c.setFillColor(color); c.circle(xx, yy, 2.1, fill=1, stroke=0)
-            if pidx == 1 and value > 0: txt(c, min(xx+5, 468), yy-2.6, "neural win", 8, color=color)
-        for tick in np.linspace(lo, hi, 5):
-            xx = x0+w*(tick-lo)/(hi-lo); txt(c, xx, y0-13, f"{tick:.2f}", 8, "middle")
-        txt(c, x0+w/2, y0-27, "RMSE skill (positive = neural forecast is better)", 8, "middle")
+            if pidx == 1 and value < 1:
+                txt(c, min(xx+5, 467), yy-2.6, "Hanwha H12", 8, color=color)
+        ticks = [v for v in [0.1, 0.2, 0.5, 1, 2, 5, 10] if lo <= v <= hi]
+        for tick in ticks:
+            xx = x0 + w * (math.log10(tick) - math.log10(lo)) / (math.log10(hi) - math.log10(lo))
+            txt(c, xx, y0-13, f"{tick:g}", 8, "middle")
+        txt(c, x0+w/2, y0-27, "RMSE ratio (log scale): <1 envelope better; >1 Persistence better", 8, "middle")
+    txt(c, 255, 303, "Daily Persistence is lower in 22/24 matched comparisons; the two exceptions are Hanwha H12 Full and Daylight.", 8, "middle")
     c.showPage(); c.save()
 
 
@@ -172,30 +181,27 @@ def marker(c, x, y, model, radius=2.4):
 
 def figure_horizon_dependence(d):
     q = d[(d.analysis == "primary_horizon_specific") & (d.metric == "range_nRMSE") & d.model.isin(MODELS) & d.statistic.isin(["mean", "deterministic"])]
-    c = Canvas(str(OUT/"fig3_horizon_technology.pdf"), pagesize=(510, 290), initialFontName="Arial")
-    txt(c, 255, 274, "Error growth depends on array, horizon, and evaluation scope", 9.5, "middle", True)
+    c = Canvas(str(OUT/"fig3_horizon_technology.pdf"), pagesize=(510, 430), initialFontName="Arial")
+    txt(c, 255, 414, "Error growth depends on array, horizon, and evaluation scope", 9.5, "middle", True)
     ymax = .67
-    for col, ds in enumerate(DATASETS):
-        x,y,w,h = 10+col*168,49,158,201; left,bottom,pw,ph=x+30,y+25,w-39,h-49
+    for row, (scope, scope_label) in enumerate(SCOPES):
+      for col, ds in enumerate(DATASETS):
+        x,y,w,h = 8+col*168,218-row*190,160,174; left,bottom,pw,ph=x+31,y+24,w-40,h-48
         c.setStrokeColor(HexColor("#777777")); c.rect(left,bottom,pw,ph,fill=0,stroke=1)
         for val in [0,.2,.4,.6]:
             yy=bottom+ph*val/ymax; c.setStrokeColor(HexColor("#E0E0E0")); c.line(left,yy,left+pw,yy)
-            if col==0: txt(c,left-4,yy-2,f"{val:.1f}",5.5,"end")
+            if col==0: txt(c,left-4,yy-2,f"{val:.1f}",8,"end")
         for ix,hz in enumerate(HORIZONS): txt(c,left+pw*ix/3,bottom-10,f"H{hz}",5.5,"middle")
         for model in MODELS:
-            for sc,_ in SCOPES:
-                z=q[(q.dataset==ds)&(q.model==model)&(q.scope==sc)].sort_values("horizon_steps"); assert len(z)==4
-                pts=[(left+pw*i/3,bottom+ph*row.value/ymax) for i,(_,row) in enumerate(z.iterrows())]
-                c.setStrokeColor(HexColor(COLORS[model])); c.setLineWidth(1.05); c.setDash(3,2) if sc=="daylight" else c.setDash()
-                for a,b in zip(pts,pts[1:]): c.line(a[0],a[1],b[0],b[1])
-                for xx,yy in pts: marker(c,xx,yy,model,1.5 if sc=="daylight" else 2)
-                c.setDash()
-        txt(c,x+w/2,y+h-14,ds,7.5,"middle",True)
+            z=q[(q.dataset==ds)&(q.model==model)&(q.scope==scope)].sort_values("horizon_steps"); assert len(z)==4
+            pts=[(left+pw*i/3,bottom+ph*r.value/ymax) for i,(_,r) in enumerate(z.iterrows())]
+            c.setStrokeColor(HexColor(COLORS[model])); c.setLineWidth(1.05); c.setDash()
+            for a,b in zip(pts,pts[1:]): c.line(a[0],a[1],b[0],b[1])
+            for xx,yy in pts: marker(c,xx,yy,model,2)
+        txt(c,x+w/2,y+h-14,f"{ds} — {scope_label}",8,"middle",True)
     for i,model in enumerate(MODELS):
-        xx=20+i*98; marker(c,xx,29,model,2.2); txt(c,xx+7,27,SHORT[model],5.7)
-    c.setStrokeColor(black); c.line(185,10,205,10); txt(c,210,8,"Full",5.6)
-    c.setDash(3,2); c.line(254,10,274,10); c.setDash(); txt(c,279,8,"Daylight",5.6)
-    c.saveState(); c.translate(12,148); c.rotate(90); txt(c,0,0,"Train-range nRMSE",6.5,"middle"); c.restoreState()
+        xx=15+i*99; marker(c,xx,18,model,2.2); txt(c,xx+7,16,SHORT[model],8)
+    c.saveState(); c.translate(12,215); c.rotate(90); txt(c,0,0,"Train-range nRMSE",8,"middle"); c.restoreState()
     c.showPage(); c.save()
 
 
@@ -208,9 +214,8 @@ def figure_efficiency(d):
     persistence=d[(d.analysis=="primary_horizon_specific")&(d.metric=="range_nRMSE")&(d.statistic=="deterministic")&(d.model==LAST)].value.mean()
     p["pareto"]=[not any((o.latency<=r.latency and o.error<=r.error and (o.latency<r.latency or o.error<r.error)) for _,o in p.iterrows()) for _,r in p.iterrows()]
     c=Canvas(str(OUT/"fig4_accuracy_efficiency.pdf"),pagesize=(510,330),initialFontName="Arial")
-    x0,y0,w,h=78,58,392,226; xmin,xmax=math.log10(.35),math.log10(45); ymin,ymax=min(.10,p.error.min()-.02),max(.35,persistence+.02)
-    c.rect(x0,y0,w,h,fill=0,stroke=1); py=y0+h*(persistence-ymin)/(ymax-ymin)
-    c.setStrokeColor(HexColor("#555555")); c.setDash(4,3); c.line(x0,py,x0+w,py); c.setDash(); txt(c,x0+w-3,py+4,"Last-value Persistence macro error",6.3,"end")
+    x0,y0,w,h=78,58,392,226; xmin,xmax=math.log10(.35),math.log10(45); ymin,ymax=p.error.min()-.018,p.error.max()+.018
+    c.rect(x0,y0,w,h,fill=0,stroke=1)
     # Fixed annotation offsets separate the three compact models clustered near
     # 0.5 ms.  They affect presentation only; all coordinates remain data-driven.
     maxp=p.params.max(); offsets={NEURAL[0]:(-10,8,"end"),NEURAL[1]:(12,2,"start"),NEURAL[2]:(12,-17,"start"),NEURAL[3]:(12,18,"start")}
@@ -224,6 +229,7 @@ def figure_efficiency(d):
     txt(c,255,311,"Hardware-specific accuracy-efficiency trade-off",10,"middle",True); txt(c,270,29,"Mean batch-one GPU latency (ms, logarithmic scale)",7,"middle")
     c.saveState(); c.translate(20,170); c.rotate(90); txt(c,0,0,"Macro mean Train-range nRMSE",7,"middle"); c.restoreState()
     txt(c,270,10,"Marker area is proportional to parameter count; bold outlines identify Pareto-efficient implementations.",6.1,"middle")
+    txt(c,x0+w-3,y0+h-13,f"Last-value Persistence macro error = {persistence:.3f} (outside neural-focused y range)",8,"end",False,HexColor("#555555"))
     c.showPage(); c.save()
 
 
@@ -283,11 +289,11 @@ def supplementary_tables(d):
 def main_result_tables(d):
     """Generate the quantitative main-text table from the evidence."""
     q=d[(d.analysis=="primary_horizon_specific")&(d.metric=="range_nRMSE")&d.statistic.isin(["mean","deterministic"])]
-    best=best_neural(q)
+    best=posthoc_neural_envelope(q)
     last=q[q.model==LAST].set_index(["dataset","horizon_steps","scope"])
     lines=["% AUTO-GENERATED by build_figures.py from corrected_metrics.csv. DO NOT EDIT.",
-           r"\begin{table*}[t]",r"\caption{Primary Test Train-range nRMSE on horizon-specific valid origins. The neural value is the lowest three-seed mean among the four compact implementations; the complete model-by-seed table is in the Supplementary Material.}",r"\label{tab:primarysummary}\centering\small",
-           r"\begin{tabular}{lllrrrr}",r"\toprule Array & Scope & Horizon & Best neural implementation & Neural nRMSE & Last-value nRMSE & RMSE skill\\\midrule"]
+           r"\begin{table*}[t]",r"\caption{Primary Test Train-range nRMSE on horizon-specific valid origins. The envelope is the post hoc minimum three-seed mean among the four compact implementations and is a descriptive upper bound, not a prespecified model; the complete model-by-seed table is in the Supplementary Material.}",r"\label{tab:primarysummary}\centering\small",
+           r"\begin{tabular}{lllrrrr}",r"\toprule Array & Scope & Horizon & Envelope member & Envelope nRMSE & Last-value nRMSE & RMSE skill\\\midrule"]
     for ds in DATASETS:
         for sc,slabel in SCOPES:
             for hz in [12,144]:

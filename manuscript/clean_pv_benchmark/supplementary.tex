@@ -8,16 +8,20 @@
 \usepackage{amsmath,amssymb}
 \hypersetup{colorlinks=true,linkcolor=blue!45!black,urlcolor=blue!45!black,pdftitle={Supplementary Material: Leakage-Aware Multi-Horizon Benchmarking of Compact Neural PV Forecasts}}
 \begin{document}
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\theequation}{S\arabic{equation}}
 \title{Supplementary Material for ``Leakage-Aware Multi-Horizon Benchmarking of Compact Neural PV Forecasts Across Co-Located Technologies''}
-\author{Jiangkun Zhu}
-\author{Mengling Yang}
-\author{Zhicong Chen}
-\author{Lijun Wu}
-\date{August 28, 2026 --- WORKING MATERIAL FOR AUTHOR APPROVAL}
+\author{Jiangkun Zhu$^{1}$, Mengling Yang$^{1}$, Zhicong Chen$^{1,2,*}$, and Lijun Wu$^{1,2,*}$\\[0.5em]
+\small $^{1}$College of Advanced Manufacturing, Fuzhou University, 1 Shuicheng Road, Quanzhou 362251, China\\
+\small $^{2}$College of Physics and Information Engineering, Fuzhou University, 2 Xueyuan Road, Fuzhou 350116, China\\
+\small $^{*}$Corresponding authors: zhicong.chen@fzu.edu.cn; lijun.wu@fzu.edu.cn\\
+\small Jiangkun Zhu ORCID: 0009-0009-5335-2345}
+\date{August 28, 2026 --- WORKING MANUSCRIPT; AUTHOR DECLARATIONS PENDING CONFIRMATION}
 \maketitle
 
 \section{Evidence scope}
-This supplement reports only the frozen evidence used by the main manuscript. No model was trained or tuned during manuscript revision. The benchmark comprises four compact neural implementations, three co-located photovoltaic arrays, three random seeds (42, 43, and 44), and direct 144-step forecasts at five-minute resolution. Primary H12, H48, H96, and H144 metrics use horizon-specific valid origins. Daily Persistence comparisons instead use an elementwise intersection mask that is valid for the daily lag, labels, Last-value Persistence, and every neural forecast.
+This supplement reports the frozen evidence supporting the main manuscript. The benchmark comprises four compact neural implementations, three co-located photovoltaic arrays, three random seeds (42, 43, and 44), and direct 144-step forecasts at five-minute resolution. Primary H12, H48, H96, and H144 metrics use horizon-specific valid origins. Daily Persistence comparisons instead use an elementwise intersection mask that is valid for the daily lag, labels, Last-value Persistence, and every neural forecast.
 
 \section{Input and preprocessing configuration}
 Each history has 72 time steps and 17 channels: Performance Ratio; ambient temperature; relative humidity; global and diffuse horizontal radiation; global and diffuse tilted radiation; Active Power; eight corresponding missingness indicators; and one Isolation Forest indicator. The imputer, feature scaler, target scaler, and Isolation Forest are fitted on Train only. No forecast-origin successor value enters the input. Windows remain within chronological splits and within a regular five-minute coordinate.
@@ -71,12 +75,12 @@ The following tables are generated directly from the frozen \texttt{corrected\_m
 \end{figure}
 
 \section{Independent evidence verification}
-An independent NumPy/Pandas verifier reads the saved H144 predictions, labels, timestamps, and validity arrays without importing the production metric or mask functions. It re-derives primary and Daily-matched masks, Persistence forecasts, RMSE, MAE, Train-range nRMSE, ranks, and sample counts. All 4,414 comparisons passed the registered numerical tolerances; the maximum absolute discrepancy was $8.51\times10^{-12}$ and the maximum relative discrepancy was $3.23\times10^{-11}$. The verifier confirmed primary wins of 12, 9, 2, and 1 for the Inverted-variate, Depthwise, Joint-patch, and Discrete implementations, respectively, with zero for Last-value Persistence. It also confirmed 22 Daily Persistence wins and two neural wins, both at Hanwha H12.
+An independent NumPy/Pandas verifier reads the saved H144 predictions, labels, timestamps, and validity arrays without importing the production metric or mask functions. It re-derives primary and Daily-matched masks, Persistence forecasts, RMSE, MAE, Train-range nRMSE, ranks, and sample counts. All 4,414 comparisons passed the registered numerical tolerances; the maximum absolute discrepancy was $8.51\times10^{-12}$ and the maximum relative discrepancy was $3.23\times10^{-11}$. The verifier confirmed primary wins of 12, 9, 2, and 1 for the Inverted-variate, Depthwise, Joint-patch, and Discrete implementations, respectively, with zero for Last-value Persistence. It also confirmed that Daily Persistence was lower than the post hoc best-of-four neural envelope in 22 comparisons; the two envelope wins were Hanwha H12 full-timeline and daylight.
 
 \section{Inference measurement details}
 Parameter counts include all learned tensors. Batch-one latency and batch-256 throughput were measured in evaluation and inference modes on an NVIDIA GeForce RTX 3060 Laptop GPU with float32 inputs of shape $[B,72,17]$. Warm-up preceded synchronized repetitions. Timing excludes model loading, disk input/output, data loading, and host-to-device transfer. Peak allocation is reported in MiB. These hardware-specific measurements support only within-environment comparisons.
 
 \section{Unmatched-sample diagnostic}
-An earlier diagnostic demonstrated why a baseline's missing lag points cannot be deleted from that baseline alone. Such a comparison changes the target set and can reverse a headline count even when every numerical metric is computed correctly. The final Daily-matched analysis instead applies one point mask to Daily Persistence, Last-value Persistence, all neural seeds, and the labels. No unmatched-sample number is used as a model-performance result.
+Deleting unavailable lag points from Daily Persistence alone changes its target support and can reverse a headline comparison even when each metric is calculated correctly. The matched-support analysis applies one point mask to Daily Persistence, Last-value Persistence, every neural seed, and the labels. Unmatched-support values are therefore treated only as a methodological diagnostic and never as model-performance evidence.
 
 \end{document}
