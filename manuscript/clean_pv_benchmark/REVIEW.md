@@ -4,6 +4,8 @@
 
 **Evidence ready for preparation of a submission package; manuscript not ready for upload until author-owned metadata is confirmed.** The numerical comparisons, code paths, and manuscript statements are now mutually consistent. No new model training is warranted.
 
+An independent NumPy/Pandas verifier that does not import the production metric or mask functions passed 4,414/4,414 comparisons. Its maximum absolute and relative differences were 8.51e-12 and 3.23e-11. The 22/24 Daily-Persistence result, both Hanwha H12 exceptions, the Primary ranks, and the Qcells H12 counts were all reproduced from source arrays and raw target timestamps.
+
 ## Evidence verification
 
 1. **Run completeness:** 36/36 corrected runs contain `completed.json`, H144 predictions, and Validation-best checkpoints.
@@ -63,5 +65,6 @@ These ratio-based skills are not described as arithmetic mean absolute or normal
 - Funding agencies and grant numbers.
 - Institutional confirmation of current SCIE/JCR status and subscription-route charges.
 - Final data/code release language and submission-system declarations.
+- Conflict of Interest, CRediT roles, funding, ethics applicability, ORCID identifiers, exclusive-submission status, and explicit approval by all authors.
 
-No unconfirmed item should be inserted into the submission PDF by Codex.
+No unconfirmed item should be inserted into the submission PDF by Codex. With that boundary, the final decision is **SCHEME_A_SUBMISSION_PACKAGE_READY**: the numerical evidence, rendered manuscript, and author-facing submission checklist are ready for human completion, but no journal submission has been made.

@@ -288,7 +288,7 @@ Table~\ref{tab:eff} and Fig.~\ref{fig:efficiency} compare neural efficiency. Joi
 \small\textbf{TABLE \Roman{table}. Unified GPU efficiency measurements.} Latency excludes model loading, data loading, disk I/O, and host-to-device transfer. Values are hardware-specific descriptive measurements.\par\medskip
 \begin{tabular}{lrrrr}
 \toprule
-Model & Parameters & Mean latency (ms) & Throughput (samples/s) & Peak GPU memory (MB) \\
+Model & Parameters & Mean latency (ms) & Throughput (samples/s) & Peak GPU memory (MiB) \\
 \midrule
 Discrete recurrent & 99,362 & 32.204 & 1,116 & 121.12 \\
 Inverted-variate & 194,960 & 0.558 & 377,131 & 27.31 \\
@@ -366,14 +366,13 @@ The source PV and meteorological observations are available from the DKA Solar C
 \section*{Code Availability}
 The leakage-aware evaluation code, evidence tables, figure-generation script, and manuscript source are available in the project repository at \url{https://github.com/Zhujiangkun-Yohkoh/PV-forecast}. Large checkpoints and prediction arrays are not included in the manuscript branch.
 
-\section*{Conflict of Interest}
-The authors have no conflicts to disclose.
-
-% TODO: AUTHOR CONFIRMATION REQUIRED -- insert the verified CRediT statement before submission.
-
 \section*{Acknowledgments}
 The authors acknowledge the DKA Solar Centre for making the Alice Springs PV and meteorological observations available.
-% TODO: AUTHOR CONFIRMATION REQUIRED -- insert verified funding agency and grant numbers, if applicable.
+
+% AUTHOR CONFIRMATION REQUIRED BEFORE SUBMISSION:
+% insert the verified Conflict of Interest statement, CRediT author-contribution
+% statement, and funding acknowledgement. These declarations are intentionally
+% omitted from this draft rather than guessed.
 
 \bibliography{references}
 

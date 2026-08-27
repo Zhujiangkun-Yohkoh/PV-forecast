@@ -45,7 +45,7 @@ All models are trained and selected on complete H144 Train/Validation windows. H
 
 Qcells H12 remains corrected at 6,463 common origins and 77,556 full-timeline targets. Its 36,504 daylight targets are 47.067% of full target points. Full/daylight Last-value RMSE is 0.471/0.682 kW; Inverted-variate is 0.327/0.457 kW; Depthwise TCN is 0.416/0.599 kW.
 
-The independently recomputed 24-combination primary ranking remains:
+The independently verified 24-combination primary ranking remains:
 
 | Method | RMSE wins | Mean rank | Arithmetic mean RMSE skill vs Last |
 |---|---:|---:|---:|
@@ -103,7 +103,20 @@ Efficiency rows are read directly from the 36 `completed.json` files. Mean value
 | Joint-patch Transformer | 148,112 | 0.535 | 421,929 | 26.47 |
 | Depthwise convolutional TCN | 683,024 | 0.706 | 197,426 | 35.27 |
 
-The manuscript table was updated to these independently re-read values. The prior rounded latency values are withdrawn.
+The manuscript table was updated to these artifact-derived values. The prior rounded latency values are withdrawn. A separate NumPy/Pandas implementation subsequently verified all submission-critical metric rows without importing the production evaluation functions.
+
+## Independent submission evidence verification
+
+`independent_verify_evidence.py` directly read the 36 saved NPZ files, 36 run metadata files, the three source Active Power series, and `corrected_metrics.csv`. It independently rebuilt the horizon-specific and Daily-matched masks, Last-value and exact-lag Daily Persistence, RMSE, MAE, Train-range nRMSE, rankings, and skills. It did not import or call the production metric or mask functions.
+
+- Comparisons: **4,414/4,414 passed**.
+- Maximum absolute difference: **8.51e-12**.
+- Maximum relative difference: **3.23e-11**.
+- Primary win counts: 12 Inverted-variate, 9 Depthwise TCN, 2 Joint-patch, 1 Discrete recurrent, and 0 Last-value.
+- Daily-matched outcome: **22/24 Daily Persistence**, with the two neural wins still limited to Hanwha H12 full/daylight.
+- Qcells H12: 6,463 origins, 77,556 full targets, and 36,504 daylight targets.
+- Training, optimizer, backward, and checkpoint loading: **not executed**.
+- The source data, checkpoints, and prediction artifacts retained their exact sizes and nanosecond modification times.
 
 ## Manuscript disposition
 
@@ -118,3 +131,17 @@ The manuscript table was updated to these independently re-read values. The prio
 The evidence is internally coherent for a transparent benchmark/application submission package. The result is scientifically challenging rather than favorable: the learned models beat Last-value Persistence, but Daily Persistence wins 22/24 strictly matched supplementary comparisons. This must remain prominent in the abstract, results, discussion, limitations, and conclusion. The manuscript is not evidence for algorithmic novelty, universal neural superiority, or cross-site generalization.
 
 No new training is justified or authorized by this audit. Remaining work is human submission metadata and editorial positioning, not numerical repair.
+
+## Final independent verification and submission package
+
+**SCHEME_A_SUBMISSION_PACKAGE_READY.** The submission package was prepared without neural-network training or checkpoint modification.
+
+- Original ordinary protocol tests: **16/16 passed**.
+- Completed-artifact tests: **9/9 passed**.
+- New independent-evidence tests: **12/12 passed**.
+- Skipped tests: **0**.
+- Independent numerical comparisons: **4,414/4,414 passed**.
+- PDF: **12 pages**, all reported fonts embedded; no missing citations, undefined references, overfull boxes, or visual page-boundary failures were found.
+- Table IV memory unit: corrected from MB to **MiB** with values unchanged, matching the `bytes / 1024**2` implementation.
+- Official JRSE/AIP requirements were checked on **2026-08-27**. JRSE remains a hybrid journal; its official charge page states no page charges and lists optional Author Select open access at USD 3,800. Current Clarivate indexing must still be confirmed by the author or library.
+- The package intentionally does not assert author approval, exclusive submission, CRediT roles, funding, Conflict of Interest, ethics applicability, ORCID, reviewer nominations, or fee authorization.
