@@ -1,11 +1,12 @@
 # JRSE submission metadata checklist
 
-Official requirements checked on **2026-08-27** against the JRSE scope and charges pages, AIP author instructions, and the [AIP AI policy](https://publishing.aip.org/resources/researchers/policies-and-ethics/ai-policy/).
+Official requirements checked on **2026-08-28** against the JRSE scope and charges pages, AIP author instructions, and the [AIP AI policy](https://publishing.aip.org/resources/researchers/policies-and-ethics/ai-policy/).
 
 ## Confirmed manuscript metadata
 
 - Target: *Journal of Renewable and Sustainable Energy*; Research Article.
-- Status: `WORKING_MANUSCRIPT_FOR_REVISION`.
+- Title: *Leakage-Aware Multi-Horizon Benchmarking of Compact Neural PV Forecasts Across Co-Located Technologies*.
+- Status: `JRSE_SCIENTIFIC_REVISION_READY_FOR_AUTHOR_APPROVAL`; declarations are not final.
 - Author order: Jiangkun Zhu; Mengling Yang; Zhicong Chen; Lijun Wu.
 - Affiliation 1: College of Advanced Manufacturing, Fuzhou University, 1 Shuicheng Road, Quanzhou 362251, China.
 - Affiliation 2: College of Physics and Information Engineering, Fuzhou University, 2 Xueyuan Road, Fuzhou 350116, China.
@@ -38,10 +39,10 @@ Official requirements checked on **2026-08-27** against the JRSE scope and charg
 
 ## Files and accessibility
 
-- [ ] Replace the current working PDF with the fully revised and author-approved PDF before upload.
+- [ ] Obtain all-author approval for the scientifically revised main and supplementary PDFs before upload.
 - [ ] Confirm every figure and table is cited, numbered, captioned, and legible.
-- [ ] Prepare AIP-requested alt text at revision if required by the live workflow.
-- [ ] At source-file request, upload `main.tex`, `references.bib`, and four figure PDFs.
+- [x] Prepare English alt text for all main and supplementary figures and principal tables.
+- [ ] At source-file request, upload `main.tex`, `supplementary.tex`, `references.bib`, generated table sources, and five vector figure PDFs.
 - [ ] Confirm PDF fonts are embedded and declarations contain no draft marker.
 
 ## Official-information boundary

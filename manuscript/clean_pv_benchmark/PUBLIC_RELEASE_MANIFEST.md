@@ -2,11 +2,11 @@
 
 ## Recommendation
 
-`DEDICATED_PUBLIC_RELEASE_RECOMMENDED`
+`PUBLIC_RELEASE_REQUIRES_ACTION` — `DEDICATED_PUBLIC_RELEASE_RECOMMENDED`
 
 Do **not** change the visibility of the existing `PV-forecast` repository. Repository visibility applies to every branch, commit, open Draft PR, and historical object, not only Scheme A. The audited repository contains multiple unrelated and not-yet-published C1 and NWP research branches, ten open Draft PRs, historical absolute workstation paths in experiment reports/configurations, and manuscript/submission materials. Publicizing it would expand the authorized disclosure scope beyond Scheme A.
 
-After manuscript revision, create a separate repository provisionally named `leakage-aware-pv-benchmark`. This task does not create that repository and does not rewrite the existing repository's history.
+After author approval of the manuscript and release scope, create a separate repository provisionally named `leakage-aware-pv-benchmark`. This task does not create that repository and does not rewrite the existing repository's history.
 
 ## Files proposed for the dedicated repository
 

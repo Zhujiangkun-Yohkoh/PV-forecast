@@ -1,70 +1,51 @@
-# Clean deterministic PV benchmark manuscript
+# Leakage-aware PV benchmark manuscript
 
-This directory contains a complete LaTeX draft targeted to the **Journal of Renewable and Sustainable Energy (JRSE, AIP Publishing)**. It is a leakage-aware benchmark/application article, not a revision of the former GFNODE manuscript and not a new-model paper.
+This directory contains the JRSE-oriented Research Article **“Leakage-Aware Multi-Horizon Benchmarking of Compact Neural PV Forecasts Across Co-Located Technologies”** and its Supplementary Material. The work is a benchmark/application study, not a new-model paper. It evaluates four compact project implementations under a common causal protocol and does not claim full reproduction of iTransformer, PatchTST, or ModernTCN.
 
-## Journal and publication-route verification
+## Evidence and reproducibility boundary
 
-Verified on 2026-08-27 from official AIP/JRSE sources; manuscript evidence corrected and independently verified on 2026-08-27:
-
-- [JRSE aims and scope](https://pubs.aip.org/aip/jrse/pages/about): the journal covers interdisciplinary renewable-energy physical science and engineering, including solar photovoltaics, energy meteorology, distributed generation, utility power, and system integration. This supports the present PV forecasting application/evaluation scope.
-- [AIP author instructions](https://publishing.aip.org/resources/researchers/author-instructions/): Word or LaTeX submissions are accepted; initial submission uses a single compiled PDF (plus a separate PDF only if supplementary material exists); the abstract is one paragraph of at most 250 words; conflict-of-interest, CRediT author-contribution, and data-availability statements are required. Figures and tables require alt text at revision. No JRSE-specific Research Article word/page limit is stated on this page.
-- [Official AIP LaTeX template on Overleaf](https://www.overleaf.com/latex/templates/template-for-submission-to-aip-journals/wdmsvzfjgvyj): the template covers JRSE and uses REVTeX. This repository uses the installed `revtex4-2` AIP style and does not redistribute publisher class/style files.
-- [JRSE publication charges](https://pubs.aip.org/aip/jrse/pages/charges): the official page states that there are no page charges. Author Select open access is optional and listed at USD 3,800. The intended route is subscription/non-OA, with no Author Select purchase.
-- [AIP license information](https://publishing.aip.org/resources/researchers/rights-and-permissions/licensing/): JRSE is listed among AIP subscription journals, with Author Select as an optional open-access route.
-
-The JRSE page reports a 2025 Journal Impact Factor of 2.4 and Q4 in both *Energy & Fuels* and *Green & Sustainable Science & Technology* (Clarivate data displayed by the publisher in 2026). Direct institutional access to the Clarivate Master Journal List/JCR record was unavailable during this task. Therefore:
-
-- **INDEXING_STATUS_REQUIRES_AUTHOR_OR_LIBRARY_CONFIRMATION.**
-- **JCR quartile requires institutional verification.**
-- Before submission, the corresponding author should reconfirm that no mandatory color, overlength, or other unavoidable production charge applies to the selected subscription route. The official JRSE charges page currently states no page charges and only optional OA fees.
-
-## Evidence boundary
-
-The original manuscript draft used Stage-2 evidence under:
-
-`GFNODE_experiments/clean_deterministic_manuscript_stage2_evidence/`
-
-Submission-critical review identified three issues in that evidence: historical Active Power was absent from all learned inputs despite being available to Last-value Persistence, Validation batch means were weighted equally, and prefix metrics were restricted to complete-H144 origins. The corrected quantitative source is now:
+The quantitative source of truth is:
 
 `GFNODE_experiments/scheme_A_submission_correction/corrected_metrics.csv`
 
-`build_figures.py` reads that long-format file directly. The previous Stage-2 CSVs are retained as audit history but are not authoritative for manuscript results. The paper does not use former GFNODE Tables 9--13, Figures 10--14, or any C1/NWP artifact.
+`build_figures.py` reads that long-format file directly and generates all five vector figures plus the main and supplementary quantitative tables. It does not read former GFNODE results. The independent verifier in the experiment directory reproduced 4,414/4,414 comparisons from saved artifacts without importing the production metric functions. The manuscript preserves the verified primary wins (12/9/2/1/0), the matched Daily-Persistence result (22/24), and the Qcells H12 support (6,463 origins; 77,556 full and 36,504 daylight target points).
+
+No neural-network training is part of the manuscript build. Checkpoints, predictions, raw data, and local `results/` are deliberately excluded.
 
 ## Build
 
-Requirements: TeX Live 2025 (or equivalent), `latexmk`, REVTeX 4.2, and the bundled Python environment with pandas, NumPy, and ReportLab.
+Requirements are TeX Live 2025 (or equivalent), `latexmk`, REVTeX 4.2, and Python with pandas, NumPy, and ReportLab.
 
 ```powershell
 python build_figures.py
 latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
+latexmk -pdf -interaction=nonstopmode -halt-on-error supplementary.tex
 ```
 
-The checked build produces a 13-page `main.pdf` with no missing citations, no undefined references, and no overfull boxes. All fonts are embedded. The visible date line marks it `WORKING MANUSCRIPT FOR REVISION`; it is not the final upload version.
+The checked build produces `main.pdf` and `supplementary.pdf`; all fonts are embedded. `FIGURE_ALT_TEXT.txt` provides 25–50-word descriptions for every figure and principal table. Both PDFs remain working documents until the authors confirm declarations and approve submission.
+
+## JRSE format basis
+
+Official requirements were checked on 2026-08-28 using the [AIP author instructions](https://publishing.aip.org/resources/researchers/author-instructions/), [JRSE scope](https://pubs.aip.org/aip/jrse/pages/about), [AIP ethics policies](https://publishing.aip.org/resources/researchers/policies-and-ethics/), and [JRSE charges](https://pubs.aip.org/aip/jrse/pages/charges). The manuscript uses the installed AIP REVTeX style, a single-paragraph abstract below 250 words, the required declarations/order, a separate Supplementary Material PDF, and alt text. The planned route is subscription/non-OA; optional Author Select is not authorized.
+
+`INDEXING_STATUS_REQUIRES_AUTHOR_OR_LIBRARY_CONFIRMATION`: current SCIE/JCR status was not independently established from an accessible Clarivate institutional record.
 
 ## Files
 
-- `main.tex`: complete English manuscript.
-- `references.bib`: verified references including MANODE and other Alice Springs/PV forecasting studies.
-- `build_figures.py`: evidence-driven generator for four vector PDF figures.
-- `figures/`: final vector figures.
-- `main.pdf`: compiled manuscript.
-- `REVIEW.md`: independent reviewer-style audit and remaining submission actions.
-- `submission_package/`: cover-letter draft, author-owned metadata/declaration drafts, upload manifest, and a copy of the compiled working manuscript PDF.
-- `PUBLIC_RELEASE_MANIFEST.md`: reviewed scope for a future dedicated public code repository.
+- `main.tex`, `main.pdf`: main article source and compiled working PDF.
+- `supplementary.tex`, `supplementary.pdf`: separate supplementary source and PDF.
+- `references.bib`: cited literature, including the 2025–2026 direct competitors.
+- `build_figures.py`, `figures/`: evidence-driven vector outputs.
+- `main_result_tables.tex`, `supplementary_tables.tex`: generated LaTeX tables.
+- `FIGURE_ALT_TEXT.txt`: figure/table accessibility descriptions.
+- `REVIEW.md`: reviewer-style scientific and production audit.
+- `submission_package/`: working cover letter and upload/metadata checklists.
+- `PUBLIC_RELEASE_MANIFEST.md`: proposed scope for a future dedicated public repository.
 
-## Human confirmation required
+## Author action still required
 
-The following remain subject to final author action:
+Before upload, all authors must confirm the author list, CRediT roles, Funding Grant Nos. 62271151 and W2421092, conflict-of-interest and AI-use wording, ethics applicability, code/data release wording, and final manuscript. Three optional ORCIDs remain unconfirmed. The corresponding authors must also reconfirm the subscription route, current indexing, and any conditional production charges.
 
-1. Final approval of the confirmed four-author order and complete revised manuscript.
-2. Confirmation that the draft CRediT roles and Funding Grant Nos. 62271151 and W2421092 apply to this Scheme A paper.
-3. Institutional confirmation of current SCIE indexing and JCR quartile.
-4. Corresponding-author confirmation of subscription-route production charges at the point of submission.
-5. Final confirmation that the dedicated repository and Data/Code Availability wording match the release policy.
-6. Conflict of Interest and AI-use drafts, ethics applicability, optional ORCIDs for three authors, and all-author approval.
+## Public release status
 
-Exclusive submission has been confirmed by the user. The planned publishing route is traditional/subscription, and no optional Author Select purchase is authorized. Suggested reviewers were not provided and opposed reviewers are none.
-
-The existing multi-branch `PV-forecast` repository is **not** recommended for a visibility change. See `PUBLIC_RELEASE_MANIFEST.md`; a dedicated `leakage-aware-pv-benchmark` repository should be prepared only after the next manuscript revision and license selection.
-
-The submission correction trained 36 runs in the isolated Scheme-A worktree. It did not modify the old GFNODE manuscript, raw data, prior artifacts, master worktree, Scheme C1, or NWP branches. New checkpoints and predictions remain local and untracked.
+`PUBLIC_RELEASE_REQUIRES_ACTION`. The existing multi-branch repository should remain private. A dedicated release still requires license selection, a reviewed dependency specification, path-independent public configuration, provider-compliant data download instructions, and an author-approved release scope. No release or visibility change is performed here.

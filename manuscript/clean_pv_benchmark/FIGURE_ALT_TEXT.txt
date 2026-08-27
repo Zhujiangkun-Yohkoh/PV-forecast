@@ -1,0 +1,17 @@
+Figure 1. Three-layer workflow showing the co-located Sanyo, Hanwha, and Qcells arrays; chronological Train, Validation, and Test partitions around a causal L72-to-H144 forecast window; and matched evaluation of four neural implementations against Last-value and Daily Persistence.
+
+Figure 2. Two aligned dot plots for 24 array, horizon, and scope combinations. Best-neural RMSE skill is positive against Last-value Persistence in every primary comparison, but negative against matched Daily Persistence in 22 comparisons; only Hanwha H12 full and daylight remain positive.
+
+Figure 3. Three array panels plot Train-range nRMSE from H12 through H144 for five forecasting methods. Solid full-timeline and dashed daylight curves show increasing error with horizon and model-rank changes across arrays and evaluation scopes.
+
+Figure 4. Scatter plot of macro Train-range nRMSE against logarithmic batch-one GPU latency for four compact neural implementations. Bubble area represents parameter count, bold borders identify the within-environment Pareto frontier, and a horizontal line marks Last-value Persistence macro error.
+
+Supplementary Figure S1. Heat map of model RMSE ranks for all 24 primary comparisons. Rows identify array, forecast horizon, and evaluation scope; columns identify the four compact neural implementations and Last-value Persistence. Rank patterns vary across conditions.
+
+Table 1. The three co-located Alice Springs PV arrays, documented module technologies and DC ratings, Active Power target, and horizon-specific Test forecast-origin counts used identically by neural forecasts and Last-value Persistence.
+
+Table 2. Identity and scope of the four compact neural implementations, including architectural inspiration, retained mechanism, omitted official components, parameter count, common input-output mapping, and the interpretations permitted by this controlled project comparison.
+
+Table 3. Primary Test Train-range nRMSE at H12 and H144 for each array and scope, comparing the lowest neural three-seed mean with Last-value Persistence and reporting corresponding RMSE skill on identical valid targets.
+
+Table 4. Unified RTX 3060 Laptop GPU measurements for four neural implementations, showing parameters, macro normalized error, batch-one mean latency, batch-256 throughput, and peak allocated memory in MiB under one fixed environment.
