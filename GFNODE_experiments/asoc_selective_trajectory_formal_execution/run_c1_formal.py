@@ -1,9 +1,8 @@
-"""Scheme C1-S4 formal data audit and executable-readiness entry point.
+"""Archived Scheme C1 entry point.
 
-The raw annual CSVs are streamed.  This script writes only compact audit and
-reporting outputs below this experiment directory.  The GPU path is reachable
-only when all preregistered data-readiness conditions and ordinary tests pass;
-the present execution stops before that path when the source data fail.
+The route is administratively closed. Public CLI modes return the stable
+closeout state before audit, data preparation, model construction, or Final-Test
+materialization. Historical functions remain as read-only development evidence.
 """
 from __future__ import annotations
 
@@ -52,6 +51,21 @@ S2 = load_s2_module()
 
 def load_config() -> dict[str, Any]:
     return json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
+
+
+def closed_state(config: dict[str, Any]) -> dict[str, Any]:
+    """Return the stable, non-error terminal state for the archived route."""
+    return {
+        "route_status": config.get("route_status", "C1_ROUTE_CLOSED_DATA_UNAVAILABLE"),
+        "route_closed": True,
+        "data_readiness": "C1_FORMAL_DATA_FAIL",
+        "scientific_method_outcome": "NOT_EVALUATED",
+        "future_gpu_execution_authorized": False,
+        "completed_runs": 0,
+        "expected_runs": 9,
+        "training_started": False,
+        "final_test_accessed": False,
+    }
 
 
 def file_state(path: Path) -> dict[str, int]:
@@ -305,7 +319,7 @@ def write_not_run_metrics(verdict: str) -> None:
 def write_report(audit: dict[str, Any]) -> None:
     irr=audit["irradiance"]; common=[r for r in audit["windows"] if r["array"]=="THREE_ARRAY_COMMON"]
     lines=["# Scheme C1-S4 — annual source and executable-readiness review","",
-      "## Two independent verdicts","",f"- Data: **`{audit['verdict']}`**.","- Implementation: **`C1_FORMAL_IMPLEMENTATION_READY_FOR_GPU_REVIEW`** after 28 synthetic production-function tests and 7 real-array tests pass.","- GPU execution: **NOT AUTHORIZED / not performed (0/9)**.","- Scientific method outcome: **NOT EVALUATED**.","",
+      "## Archived verdicts","",f"- Data: **`{audit['verdict']}`**.","- Implementation: **`C1_FORMAL_IMPLEMENTATION_NOT_VALIDATED_AND_NO_LONGER_REQUIRED`**.","- GPU execution: **NOT AUTHORIZED / not performed (0/9)**.","- Scientific method outcome: **NOT EVALUATED**.","",
       "## Official-source finding","",
       "For both 2021 and 2023 the defensible source verdict is **`OFFICIAL_FULL_YEAR_UNAVAILABLE_OR_UNCONFIRMED`**. The official DKASC NT Solar Resource page lists Alice Springs annual 5-minute and 5-second downloads for both years and states that the Class-A stations collect high-resolution data. The official Fulcrum3D interface separately exposes a user-selected date range and a 1-second irradiance download. Neither public page guarantees that a requested 1-second export contains every second of a calendar year, documents an annual 1-second row limit, or explains these two malformed exports. Therefore portal availability is not evidence of complete 1-second annual coverage. The present files support download/export failure or wrong selection as possibilities, but do not distinguish them from true upstream gaps.","",
       "Official pages checked 2026-08-28: https://www.dkasolarcentre.com.au/download?location=nt-solar-resource and https://nt-solar-resource.fulcrum3d.com/download . The DKASC page defines System Status (0=OK, 1=issue), but the selected CSV headers contain no status field.","",
@@ -322,10 +336,10 @@ def write_report(audit: dict[str, Any]) -> None:
       "All seven success conditions use exactly **H12 + THREE_ARRAY_COMMON + mask-available + PRIMARY_DAYLIGHT_COMMON**. Strict 300/300 three-channel completeness is only a data-quality sensitivity population and cannot select the main result.","","## Five-stage common origins","","|Stage|Expected|Formal common|Strict 300/300|First|Last|Segments|Months|Seasons|","|---|---:|---:|---:|---|---|---:|---|---|"]
     for r in common: lines.append(f"|{r['stage']}|{r['expected_calendar_origins']:,}|{r['formal_masked_origins']:,}|{r['strict_all_channel_complete_origins']:,}|{r['first_legal_origin']}|{r['last_legal_origin']}|{r['eligible_origin_segments']}|{r['months']}|{r['seasons']}|")
     lines += ["","## Implementation review","",
-      "The READY path is complete and guarded rather than an unimplemented exception. It directly prepares five-stage named loaders from the compact audit state and provides 14-channel causal construction; BASE_TRAIN-only median/scalers/target range; the frozen 4-layer 64-channel depthwise/pointwise TCN and 9-run matrix; AdamW loop and strict validation-RMSE checkpoint replacement; matched last-value Persistence; the fixed risk features and HistGradientBoostingRegressor; RISK_FIT-only fitting; same-scope `method=higher` calibration; delayed Final-Test loader creation; stable-origin AURC; fixed-mask 7-day moving-block and day-cluster resampling; and programmatic seven-condition evaluation. This stage called none of the real fitting/training functions.","",
+      "The archived prototype was not validated by an end-to-end production execution and is not authorized for use. Historical code remains only as audit evidence.","",
       "State fields are factual: raw Final-Test availability metadata was inspected; model predictions, errors, risk scores, coverage and AURC were not generated or accessed. NOT_RUN rows are execution status, not performance metrics.","",
       "## Tests and source protection","",f"- Synthetic/fixture: {audit.get('fixture_tests','pending')}.",f"- Real arrays: {audit.get('real_array_tests','pending')}.",f"- Selected PV and irradiance source size/mtime_ns unchanged: **{audit['source_files_unchanged']}**.","- Real optimizer/backward/epoch: **No**.","- Real risk-model fitting: **No**.","- Final-Test performance access: **No**.","","Local `results/` contains only compact review artifacts and remains untracked; it is not a clean-worktree claim and will not be committed.","",
-      "## Conclusion","","Data remains **`C1_FORMAL_DATA_FAIL`**, so no GPU authorization follows. Implementation is **`C1_FORMAL_IMPLEMENTATION_READY_FOR_GPU_REVIEW`**, but that does not override missing annual data. The only defensible next action is to obtain officially exported 1-second 2021 and 2023 blocks whose explicit UTC union passes the frozen annual criteria; no alternative year, interpolation, model revision, or C1 v2/v3 is proposed."]
+      "## Conclusion","","The route is **`C1_ROUTE_CLOSED_DATA_UNAVAILABLE`**. The scientific method was not evaluated, and no execution or resumption is authorized."]
     REPORT_MD.write_text("\n".join(lines)+"\n",encoding="utf-8")
 
 
@@ -380,6 +394,10 @@ def main() -> None:
     args = parser.parse_args()
     if not args.audit and not args.execute_formal:
         parser.error("Select --audit or --execute-formal")
+    config = load_config()
+    if config.get("route_closed") is True:
+        print(json.dumps(closed_state(config), sort_keys=True))
+        return
     audit = audit_data()
     if args.execute_formal:
         if audit["verdict"] != "C1_FORMAL_DATA_READY":

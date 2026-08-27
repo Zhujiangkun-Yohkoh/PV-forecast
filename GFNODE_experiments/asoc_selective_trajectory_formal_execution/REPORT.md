@@ -1,71 +1,76 @@
-# Scheme C1-S4 — annual source and executable-readiness review
+# Scheme C1 final archival closeout
 
-## Two independent verdicts
+## Terminal state
 
-- Data: **`C1_FORMAL_DATA_FAIL`**.
-- Implementation: **`C1_FORMAL_IMPLEMENTATION_READY_FOR_GPU_REVIEW`** after 28 synthetic production-function tests and 7 real-array tests pass.
-- GPU execution: **NOT AUTHORIZED / not performed (0/9)**.
-- Scientific method outcome: **NOT EVALUATED**.
+**C1_ROUTE_CLOSED_DATA_UNAVAILABLE**
 
-## Official-source finding
+- Data readiness: `C1_FORMAL_DATA_FAIL`
+- Scientific method outcome: `NOT_EVALUATED`
+- Implementation status: `C1_FORMAL_IMPLEMENTATION_NOT_VALIDATED_AND_NO_LONGER_REQUIRED`
+- Future GPU execution authorized: `false`
+- Completed runs: 0
+- Expected runs: 9
 
-For both 2021 and 2023 the defensible source verdict is **`OFFICIAL_FULL_YEAR_UNAVAILABLE_OR_UNCONFIRMED`**. The official DKASC NT Solar Resource page lists Alice Springs annual 5-minute and 5-second downloads for both years and states that the Class-A stations collect high-resolution data. The official Fulcrum3D interface separately exposes a user-selected date range and a 1-second irradiance download. Neither public page guarantees that a requested 1-second export contains every second of a calendar year, documents an annual 1-second row limit, or explains these two malformed exports. Therefore portal availability is not evidence of complete 1-second annual coverage. The present files support download/export failure or wrong selection as possibilities, but do not distinguish them from true upstream gaps.
+The preregistered C1 execution is administratively closed under the currently obtainable official data snapshot. This is not a method-performance failure and is not a base-forecaster failure.
 
-Official pages checked 2026-08-28: https://www.dkasolarcentre.com.au/download?location=nt-solar-resource and https://nt-solar-resource.fulcrum3d.com/download . The DKASC page defines System Status (0=OK, 1=issue), but the selected CSV headers contain no status field.
+## Source-data evidence
 
-## Explicit sources and annual union
+The source data are incomplete or unconfirmed; therefore, the preregistered execution is unavailable and the scientific method remains unevaluated. No interpolation, repair, year substitution, or raw-file rewrite was performed.
 
-|Year|Files|Bytes|Unique seconds|First UTC|Last UTC|Missing|Duplicate|Out-of-year|Structure|
-|---:|---:|---:|---:|---|---|---:|---:|---:|---|
-|2021|1|1,726,481,334|18,403,200|2021-06-02 00:00:00|2021-12-31 23:59:59|13,132,800|0|0|columns 0; glued 0; truncated 0; Data Error 0|
-|2022|1|3,011,901,400|31,536,000|2022-01-01 00:00:00|2022-12-31 23:59:59|0|0|0|columns 0; glued 0; truncated 0; Data Error 0|
-|2023|1|1,774,300,567|167,952|2023-01-01 00:00:01|2023-01-02 22:39:12|31,368,048|0|18,489,565|columns 212; glued 1; truncated 211; Data Error 211|
+| Year | Data file | Bytes | Target-year unique seconds | UTC coverage | Missing target-year seconds | Structural evidence |
+|---|---|---:|---:|---|---:|---|
+| 2021 | `fsm1m_7111_ekistica-alice-springs-ekistica-alice-springs_irradiancedata_1sec_2021.csv` | 1,726,481,334 | 18,403,200 | 2021-06-02 00:00:00 to 2021-12-31 23:59:59 | 13,132,800 | No recorded structural anomaly, but the first 152 days are absent. |
+| 2022 | `fsm1m_7111_ekistica-alice-springs-ekistica-alice-springs_irradiancedata_1sec_2022.csv` | 3,011,901,400 | 31,536,000 | 2022-01-01 00:00:00 to 2022-12-31 23:59:59 | 0 | Complete verified reference year. |
+| 2023 | `fsm1m_7111_ekistica-alice-springs-ekistica-alice-springs_irradiancedata_1sec_2023.csv` | 1,774,300,567 | 167,952 | Target-year records from 2023-01-01 00:00:01 to 2023-01-02 22:39:12 | 31,368,048 | 18,489,565 out-of-year records; 212 column anomalies, including 1 glued record and 211 truncated/Data Error records; later content includes 2024/2025. |
 
-2021 contains only 2021-06-02 through year-end. The 2023 source begins one second late, ends its target-year coverage on 2023-01-02, then contains 2024/2025 rows and structural damage. The excluded older damaged 2023 file was not used. The 2022 authoritative redownload remains complete.
+All three target years are non-leap years with 31,536,000 expected seconds. The saved audit arithmetic reconciles exactly:
 
-All years use `Timestamp_UTC`; ACST is derived as UTC+09:30. MB0/MB1/MB2 remain separate in W/m². No interpolation, repair, Excel rewrite, or concatenated raw copy was made. Config now accepts an explicit list of one or more annual/monthly files; ordering and overlap checks use actual UTC records.
+- 2021: 18,403,200 + 13,132,800 = 31,536,000.
+- 2023: 167,952 + 31,368,048 = 31,536,000.
+- Five-minute bins: 2021 has 58,711 strict + 2,633 partial + 43,776 empty = 105,120; 2022 has 99,211 + 5,909 + 0 = 105,120; 2023 has 464 + 96 + 104,560 = 105,120.
 
-## Five-minute quality
+The official public pages do not guarantee a complete annual one-second export. Repeated user downloads produced the same unusable temporal coverage. Re-downloading the same files is not recommended.
 
-|Year|MB0 missing|MB1 missing|MB2 missing|Strict complete bins|Partial bins|Empty bins|
-|---:|---:|---:|---:|---:|---:|---:|
-|2021|781,177|781,579|781,759|58,711|2,633|43,776|
-|2022|3,992|3,236|3,320|99,211|5,909|0|
-|2023|59|58|42|464|96|104,560|
+## Five-stage evidence
 
-Right-closed `(t-5 min,t]` aggregation is fixed. Partial numeric missingness is retained through channel mean, valid fraction and valid mask; zero-timestamp bins interrupt windows.
+| Stage | Expected origins | Three-array common legal origins | Strict 300/300 common origins | Temporal coverage |
+|---|---:|---:|---:|---|
+| BASE_TRAIN | 105,037 | 58,122 | 54,067 | 2021-06-02 15:25 to 2021-12-31 22:55 ACST |
+| BASE_MODEL_VALIDATION | 34,477 | 31,750 | 31,315 | 2022-01-01 05:55 to 2022-04-30 22:55 ACST |
+| RISK_FIT | 35,341 | 32,509 | 31,676 | 2022-05-01 05:55 to 2022-08-31 22:55 ACST |
+| RISK_CALIBRATION | 35,053 | 34,969 | 2,300 | 2022-09-01 05:55 to 2022-12-31 22:55 ACST |
+| FINAL_TEST | 105,037 | 604 | **0** | 2023-01-01 05:55 to 2023-01-03 08:10 ACST |
 
-## Frozen primary population
+FINAL_TEST strict three-channel common origins equal zero. BASE_TRAIN and FINAL_TEST also fail the preregistered complete-year coverage requirement.
 
-All seven success conditions use exactly **H12 + THREE_ARRAY_COMMON + mask-available + PRIMARY_DAYLIGHT_COMMON**. Strict 300/300 three-channel completeness is only a data-quality sensitivity population and cannot select the main result.
+## Unexecuted implementation limitations
 
-## Five-stage common origins
+The historical S4 code passed only local fixtures and was never validated through a real end-to-end execution. Known limitations are preserved as archival warnings:
 
-|Stage|Expected|Formal common|Strict 300/300|First|Last|Segments|Months|Seasons|
-|---|---:|---:|---:|---|---|---:|---|---|
-|BASE_TRAIN|105,037|58,122|54,067|2021-06-02T15:25|2021-12-31T22:55|13|6;7;8;9;10;11;12|spring;summer;winter|
-|BASE_MODEL_VALIDATION|34,477|31,750|31,315|2022-01-01T05:55|2022-04-30T22:55|7|1;2;3;4|autumn;summer|
-|RISK_FIT|35,341|32,509|31,676|2022-05-01T05:55|2022-08-31T22:55|6|5;6;7;8|autumn;winter|
-|RISK_CALIBRATION|35,053|34,969|2,300|2022-09-01T05:55|2022-12-31T22:55|2|9;10;11;12|spring;summer|
-|FINAL_TEST|105,037|604|0|2023-01-01T05:55|2023-01-03T08:10|1|1|summer|
+- The Dataset produces `[B,72,14]`, while the `Conv1d` path expects `[B,14,72]` without the required explicit conversion.
+- The seed is set after model initialization in the historical execution path.
+- The Final-Test payload is materialized earlier than the intended delayed-access boundary.
+- Bootstrap is not connected to the formal execution chain.
+- Formal metric persistence was not validated.
+- A bootstrap field named `mean` actually contains the median.
+- Some historical tests are placeholders rather than production integration tests.
 
-## Implementation review
+These defects will not be repaired because the route is closed. The archived pipeline is an unvalidated prototype and is not authorized for execution.
 
-The READY path is complete and guarded rather than an unimplemented exception. It directly prepares five-stage named loaders from the compact audit state and provides 14-channel causal construction; BASE_TRAIN-only median/scalers/target range; the frozen 4-layer 64-channel depthwise/pointwise TCN and 9-run matrix; AdamW loop and strict validation-RMSE checkpoint replacement; matched last-value Persistence; the fixed risk features and HistGradientBoostingRegressor; RISK_FIT-only fitting; same-scope `method=higher` calibration; delayed Final-Test loader creation; stable-origin AURC; fixed-mask 7-day moving-block and day-cluster resampling; and programmatic seven-condition evaluation. This stage called none of the real fitting/training functions.
+## Reproducible closure behavior
 
-State fields are factual: raw Final-Test availability metadata was inspected; model predictions, errors, risk scores, coverage and AURC were not generated or accessed. NOT_RUN rows are execution status, not performance metrics.
+- `config.json` fixes `route_closed=true` and `route_status=C1_ROUTE_CLOSED_DATA_UNAVAILABLE`.
+- Both public CLI modes return the same stable terminal-state JSON before audit, data preparation, model creation, loader creation, optimizer construction, risk fitting, or Final-Test access.
+- The formal execution function independently refuses execution while the route is closed.
+- Closeout tests are side-effect free and verify that the terminal JSON, report, and both status CSVs remain byte-for-byte unchanged.
+- The nine array-seed rows are execution-status records only. No RMSE, MAE, coverage, AURC, or other performance value exists.
 
-## Tests and source protection
+## Final interpretation
 
-- Synthetic/fixture: 28/28 passed; 0 skipped.
-- Real arrays: 7/7 passed; 0 skipped.
-- Selected PV and irradiance source size/mtime_ns unchanged: **True**.
-- Real optimizer/backward/epoch: **No**.
-- Real risk-model fitting: **No**.
-- Final-Test performance access: **No**.
-
-Local `results/` contains only compact review artifacts and remains untracked; it is not a clean-worktree claim and will not be committed.
-
-## Conclusion
-
-Data remains **`C1_FORMAL_DATA_FAIL`**, so no GPU authorization follows. Implementation is **`C1_FORMAL_IMPLEMENTATION_READY_FOR_GPU_REVIEW`**, but that does not override missing annual data. The only defensible next action is to obtain officially exported 1-second 2021 and 2023 blocks whose explicit UTC union passes the frozen annual criteria; no alternative year, interpolation, model revision, or C1 v2/v3 is proposed.
+1. C1 is closed because the preregistered data execution is unavailable.
+2. The risk-control method was not evaluated.
+3. The base trajectory forecaster was not evaluated under this formal C1 protocol.
+4. These closeout records cannot support a manuscript method-performance comparison.
+5. If a new complete official dataset becomes available, it would require a new research proposal and a new preregistration; this closed execution must not be resumed.
+6. No further C1 experiment, implementation work, or data download is authorized.
+7. Research resources return to the Scheme A JRSE manuscript final refinement and author sign-off.
