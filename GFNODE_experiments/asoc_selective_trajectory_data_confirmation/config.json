@@ -1,0 +1,138 @@
+{
+  "study_id": "C1-S2",
+  "timezone": {
+    "authoritative_irradiance_clock": "UTC",
+    "pv_clock": "ACST",
+    "utc_to_acst_minutes": 570,
+    "use_exported_local_field": false
+  },
+  "pv_files": {
+    "Site 17 Sanyo": "C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PV_improve_v1/原始Dataset/5min pv active power data/17 Sanyo.csv",
+    "Site 25 Hanwha": "C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PV_improve_v1/原始Dataset/5min pv active power data/25 Hanwha.csv",
+    "Site 38 Q CELLS": "C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PV_improve_v1/原始Dataset/5min pv active power data/38 Q CELLS.csv"
+  },
+  "irradiance_files": {
+    "2021": "C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PV_improve_v1/原始Dataset/高分辨率气象数据集/fsm1m_7111_ekistica-alice-springs-ekistica-alice-springs_irradiancedata_1sec_2021.csv",
+    "2022": "C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PV_improve_v1/GFNODE_experiments/asoc_multirate_redownload_validation/fsm1m_7111_ekistica-alice-springs-ekistica-alice-springs_irradiancedata_1sec_2022.csv",
+    "2023": "C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PV_improve_v1/原始Dataset/高分辨率气象数据集/fsm1m_7111_ekistica-alice-springs-ekistica-alice-springs_irradiancedata_1sec_2023.csv"
+  },
+  "stages": {
+    "BASE_TRAIN": ["2021-01-01 00:00:00", "2022-01-01 00:00:00"],
+    "BASE_MODEL_VALIDATION": ["2022-01-01 00:00:00", "2022-05-01 00:00:00"],
+    "RISK_FIT": ["2022-05-01 00:00:00", "2022-09-01 00:00:00"],
+    "RISK_CALIBRATION": ["2022-09-01 00:00:00", "2023-01-01 00:00:00"],
+    "FINAL_TEST": ["2023-01-01 00:00:00", "2024-01-01 00:00:00"]
+  },
+  "lookback": 72,
+  "horizon": 12,
+  "seeds": [42, 43, 44],
+  "primary_endpoint": {
+    "horizon": 12,
+    "scope": "origin_daylight",
+    "origin_population": "three_array_common_formal_masked_origins"
+  },
+  "secondary_endpoints": ["H3", "H6", "full_timeline", "array_specific_all_valid_origins"],
+  "irradiance_window_policy": {
+    "interval": "right_closed_(t-5min,t]",
+    "channels": ["MB0", "MB1", "MB2"],
+    "partial_numeric_missingness": "retain_with_channel_valid_fraction_and_mask",
+    "zero_timestamp_bin": "break_continuous_segment",
+    "interpolation": false
+  },
+  "nominal_acceptance": {
+    "coverage": 0.8,
+    "scope_matched": true,
+    "quantile_method": "higher",
+    "order_index_zero_based": "ceil(q * (n - 1))",
+    "accept_rule": "score <= threshold",
+    "coverage_claim": "empirical_only_not_conformal"
+  },
+  "aurc": {
+    "coverage_grid_start": 0.05,
+    "coverage_grid_stop": 1.0,
+    "coverage_grid_points": 96,
+    "window_loss": "H12 trajectory RMSE in kW",
+    "selective_risk": "mean accepted per-window H12 trajectory RMSE",
+    "integration": "trapezoid over coverage grid",
+    "normalization": "divide by ((1.00-0.05) * unselected mean per-window H12 trajectory RMSE)",
+    "direction": "lower_is_better"
+  },
+  "origin_daylight": {
+    "official_array_rating_kw": {
+      "Site 17 Sanyo": 6.3,
+      "Site 25 Hanwha": 5.83,
+      "Site 38 Q CELLS": 5.9
+    },
+    "official_rating_interpretation": "DC_nameplate_proxy_not_verified_AC_rating",
+    "formal_reference_policy": "BASE_TRAIN_valid_positive_Active_Power_p99.9_kw",
+    "threshold_fraction": 0.01,
+    "final_test_distribution_access": false
+  },
+  "base_forecaster": {
+    "formal_name": "DEPTHWISE_TCN_TRAJECTORY",
+    "input_features": ["Active_Power", "sin_time_of_day", "cos_time_of_day", "sin_day_of_year", "cos_day_of_year", "MB0_mean", "MB0_valid_fraction", "MB0_valid_mask", "MB1_mean", "MB1_valid_fraction", "MB1_valid_mask", "MB2_mean", "MB2_valid_fraction", "MB2_valid_mask"],
+    "channels": 64,
+    "layers": 4,
+    "kernel_size": 5,
+    "dropout": 0.0,
+    "output_steps": 12
+  },
+  "deep_training": {
+    "authorized_this_stage": false,
+    "optimizer": "AdamW",
+    "learning_rate": 0.001,
+    "weight_decay": 0.00001,
+    "batch_size": 256,
+    "max_epochs": 25,
+    "early_stopping_patience": 5,
+    "checkpoint_metric": "BASE_MODEL_VALIDATION_RMSE_kW",
+    "gradient_clipping_norm": 1.0,
+    "scheduler": null,
+    "mixed_precision": false,
+    "num_workers": 0,
+    "loss": "target_scaled_MSE"
+  },
+  "risk_features": {
+    "time": ["sin_time_of_day", "cos_time_of_day", "sin_day_of_year", "cos_day_of_year", "hour", "origin_daylight"],
+    "pv_windows": [12, 36, 72],
+    "pv_statistics": ["last", "mean", "std", "range", "max_abs_first_difference", "mean_abs_first_difference", "linear_slope", "last_minus_window_mean"],
+    "irradiance_channels": ["MB0", "MB1", "MB2"],
+    "irradiance_window": 12,
+    "irradiance_statistics": ["mean", "std", "range", "max_abs_first_difference", "valid_ratio"],
+    "model_information": ["model_persistence_mean_absolute_disagreement", "model_persistence_max_absolute_disagreement", "model_persistence_endpoint_disagreement", "prediction_total_variation", "prediction_range", "prediction_max_abs_first_difference"]
+  },
+  "risk_estimator": {
+    "class": "sklearn.ensemble.HistGradientBoostingRegressor",
+    "loss": "squared_error",
+    "learning_rate": 0.05,
+    "max_iter": 100,
+    "max_leaf_nodes": 15,
+    "max_depth": null,
+    "min_samples_leaf": 30,
+    "l2_regularization": 1.0,
+    "early_stopping": false,
+    "random_state": "current_seed",
+    "fit_stage": "RISK_FIT",
+    "target": "log1p(H12_train_range_normalized_trajectory_RMSE)"
+  },
+  "risk_methods": ["FULL_RISK_MODEL", "RECENT_VARIATION", "MODEL_PERSISTENCE_DISAGREEMENT"],
+  "high_error_quantile": 0.8,
+  "high_change_quantile": 0.9,
+  "bootstrap": {
+    "primary": "continuous_7_day_moving_block",
+    "sensitivity": "natural_day_cluster",
+    "replicates": 1000,
+    "acceptance_mask_fixed_before_resampling": true
+  },
+  "success_rule": {
+    "primary_endpoint_only": true,
+    "macro_test_coverage_interval": [0.75, 0.85],
+    "minimum_array_coverage": 0.7,
+    "macro_aurc_improvement_vs_best_simple_min": 0.05,
+    "arrays_with_aurc_improvement_min": 2,
+    "arrays_beating_matched_persistence_min": 2,
+    "accepted_rmse_reduction_min": 0.1,
+    "seeds_with_macro_improvement_min": 2,
+    "failure_action": "close_C1_without_v2_or_v3"
+  }
+}
