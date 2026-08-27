@@ -1,2 +1,2 @@
-completed_runs,expected_runs,scientific_metrics_available,method_evaluated,note
-0,9,false,false,route closed because required data were unavailable
+record_type,completed_runs,expected_runs,scientific_metrics_available,method_evaluated,note
+EXECUTION_STATUS_ONLY,0,9,false,false,route closed because required data were unavailable

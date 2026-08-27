@@ -1,5 +1,7 @@
 {
   "study_id": "C1-S4",
+  "route_closed": true,
+  "route_status": "C1_ROUTE_CLOSED_DATA_UNAVAILABLE",
   "timezone": {"authoritative_clock": "UTC", "analysis_clock": "ACST", "utc_to_acst_minutes": 570, "use_exported_local": false},
   "fresh_download_roots": {
     "2021": "C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PV_improve_v1/原始Dataset/高分辨率气象数据集/C1_fresh_downloads/2021",
@@ -67,5 +69,5 @@
   "success_conditions": {"macro_coverage": [0.75, 0.85], "minimum_array_coverage": 0.70, "macro_aurc_improvement": 0.05, "arrays_aurc_direction": 2, "arrays_beating_persistence": 2, "mean_seed_macro_rmse_reduction": 0.10, "seeds_with_aurc_direction": 2},
   "execution_authorized_this_stage": false,
   "official_source_urls": ["https://www.dkasolarcentre.com.au/download?location=nt-solar-resource", "https://nt-solar-resource.fulcrum3d.com/download"],
-  "output_files": ["run_c1_formal.py", "c1_formal_pipeline.py", "config.json", "test_protocol.py", "DATA_CONFIRMATION_SUMMARY.csv", "metrics_per_seed.csv", "metrics_summary_mean_sd.csv", "decision.json", "REPORT.md"]
+  "output_files": ["run_c1_formal.py", "c1_formal_pipeline.py", "config.json", "test_protocol.py", "test_closeout.py", "DATA_CONFIRMATION_SUMMARY.csv", "metrics_per_seed.csv", "metrics_summary_mean_sd.csv", "decision.json", "REPORT.md"]
 }

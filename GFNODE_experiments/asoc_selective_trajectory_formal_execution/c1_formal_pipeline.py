@@ -1,7 +1,8 @@
-"""Frozen C1 formal pipeline primitives.
+"""Archived, unvalidated C1 prototype; not authorized for execution.
 
-Production code is deliberately separated from authorization: importing and testing this
-module never starts training.  Real execution requires ``authorize_real_execution=True``.
+The preregistered route is administratively closed because the required annual
+data are unavailable or unconfirmed. Historical prototype functions remain only
+as evidence and must not be interpreted as validated operational code.
 """
 from __future__ import annotations
 
@@ -315,11 +316,19 @@ def evaluate_locked_test(test: dict[str,np.ndarray], scores: dict[str,np.ndarray
 
 def execute_formal(config: dict[str, Any], prepared: dict[str, Any] | None, results_dir: Path,
                    data_ready: bool, authorize_real_execution: bool = False) -> dict[str, Any]:
-    """Complete guarded entry; never mistakes lack of authorization for unimplemented code."""
+    """Historical entry point, permanently guarded while this C1 record is closed."""
+    if config.get("route_closed") is True:
+        return {
+            "status": config.get("route_status", "C1_ROUTE_CLOSED_DATA_UNAVAILABLE"),
+            "route_closed": True,
+            "training_started": False,
+            "completed_runs": 0,
+            "scientific_method_outcome": "NOT_EVALUATED",
+        }
     if not data_ready:
         return {"status":"DATA_FAIL","training_started":False,"completed_runs":0}
     if not authorize_real_execution:
-        return {"status":"READY_AWAITING_GPU_AUTHORIZATION","training_started":False,"completed_runs":0}
+        return {"status":"EXECUTION_NOT_AUTHORIZED","training_started":False,"completed_runs":0}
     if prepared is None: raise ValueError("prepared five-stage arrays required")
     results_dir.mkdir(parents=True,exist_ok=True)
     frozen=[]

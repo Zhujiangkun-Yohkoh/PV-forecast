@@ -57,12 +57,10 @@ class FixtureTests(unittest.TestCase):
   n=30; y=np.ones((n,12)); p=y+.1; q=np.zeros_like(y); a=np.arange(n)%2==0; o=np.datetime64('2021-01-01')+np.arange(n).astype('timedelta64[D]'); self.assertEqual(pipe.bootstrap_metrics(y,p,q,a,o,20,42)['valid_replicates'],20)
  def test_25_success_pass_fail(self):
   rows=[{'array':a,'seed':s,'risk_method':'FULL_RISK_MODEL','coverage':.8,'best_simple_aurc_improvement':.1,'accepted_rmse':1.,'persistence_rmse':2.,'rmse_reduction':.2} for a in CONFIG['arrays'] for s in CONFIG['seeds']]; self.assertTrue(pipe.evaluate_success(rows,CONFIG)['passed']); rows[0]['coverage']=0.; self.assertFalse(pipe.evaluate_success(rows,CONFIG)['passed'])
- def test_26_ready_decision_not_false(self):
-  r=pipe.execute_formal(CONFIG,None,Path('unused'),True,False); self.assertEqual(r['status'],'READY_AWAITING_GPU_AUTHORIZATION'); self.assertFalse(r['training_started'])
- def test_27_data_fail_no_training(self): self.assertEqual(pipe.execute_formal(CONFIG,None,Path('unused'),False,False)['status'],'DATA_FAIL')
- def test_28_model_forward_and_entry_complete(self):
-  import torch
-  self.assertEqual(tuple(pipe.make_model(CONFIG)(torch.zeros(2,14,72)).shape),(2,12)); self.assertNotIn('RuntimeError',pipe.execute_formal(CONFIG,None,Path('unused'),True,False)['status'])
+ def test_26_closed_route_refuses_authorization(self):
+  r=pipe.execute_formal(CONFIG,None,Path('unused'),True,True); self.assertEqual(r['status'],'C1_ROUTE_CLOSED_DATA_UNAVAILABLE'); self.assertFalse(r['training_started'])
+ def test_27_closed_route_precedes_data_state(self): self.assertEqual(pipe.execute_formal(CONFIG,None,Path('unused'),False,False)['status'],'C1_ROUTE_CLOSED_DATA_UNAVAILABLE')
+ def test_28_archived_entry_is_not_executed(self): self.assertTrue(CONFIG['route_closed'])
 
 class RealArrayTests(unittest.TestCase):
  def test_01_real_three_year_scan(self): self.assertEqual(set(AUDIT['irradiance']),{'2021','2022','2023'}); self.assertEqual(AUDIT['irradiance']['2022']['parseable_target_year_unique_seconds'],31536000)
@@ -90,5 +88,5 @@ class RealArrayTests(unittest.TestCase):
 def main():
  global AUDIT,STATE,CONFIG
  AUDIT=json.loads((formal.RESULTS/'audit.json').read_text(encoding='utf-8')); STATE=np.load(formal.RESULTS/'audit_state.npz'); CONFIG=formal.load_config(); suite=unittest.TestSuite(); suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(FixtureTests)); suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(RealArrayTests)); result=unittest.TextTestRunner(verbosity=2).run(suite)
- decision=json.loads(formal.DECISION_JSON.read_text(encoding='utf-8')); decision['implementation_readiness']='C1_FORMAL_IMPLEMENTATION_READY_FOR_GPU_REVIEW' if result.wasSuccessful() else 'C1_FORMAL_IMPLEMENTATION_REQUIRES_CORRECTION'; formal.DECISION_JSON.write_text(json.dumps(decision,indent=2)+'\n',encoding='utf-8'); AUDIT['fixture_tests']=f"{28-len(result.failures)-len(result.errors)}/28 passed; {len(result.skipped)} skipped"; AUDIT['real_array_tests']='7/7 passed; 0 skipped' if result.wasSuccessful() else 'failed'; (formal.RESULTS/'audit.json').write_text(json.dumps(AUDIT,indent=2),encoding='utf-8'); formal.write_report(AUDIT); print(json.dumps({'fixture_total':28,'real_total':7,'successful':result.wasSuccessful()})); return 0 if result.wasSuccessful() else 1
+ print(json.dumps({'fixture_total':28,'real_total':7,'successful':result.wasSuccessful(),'side_effects':False})); return 0 if result.wasSuccessful() else 1
 if __name__=='__main__':raise SystemExit(main())
