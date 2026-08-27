@@ -203,7 +203,7 @@ def predict_stage(model, loader, preprocessor: TrainOnlyPreprocessor) -> dict[st
             pred=model(batch["x"].to(device)).cpu().numpy()
             buckets["prediction"].append(preprocessor.inverse_y(pred)); buckets["label"].append(preprocessor.inverse_y(batch["y"].cpu().numpy()))
             for key in ("origin","history_power","history_mb","history_valid","daylight"): buckets[key].append(np.asarray(batch[key]))
-    return {k:np.concatenate(v) for k,v in buckets.items()}
+    result={k:np.concatenate(v) for k,v in buckets.items()}; result["origin"]=result["origin"].astype("datetime64[ns]"); return result
 
 
 def last_value_persistence(last_power: np.ndarray, horizon: int = 12) -> np.ndarray:
@@ -347,3 +347,34 @@ def execute_formal(config: dict[str, Any], prepared: dict[str, Any] | None, resu
         for row in evaluate_locked_test(test,scores,run["thresholds"]): row.update(array=run["array"],seed=run["seed"]); final_rows.append(row)
     success=evaluate_success(final_rows,config)
     return {"status":success["decision"],"training_started":True,"completed_runs":9,"metrics":final_rows,"success":success}
+
+
+def prepare_from_audit_state(config: dict[str,Any], state_path: Path) -> dict[str,Any]:
+    """Build the frozen five-stage loaders directly from the compact read-only audit state."""
+    import torch
+    from torch.utils.data import DataLoader,Dataset
+    state=np.load(state_path,allow_pickle=False); grid=state["grid_ns"].astype("datetime64[ns]"); mb=state["hf_channel_mean"].T
+    count=state["hf_channel_count"].T.astype(float); fraction=np.clip(count/300.,0,1); valid=(count>0).astype(float)
+    class NamedDataset(Dataset):
+        def __init__(self,payload): self.payload=payload
+        def __len__(self): return len(self.payload["y"])
+        def __getitem__(self,i): return {k:(torch.as_tensor(v[i]) if k not in ("origin",) else v[i]) for k,v in self.payload.items()}
+    def loader(payload,shuffle=False): return DataLoader(NamedDataset(payload),batch_size=config["training"]["batch_size"],shuffle=shuffle,num_workers=config["training"]["num_workers"])
+    out={}; arrays=config["arrays"]
+    for ai,array in enumerate(arrays):
+        power=state[f"pv_power_{ai}"]; features=build_14_features(power,mb,fraction,valid,grid)
+        stage_payload={}
+        for stage in config["stages"]:
+            origins=state[f"origins__{stage}__COMMON"].astype(np.int64)
+            if stage in ("RISK_FIT","RISK_CALIBRATION","FINAL_TEST"):
+                origins=state[f"primary_daylight__{stage}"].astype(np.int64)
+            x,y=causal_windows(features,power,origins,config["lookback"],config["horizon"])
+            stage_payload[stage]={"x":x,"y":y,"origin":grid[origins].astype("datetime64[ns]").astype(np.int64),
+                "history_power":np.stack([power[i-71:i+1] for i in origins]).astype(np.float32),
+                "history_mb":np.stack([mb[i-71:i+1] for i in origins]).astype(np.float32),
+                "history_valid":np.stack([valid[i-71:i+1] for i in origins]).astype(np.float32),
+                "daylight":np.ones(len(origins),dtype=np.float32)}
+        pre=TrainOnlyPreprocessor().fit(stage_payload["BASE_TRAIN"]["x"],stage_payload["BASE_TRAIN"]["y"],"BASE_TRAIN")
+        for payload in stage_payload.values(): payload["x"]=pre.transform_x(payload["x"]); payload["y"]=pre.transform_y(payload["y"])
+        out[array]={"preprocessor":pre,"train_loader":loader(stage_payload["BASE_TRAIN"],True),"validation_loader":loader(stage_payload["BASE_MODEL_VALIDATION"]),"risk_fit_loader":loader(stage_payload["RISK_FIT"]),"calibration_loader":loader(stage_payload["RISK_CALIBRATION"]),"final_test_loader_factory":(lambda payload=stage_payload["FINAL_TEST"]:loader(payload))}
+    return out

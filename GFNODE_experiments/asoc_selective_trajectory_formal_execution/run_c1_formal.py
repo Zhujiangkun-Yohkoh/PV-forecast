@@ -20,7 +20,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-from c1_formal_pipeline import execute_formal
+from c1_formal_pipeline import execute_formal, prepare_from_audit_state
 
 
 ROOT = Path(__file__).resolve().parent
@@ -322,7 +322,7 @@ def write_report(audit: dict[str, Any]) -> None:
       "All seven success conditions use exactly **H12 + THREE_ARRAY_COMMON + mask-available + PRIMARY_DAYLIGHT_COMMON**. Strict 300/300 three-channel completeness is only a data-quality sensitivity population and cannot select the main result.","","## Five-stage common origins","","|Stage|Expected|Formal common|Strict 300/300|First|Last|Segments|Months|Seasons|","|---|---:|---:|---:|---|---|---:|---|---|"]
     for r in common: lines.append(f"|{r['stage']}|{r['expected_calendar_origins']:,}|{r['formal_masked_origins']:,}|{r['strict_all_channel_complete_origins']:,}|{r['first_legal_origin']}|{r['last_legal_origin']}|{r['eligible_origin_segments']}|{r['months']}|{r['seasons']}|")
     lines += ["","## Implementation review","",
-      "The READY path is complete and guarded rather than an unimplemented exception. It provides 14-channel causal construction; BASE_TRAIN-only median/scalers/target range; the frozen 4-layer 64-channel depthwise/pointwise TCN and 9-run matrix; AdamW loop and strict validation-RMSE checkpoint replacement; matched last-value Persistence; the fixed risk features and HistGradientBoostingRegressor; RISK_FIT-only fitting; same-scope `method=higher` calibration; stable-origin AURC; fixed-mask 7-day moving-block and day-cluster resampling; and programmatic seven-condition evaluation. This stage called none of the real fitting/training functions.","",
+      "The READY path is complete and guarded rather than an unimplemented exception. It directly prepares five-stage named loaders from the compact audit state and provides 14-channel causal construction; BASE_TRAIN-only median/scalers/target range; the frozen 4-layer 64-channel depthwise/pointwise TCN and 9-run matrix; AdamW loop and strict validation-RMSE checkpoint replacement; matched last-value Persistence; the fixed risk features and HistGradientBoostingRegressor; RISK_FIT-only fitting; same-scope `method=higher` calibration; delayed Final-Test loader creation; stable-origin AURC; fixed-mask 7-day moving-block and day-cluster resampling; and programmatic seven-condition evaluation. This stage called none of the real fitting/training functions.","",
       "State fields are factual: raw Final-Test availability metadata was inspected; model predictions, errors, risk scores, coverage and AURC were not generated or accessed. NOT_RUN rows are execution status, not performance metrics.","",
       "## Tests and source protection","",f"- Synthetic/fixture: {audit.get('fixture_tests','pending')}.",f"- Real arrays: {audit.get('real_array_tests','pending')}.",f"- Selected PV and irradiance source size/mtime_ns unchanged: **{audit['source_files_unchanged']}**.","- Real optimizer/backward/epoch: **No**.","- Real risk-model fitting: **No**.","- Final-Test performance access: **No**.","","Local `results/` contains only compact review artifacts and remains untracked; it is not a clean-worktree claim and will not be committed.","",
       "## Conclusion","","Data remains **`C1_FORMAL_DATA_FAIL`**, so no GPU authorization follows. Implementation is **`C1_FORMAL_IMPLEMENTATION_READY_FOR_GPU_REVIEW`**, but that does not override missing annual data. The only defensible next action is to obtain officially exported 1-second 2021 and 2023 blocks whose explicit UTC union passes the frozen annual criteria; no alternative year, interpolation, model revision, or C1 v2/v3 is proposed."]
@@ -376,6 +376,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--audit", action="store_true", help="Run the complete read-only data audit")
     parser.add_argument("--execute-formal", action="store_true", help="Guarded formal execution; refuses unless audit is READY")
+    parser.add_argument("--authorize-real-execution", action="store_true", help="Explicit next-stage GPU authorization; disabled in C1-S4 config")
     args = parser.parse_args()
     if not args.audit and not args.execute_formal:
         parser.error("Select --audit or --execute-formal")
@@ -384,7 +385,9 @@ def main() -> None:
         if audit["verdict"] != "C1_FORMAL_DATA_READY":
             print(json.dumps({"decision": audit["verdict"], "training_started": False, "reason": "preregistered data readiness failed"}))
             return
-        outcome=execute_formal(load_config(),None,RESULTS,data_ready=True,authorize_real_execution=False)
+        config=load_config(); authorized=bool(args.authorize_real_execution and config.get("execution_authorized_this_stage",False))
+        prepared=prepare_from_audit_state(config,RESULTS/"audit_state.npz") if authorized else None
+        outcome=execute_formal(config,prepared,RESULTS,data_ready=True,authorize_real_execution=authorized)
         print(json.dumps(outcome)); return
     print(json.dumps({"decision": audit["verdict"], "training_started": False, "summary_csv": str(SUMMARY_CSV)}))
 

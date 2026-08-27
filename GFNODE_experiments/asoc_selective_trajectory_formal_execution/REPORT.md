@@ -51,7 +51,7 @@ All seven success conditions use exactly **H12 + THREE_ARRAY_COMMON + mask-avail
 
 ## Implementation review
 
-The READY path is complete and guarded rather than an unimplemented exception. It provides 14-channel causal construction; BASE_TRAIN-only median/scalers/target range; the frozen 4-layer 64-channel depthwise/pointwise TCN and 9-run matrix; AdamW loop and strict validation-RMSE checkpoint replacement; matched last-value Persistence; the fixed risk features and HistGradientBoostingRegressor; RISK_FIT-only fitting; same-scope `method=higher` calibration; stable-origin AURC; fixed-mask 7-day moving-block and day-cluster resampling; and programmatic seven-condition evaluation. This stage called none of the real fitting/training functions.
+The READY path is complete and guarded rather than an unimplemented exception. It directly prepares five-stage named loaders from the compact audit state and provides 14-channel causal construction; BASE_TRAIN-only median/scalers/target range; the frozen 4-layer 64-channel depthwise/pointwise TCN and 9-run matrix; AdamW loop and strict validation-RMSE checkpoint replacement; matched last-value Persistence; the fixed risk features and HistGradientBoostingRegressor; RISK_FIT-only fitting; same-scope `method=higher` calibration; delayed Final-Test loader creation; stable-origin AURC; fixed-mask 7-day moving-block and day-cluster resampling; and programmatic seven-condition evaluation. This stage called none of the real fitting/training functions.
 
 State fields are factual: raw Final-Test availability metadata was inspected; model predictions, errors, risk scores, coverage and AURC were not generated or accessed. NOT_RUN rows are execution status, not performance metrics.
 
