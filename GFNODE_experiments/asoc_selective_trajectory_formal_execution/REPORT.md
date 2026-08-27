@@ -76,4 +76,3 @@ All seven conditions are **NOT_EVALUATED**: macro coverage, per-array minimum co
 ## Conclusion
 
 `C1_FORMAL_DATA_FAIL`. The failure is data-specific: 2021 is not a full year and the new 2023 export is a mixed-year, structurally damaged file. Under the preregistration, this ends the execution before training. No interpolation, alternative year, repair, C1 v2/v3, or scientific method conclusion is proposed.
-

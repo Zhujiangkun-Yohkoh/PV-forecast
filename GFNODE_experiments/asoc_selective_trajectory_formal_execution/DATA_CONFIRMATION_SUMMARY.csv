@@ -1,4 +1,4 @@
-section,year,stage,array,metric,value,unit,source_path,notes
+﻿section,year,stage,array,metric,value,unit,source_path,notes
 candidate,2021,,,size,1726481334,,C:\Users\Zhujiangkun-Yohkoh\Desktop\光伏项目_最新\PV_improve_v1\原始Dataset\高分辨率气象数据集\C1_fresh_downloads\2021\fsm1m_7111_ekistica-alice-springs-ekistica-alice-springs_irradiancedata_1sec_2021.csv,
 candidate,2021,,,mtime_ns,1697783464000000000,,C:\Users\Zhujiangkun-Yohkoh\Desktop\光伏项目_最新\PV_improve_v1\原始Dataset\高分辨率气象数据集\C1_fresh_downloads\2021\fsm1m_7111_ekistica-alice-springs-ekistica-alice-springs_irradiancedata_1sec_2021.csv,
 candidate,2021,,,header,"Timestamp_UTC [DD/MM/YYYY hh:mm:ss],Timestamp_Local [DD/MM/YYYY hh:mm:ss],Irradiance_MB0 [W/m-2],UnitTemp_MB0 [deg C],Voltage_MB0 [V],Irradiance_MB1 [W/m-2],UnitTemp_MB1 [deg C],Voltage_MB1 [V],Irradiance_MB2 [W/m-2],UnitTemp_MB2 [deg C],Voltage_MB2 [V],Timestamp_UNIX [s],Hour_UTC,Hour_Local",,C:\Users\Zhujiangkun-Yohkoh\Desktop\光伏项目_最新\PV_improve_v1\原始Dataset\高分辨率气象数据集\C1_fresh_downloads\2021\fsm1m_7111_ekistica-alice-springs-ekistica-alice-springs_irradiancedata_1sec_2021.csv,
@@ -378,4 +378,3 @@ readiness,,,,risk_fit_and_calibration_cover_planned_months,True,,,
 readiness,,,,final_test_outcomes_not_read_or_generated_before_freeze,True,,,
 readiness,,,,raw_sources_unchanged,True,,,
 readiness,,,,frozen_daylight_thresholds_match,True,,,
-
