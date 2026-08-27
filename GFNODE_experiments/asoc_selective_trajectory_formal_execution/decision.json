@@ -1,0 +1,16 @@
+{
+  "decision": "C1_FORMAL_DATA_FAIL",
+  "data_ready": false,
+  "gpu_training_performed": false,
+  "completed_runs": 0,
+  "expected_runs": 9,
+  "failed_readiness_conditions": [
+    "fresh_2021_and_2023_have_31536000_unique_seconds",
+    "fresh_year_first_last_utc_are_exact",
+    "no_structural_anomaly_in_fresh_years",
+    "base_train_and_final_test_cover_12_months_four_seasons"
+  ],
+  "final_test_performance_accessed": false,
+  "method_success_conditions_evaluated": false
+}
+
