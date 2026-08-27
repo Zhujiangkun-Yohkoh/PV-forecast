@@ -33,7 +33,7 @@
 \date{August 27, 2026}
 
 \begin{abstract}
-Comparisons of photovoltaic (PV) forecasts can be distorted by preprocessing fitted outside the training period, windows that cross temporal splits, unequal valid samples, or weak naive references. We conduct a leakage-aware deterministic benchmark on three co-located PV arrays at the DKA Solar Centre in Alice Springs. Four compact direct multi-output implementations receive six hours of causal history, including past Active Power, and produce one 144-step trajectory whose 1, 4, 8, and 12 h prefixes are evaluated. Preprocessing is fitted on Train only, windows are built independently within each temporal split, checkpoints are selected only on Validation, and Test is excluded from fitting, training, and checkpoint selection. Horizon-specific valid origins form the primary sample set, while complete-H144 origins provide sensitivity analysis. Across 24 array--horizon--scope combinations, an inverted-variate Transformer implementation ranks first 12 times and a depthwise convolutional TCN nine times when Last-value Persistence is included. Their arithmetic mean RMSE skills relative to Last-value Persistence are 0.549 and 0.515, respectively. Nevertheless, supplementary Daily Persistence, evaluated on its slightly different eligible sample set, beats the best neural result in 22 of 24 combinations. Rankings vary with array, horizon, and daylight masking, and efficiency rankings differ from accuracy rankings. The main contribution is therefore an auditable evaluation and a persistence-centered application finding, not a new architecture or a claim of universal neural superiority.
+Comparisons of photovoltaic (PV) forecasts can be distorted by preprocessing fitted outside the training period, windows that cross temporal splits, unequal valid samples, or weak naive references. We conduct a leakage-aware deterministic benchmark on three co-located PV arrays at the DKA Solar Centre in Alice Springs. Four compact direct multi-output implementations receive six hours of causal history, including past Active Power, and produce one 144-step trajectory whose 1, 4, 8, and 12 h prefixes are evaluated. Preprocessing is fitted on Train only, windows are built independently within each temporal split, checkpoints are selected only on Validation, and Test is excluded from fitting, training, and checkpoint selection. Horizon-specific valid origins form the primary sample set, while complete-H144 origins provide sensitivity analysis. Across 24 array--horizon--scope combinations, an inverted-variate Transformer implementation ranks first 12 times and a depthwise convolutional TCN nine times when Last-value Persistence is included. Their arithmetic mean RMSE skills relative to Last-value Persistence are 0.549 and 0.515, respectively. In a separate point-matched supplementary analysis, Daily Persistence beats the best neural result in 22 of 24 combinations. Rankings vary with array, horizon, and daylight masking, and efficiency rankings differ from accuracy rankings. The main contribution is therefore an auditable evaluation and a persistence-centered application finding, not a new architecture or a claim of universal neural superiority.
 \end{abstract}
 
 \keywords{photovoltaic power forecasting, multi-horizon forecasting, data leakage, persistence benchmark, reproducibility, co-located PV arrays}
@@ -54,7 +54,7 @@ The contribution is empirical and methodological rather than architectural:
   \item We implement a leakage-aware protocol with a complete 5-min timeline, Train-only preprocessing, split-local window construction, Validation-only model selection, and sample-matched Test evaluation.
   \item We compare three co-located PV technologies under common meteorological observations, reducing site and climate confounding while retaining technology-specific targets.
   \item We report four prefixes of a common 12 h trajectory, full-timeline and daylight metrics, three-seed variability, persistence skill, and unified computational efficiency.
-  \item We document a practically important conditional result: learned models outperform Last-value Persistence on average after causal history power and sample matching are enforced, but supplementary Daily Persistence remains stronger in 22 of 24 settings.
+  \item We document a practically important conditional result: learned models outperform Last-value Persistence on average after causal history power and sample matching are enforced, but Daily Persistence remains stronger in 22 of 24 separate comparisons after its valid point mask is applied identically to every method.
 \end{enumerate}
 We do not propose a new neural architecture, and we make no claim of state-of-the-art performance, cross-site generalization, or deployment readiness.
 
@@ -72,7 +72,7 @@ Recent PV studies have used attention, decomposition, recurrent learning, and di
 
 Recursive multi-step forecasting feeds predicted values back into the model and can accumulate error. Direct approaches instead predict each future step without recursion, either with separate models or a joint output trajectory. The latter is attractive when evaluation spans many horizons because one trained model supplies all prefixes. General benchmark studies such as M4 illustrate that no single forecasting method dominates across all series and horizons.\cite{Makridakis2020} The same warning applies to PV forecasting: a model that performs well at 12 h may not be best at 1 h, and a metric averaged over night and day can conceal materially different behavior.
 
-Persistence is especially important for solar data. Last-value persistence is strong over short horizons when power changes slowly and becomes weaker as forecast age grows. A daily seasonal reference can be informative at matched clock times but requires lagged observations and may change the eligible sample set. Skill scores relative to a naive method provide a direct answer to whether complexity adds predictive value.\cite{Hyndman2006} We therefore use last-value persistence on exactly the same origins and masks as the neural models. Daily persistence is supplementary because its requirement for a valid 24 h lag changes sample availability.
+Persistence is especially important for solar data. Last-value persistence is strong over short horizons when power changes slowly and becomes weaker as forecast age grows. A daily seasonal reference can be informative at matched clock times but requires lagged observations and may change the eligible point mask. Skill scores relative to a naive method provide a direct answer to whether complexity adds predictive value.\cite{Hyndman2006} We therefore use last-value persistence on exactly the same origins and masks as the neural models. Daily persistence is supplementary; within that analysis, however, its lag-valid point mask is applied identically to Daily Persistence, Last-value Persistence, and all neural predictions.
 
 \subsection{Data leakage and reproducibility risks}
 
@@ -115,7 +115,7 @@ Qcells (38) & Monocrystalline silicon & 5.90 kW & Active Power (kW AC) & 6,463 &
 
 \subsection{Temporal alignment and data preprocessing}
 
-Raw timestamps are reindexed to a regular 5-min axis. Nighttime is not removed, because deletion would change temporal spacing and can make window construction ambiguous. Missing values are represented explicitly. K-nearest-neighbor imputation, Isolation Forest fitting, feature scaling, and target scaling are fitted using Train only. The fitted transformations are then applied without refitting to Validation and Test. KNN imputation and isolation-based anomaly detection are established tools;\cite{Troyanskaya2001,Liu2008Isolation} here they are protocol components rather than methodological contributions.
+Raw timestamps are reindexed to a regular 5-min axis. Nighttime is not removed, because deletion would change temporal spacing and can make window construction ambiguous. Missing timestamp rows are retained on that coordinate, represented by explicit feature masks, and filled only by Train-fitted imputation. K-nearest-neighbor imputation, Isolation Forest fitting, feature scaling, and target scaling are fitted using Train only. The fitted transformations are then applied without refitting to Validation and Test. KNN imputation and isolation-based anomaly detection are established tools;\cite{Troyanskaya2001,Liu2008Isolation} here they are protocol components rather than methodological contributions.
 
 Each model receives 72 past samples (6 h) and outputs 144 future samples (12 h). The seven original numerical fields are, in fixed order, array-specific Performance Ratio followed by ambient temperature, relative humidity, global horizontal radiation, diffuse horizontal radiation, global tilted radiation, and diffuse tilted radiation. The audited predecessor tensor had 15 channels: these seven values, seven missing-value indicators, and one Isolation Forest indicator. It contained neither cyclical time features nor historical Active Power. The corrected protocol adds past Active Power and its missing-value indicator, yielding 17 channels (eight causal numerical fields, eight masks, and one anomaly indicator). Active Power after the forecast origin is exclusively a target. The power history imputer and scaler are fitted only on Train, using the same discipline as the other transformations.
 
@@ -127,9 +127,9 @@ Preprocessing state is immutable after Train fitting. Validation and Test do not
 
 Figure~\ref{fig:protocol} shows the evaluation flow. Windows are generated separately inside each split; no input or target interval crosses a boundary. Validation loss accumulates squared errors and valid-target counts over the full split before forming one global masked MSE. This replaces equal averaging of batch means, which weights a small final batch incorrectly. Validation alone selects the checkpoint and triggers early stopping, and Test is not passed to the training function. Test was excluded from preprocessing fitting, training, and checkpoint selection. The three seeds use identical labels, forecast-origin timestamps, and masks within each array.
 
-All models emit one H144 trajectory. Primary H12, H48, H96, and H144 metrics use horizon-specific valid origins: L72 history and only the reported target prefix must be valid. This avoids discarding a valid one-hour forecast merely because a later portion of the 12-hour target is missing. Every model and Last-value Persistence uses identical origins, labels, and masks within a comparison. As sensitivity analysis, we also evaluate all prefixes on complete-H144 origins; those results are secondary because the restricted subset systematically lowers errors.
+All models are trained and their checkpoints selected using complete H144 Train and Validation windows. They emit one H144 trajectory. Horizon-specific eligibility is introduced only for the primary Test evaluation: L72 history and only the reported H12, H48, H96, or H144 target prefix must be valid. This avoids discarding a valid one-hour forecast merely because a later portion of the 12-hour target is missing. Every model and Last-value Persistence uses identical origins, labels, and masks within a comparison. As sensitivity analysis, we also evaluate all prefixes on complete-H144 Test origins; those results are secondary because the restricted subset systematically lowers errors.
 
-Artifact-level checks confirmed 36 completed runs: four neural models, three arrays, and three seeds. Each run maps to an H144 prediction, label array, forecast-origin timestamps, mask, configuration, and selected checkpoint. Within an array, labels, origins, and masks are elementwise identical across all models and seeds, and all numeric arrays are finite. Metrics in this manuscript were recomputed from those artifacts in the final evidence stage rather than copied from earlier summary tables. The final Stage-2 evidence supersedes all preliminary project tables.
+Artifact-level checks confirmed 36 completed runs: four neural models, three arrays, and three seeds. Each run maps to an H144 prediction, label array, forecast-origin timestamps, mask, configuration, and selected checkpoint. Within an array, labels, origins, and masks are elementwise identical across all models and seeds, and all numeric arrays are finite. The selected checkpoints reproduce the saved predictions under no-gradient inference. Metrics in this manuscript were recomputed from those artifacts in the final evidence audit rather than copied from earlier summary tables; this corrected evidence supersedes preliminary project tables.
 
 \begin{figure*}[t]
 \centering\includegraphics[width=0.97\textwidth]{figures/fig1_leakage_free_protocol.pdf}
@@ -147,7 +147,7 @@ The shared optimization configuration is AdamW\cite{Loshchilov2019AdamW} with le
 
 \subsection{Persistence references}
 
-Last-value persistence repeats the most recent observed PV power at the forecast origin across all 144 future steps. It uses the exact neural-model origins, labels, and masks and therefore provides the main naive reference. Daily persistence takes the value at each target timestamp from 24 h earlier (288 five-minute samples). No interpolation is used. Because the required lag is unavailable for some otherwise valid origins, daily persistence has a different effective sample count and is reported only as supplementary context, not ranked directly in the primary table.
+Last-value persistence repeats the most recent observed PV power at the forecast origin across all 144 future steps. It uses the exact neural-model origins, labels, and masks and therefore provides the main naive reference. Daily persistence takes the value at each target timestamp from 24 h earlier (288 five-minute samples), without interpolation. Its actual finite-lag point mask is intersected with the horizon-specific label and daylight masks, and that identical point mask is then applied to Daily Persistence, Last-value Persistence, and all four neural implementations. This gives a fair supplementary comparison, although its counts differ from the primary Last-value analysis and it is therefore not inserted into the primary rank table.
 
 \subsection{Evaluation metrics}
 
@@ -185,7 +185,7 @@ The protocol also distinguishes reproducibility from generalizability. A reader 
 Table~\ref{tab:main} reports primary Train-range nRMSE using horizon-specific valid origins. The Inverted-variate Transformer has the smallest absolute macro error and ranks first in 12 of 24 array--horizon--scope combinations when Last-value Persistence is included. The Depthwise convolutional TCN wins nine, the Joint-patch Transformer two, and the Discrete recurrent decoder one. Last-value Persistence wins none, but it still beats the latter two implementations for Qcells H12.
 
 \begin{table*}[t]
-\caption{Primary Test Train-range nRMSE on horizon-specific valid origins. Neural entries are three-seed means (sample SD); Last-value Persistence is deterministic. Bold marks the lowest value. Daily Persistence is excluded because its eligible sample set differs slightly.}
+\caption{Primary Test Train-range nRMSE on horizon-specific valid origins. Neural entries are three-seed means (sample SD); Last-value Persistence is deterministic. Bold marks the lowest value. Daily Persistence is evaluated separately with its lag-valid point mask applied identically to every method.}
 \label{tab:main}\centering\scriptsize
 \begin{tabular}{lllccccc}
 \toprule
@@ -274,41 +274,47 @@ The Qcells H12 correction illustrates why sample counts are part of the result. 
 
 Skill remains a ratio and should be presented with physical RMSE, range-nRMSE, and win counts. A high arithmetic mean of ratios does not mean the same thing as a low arithmetic mean error. We therefore keep these summaries separate throughout the manuscript.
 
-Daily Persistence is the more demanding supplementary reference. Its 24 h lag changes valid counts slightly, so it is not included in primary ranks. On its own eligible sample set it beats the best neural result in 22 of 24 combinations; only Hanwha H12 full timeline and daylight favor Depthwise TCN. Thus, the corrected evidence supports superiority over Last-value Persistence, not a blanket superiority over persistence as a class.
+Daily Persistence is the more demanding supplementary reference. Its 24 h lag changes valid point counts, so it is not included in primary ranks. For each supplementary comparison, we apply the same lag-valid point mask to Daily Persistence, Last-value Persistence, and all neural predictions. Under this matched design, Daily Persistence beats the best neural implementation in 22 of 24 combinations; only Hanwha H12 full timeline (0.185 versus 0.176 kW) and daylight (0.273 versus 0.231 kW) favor the Depthwise TCN. Thus, the corrected evidence supports superiority over Last-value Persistence, not blanket superiority over persistence as a class.
 
 \subsection{Accuracy--efficiency trade-off}
 
-Table~\ref{tab:eff} and Fig.~4 compare neural efficiency. Inverted-variate has the lowest mean batch-one latency (0.496 ms), Joint-patch the highest throughput (421,929 samples/s), and Depthwise TCN the largest parameter count (683,024). The Discrete recurrent decoder is smallest (99,362 parameters) but much slower because it decodes the trajectory recurrently. Parameter count alone does not determine runtime.
+Table~\ref{tab:eff} and Fig.~\ref{fig:efficiency} compare neural efficiency. Joint-patch has the lowest mean batch-one latency (0.535 ms) and the highest throughput (421,929 samples/s), while Depthwise TCN has the largest parameter count (683,024). The Discrete recurrent decoder is smallest (99,362 parameters) but much slower because it decodes the trajectory recurrently. Parameter count alone does not determine runtime.
 
-\begin{table}[t]
-\caption{Unified GPU efficiency measurements. Latency excludes model loading, data loading, disk I/O, and host-to-device transfer. Values are hardware-specific descriptive measurements.}
-\label{tab:eff}\centering\small
-\resizebox{\columnwidth}{!}{\begin{tabular}{lrrrrr}
-\toprule
-Model & Parameters & Median latency (ms) & Mean latency (ms) & Throughput (samples/s) & Peak GPU memory (MB) \\
-\midrule
-Discrete recurrent & 99,362 & 30.989 & 31.023 & 1,116 & 121.12 \\
-Inverted-variate & 194,960 & 0.492 & 0.496 & 377,131 & 27.31 \\
-Joint-patch & 148,112 & 0.493 & 0.499 & 421,929 & 26.47 \\
-Depthwise TCN & 683,024 & 0.663 & 0.670 & 197,426 & 35.27 \\
-\bottomrule
-\end{tabular}}
-\end{table}
-
+\onecolumngrid
 \begin{center}
-\includegraphics[width=0.98\columnwidth]{figures/fig4_accuracy_efficiency.pdf}
-\par\vspace{2pt}\small\textbf{FIG. 4.} Corrected accuracy--efficiency trade-off. The vertical coordinate is the unweighted mean of primary Test Train-range nRMSE over 24 array--horizon--scope combinations; marker area is exactly proportional to parameter count. The dashed Last-value Persistence reference has no neural inference latency and is not a Pareto point.
+\begin{minipage}{0.94\textwidth}
+\centering
+\refstepcounter{table}\label{tab:eff}
+\small\textbf{TABLE \Roman{table}. Unified GPU efficiency measurements.} Latency excludes model loading, data loading, disk I/O, and host-to-device transfer. Values are hardware-specific descriptive measurements.\par\medskip
+\begin{tabular}{lrrrr}
+\toprule
+Model & Parameters & Mean latency (ms) & Throughput (samples/s) & Peak GPU memory (MB) \\
+\midrule
+Discrete recurrent & 99,362 & 32.204 & 1,116 & 121.12 \\
+Inverted-variate & 194,960 & 0.558 & 377,131 & 27.31 \\
+Joint-patch & 148,112 & 0.535 & 421,929 & 26.47 \\
+Depthwise TCN & 683,024 & 0.706 & 197,426 & 35.27 \\
+\bottomrule
+\end{tabular}
+\end{minipage}
 \end{center}
 
-No model is best on every efficiency dimension. Inverted-variate has the smallest macro error, Joint-patch the highest throughput, and Depthwise TCN the second-best rank with substantially more parameters. The measurements do not establish performance on embedded controllers, other GPUs, or CPUs.
+\begin{center}
+\refstepcounter{figure}\label{fig:efficiency}
+\includegraphics[width=0.76\textwidth]{figures/fig4_accuracy_efficiency.pdf}
+\par\small\textbf{FIG. \arabic{figure}.} Corrected accuracy--efficiency trade-off. The vertical coordinate is the unweighted mean of primary Test Train-range nRMSE over 24 array--horizon--scope combinations; circular marker area is exactly proportional to parameter count. The dashed Last-value Persistence reference has no neural inference latency and is not a Pareto point.
+\end{center}
+\twocolumngrid
 
-The throughput ordering differs from batch-one latency because kernels, memory access, and batching affect architectures differently. Joint-patch processes the largest measured throughput even though Inverted-variate has slightly lower single-sample latency. A deployment study would also include data preparation, transfer, batching policy, power consumption, and the target device. The present timing isolates model forward execution so architectural overhead can be compared reproducibly.
+No model is best on every efficiency dimension. Inverted-variate has the smallest macro error, Joint-patch the lowest mean latency and highest throughput, and Depthwise TCN the second-best rank with substantially more parameters. The measurements do not establish performance on embedded controllers, other GPUs, or CPUs.
+
+The throughput ordering is not determined by parameter count because kernels, memory access, and batching affect architectures differently. Joint-patch has both the largest measured throughput and the smallest mean single-sample latency, whereas the smaller recurrent decoder is much slower. A deployment study would also include data preparation, transfer, batching policy, power consumption, and the target device. The present timing isolates model forward execution so architectural overhead can be compared reproducibly.
 
 \section{Discussion}
 
 \subsection{What the results mean}
 
-The results answer the four research questions. First, ranking is not invariant even when leakage controls and valid origins are fixed: Inverted-variate is strongest in 12 combinations, Depthwise TCN in nine, and two other implementations lead the remainder. Second, horizon and scope alter both scale and ordering. Third, learned models consistently improve on Last-value Persistence only after causal historical power and exact sample matching are enforced; they do not generally beat Daily Persistence. Fourth, co-location reduces meteorological confounding but does not produce identical conclusions across PV technologies.
+The results answer the four research questions. First, ranking is not invariant even when leakage controls and valid origins are fixed: Inverted-variate is strongest in 12 combinations, Depthwise TCN in nine, and two other implementations lead the remainder. Second, horizon and scope alter both scale and ordering. Third, learned models consistently improve on Last-value Persistence only after causal historical power and exact sample matching are enforced; on a separately matched Daily-Persistence mask, they win only the two Hanwha H12 comparisons. Fourth, co-location reduces meteorological confounding but does not produce identical conclusions across PV technologies.
 
 The practical lesson is not to reject neural forecasting. It is to require a same-sample naive reference and report where the learned model adds value. A system operator could reasonably prefer a neural forecast for a 12 h trajectory and persistence for very short stable intervals, but designing such routing is outside this study and would require a new calibration protocol. The current evidence supports benchmark conclusions only.
 
@@ -346,11 +352,11 @@ The study has several limitations. The three systems are co-located at one Alice
 
 Only three random seeds are available. Their mean and sample SD describe initialization variability but do not support strong inferential claims. The daylight mask uses true future target power and is evaluation-only; it cannot be used operationally at the forecast origin. Test was excluded from preprocessing fitting, training, and checkpoint selection, but the project has inspected its results during iterative evidence correction; it is therefore not described as a pristine one-time external confirmation.
 
-The benchmark uses historical observations but no future exogenous forecast available at issue time. Consequently, it cannot resolve whether operational NWP, satellite cloud motion, or sky images would improve long-horizon ramp prediction. Daily Persistence has a slightly different sample set and is supplementary, even though its strong result is scientifically central. Efficiency measurements are limited to one laptop GPU and omit data transfer and pipeline overhead. Finally, the four compact implementations are representative rather than exhaustive and none is an original architecture contribution.
+The benchmark uses historical observations but no future exogenous forecast available at issue time. Consequently, it cannot resolve whether operational NWP, satellite cloud motion, or sky images would improve long-horizon ramp prediction. Daily Persistence requires a smaller lag-valid point set than the primary comparison and is therefore supplementary, even though every method is evaluated on exactly that same mask within the supplementary analysis and its strong result is scientifically central. Efficiency measurements are limited to one laptop GPU and omit data transfer and pipeline overhead. Finally, the four compact project implementations are representative rather than exhaustive, are not official full reproductions of their inspiration papers, and none is an original architecture contribution.
 
 \section{Conclusion}
 
-This leakage-aware benchmark compared four direct H144 neural implementations with persistence on three co-located PV technologies. The corrected protocol supplies causal past power, fits every transformation on Train only, builds split-local windows, selects checkpoints on Validation, and matches each model to Persistence on horizon-specific valid origins. Inverted-variate wins 12 of 24 primary combinations and Depthwise TCN nine; both have positive mean skill relative to Last-value Persistence. Supplementary Daily Persistence nevertheless beats the best neural result in 22 combinations on its slightly different eligible sample set. Daylight evaluation raises error and changes some rankings, while efficiency measurements favor different models from the accuracy comparison.
+This leakage-aware benchmark compared four direct H144 neural implementations with persistence on three co-located PV technologies. The corrected protocol supplies causal past power, fits every transformation on Train only, builds split-local windows, selects checkpoints on complete-H144 Validation trajectories, and matches each model to Persistence on horizon-specific Test origins. Inverted-variate wins 12 of 24 primary combinations and Depthwise TCN nine; both have positive mean skill relative to Last-value Persistence. Supplementary Daily Persistence nevertheless beats the best neural result in 22 of 24 comparisons when its lag-valid point mask is applied identically to every method. Daylight evaluation raises error and changes some rankings, while efficiency rankings differ from accuracy rankings.
 
 The principal conclusion is methodological: credible PV forecasting claims require leakage control, horizon- and scope-specific reporting, same-sample persistence skill, seed variability, and transparent efficiency measurement. Under these controls, negative or conditional findings are as important as win counts. The evidence supports an application benchmark and reproducibility contribution, not a new-architecture or cross-climate claim.
 

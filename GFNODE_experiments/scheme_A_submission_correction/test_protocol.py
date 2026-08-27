@@ -1,9 +1,10 @@
-"""Ordinary implementation tests for the Scheme A submission correction."""
+"""Ordinary and completed-artifact tests for the final Scheme A evidence audit."""
 from __future__ import annotations
 
+import argparse
 import inspect
+import json
 import sys
-import tempfile
 import unittest
 from pathlib import Path
 
@@ -16,6 +17,15 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import run_corrected_benchmark as bench
 
+_PROTOCOLS = None
+
+
+def protocols():
+    global _PROTOCOLS
+    if _PROTOCOLS is None:
+        _PROTOCOLS = bench.preflight(bench.load_config())
+    return _PROTOCOLS
+
 
 class ConstantModel(nn.Module):
     def __init__(self, values):
@@ -26,11 +36,13 @@ class ConstantModel(nn.Module):
         return self.values[:x.shape[0]]
 
 
-class CorrectedProtocolTests(unittest.TestCase):
+class OrdinaryUnitTests(unittest.TestCase):
+    """Tests that do not require the local results directory."""
+
     @classmethod
     def setUpClass(cls):
         cls.cfg = bench.load_config()
-        cls.protocols = bench.preflight(cls.cfg)
+        cls.protocols = protocols()
 
     def test_01_audited_feature_order_and_dimensions(self):
         expected = [
@@ -74,8 +86,7 @@ class CorrectedProtocolTests(unittest.TestCase):
         y = torch.tensor([[1.0, 1.0], [3.0, 3.0], [5.0, 5.0]])
         mask = torch.ones_like(y, dtype=torch.bool)
         loader = DataLoader(TensorDataset(x, y, mask), batch_size=2, shuffle=False)
-        model = ConstantModel(torch.zeros_like(y))
-        measured = bench.global_masked_mse(model, loader, torch.device("cpu"))
+        measured = bench.global_masked_mse(ConstantModel(torch.zeros_like(y)), loader, torch.device("cpu"))
         expected = float(torch.mean(y.square()))
         batch_mean_average = float((torch.mean(y[:2].square()) + torch.mean(y[2:].square())) / 2)
         self.assertAlmostEqual(measured, expected, places=6)
@@ -86,15 +97,12 @@ class CorrectedProtocolTests(unittest.TestCase):
         self.assertNotIn("test_loader", parameters)
         self.assertNotIn("test", parameters)
 
-    def test_08_all_models_output_h144_and_backward(self):
+    def test_08_all_models_output_h144_without_gradient_execution(self):
         sample = torch.randn(2, 72, 17)
-        for name in bench.MODEL_NAMES:
-            bench.set_seed(42)
-            model = bench.make_model(name, 17, self.cfg)
-            output = model(sample)
-            self.assertEqual(tuple(output.shape), (2, 144))
-            output.square().mean().backward()
-            self.assertTrue(all(p.grad is None or torch.isfinite(p.grad).all() for p in model.parameters()))
+        with torch.inference_mode():
+            for name in bench.MODEL_NAMES:
+                model = bench.make_model(name, 17, self.cfg).eval()
+                self.assertEqual(tuple(model(sample).shape), (2, 144))
 
     def test_09_horizon_specific_model_persistence_counts_match(self):
         for protocol in self.protocols.values():
@@ -104,69 +112,176 @@ class CorrectedProtocolTests(unittest.TestCase):
                 for scope in ("regular_full_timeline", "daylight"):
                     _, mask = bench.evaluation_mask(bundle, horizon, scope,
                                                     protocol.daylight_threshold, False)
-                    model_count = int((mask & np.isfinite(bundle.y_raw[:, :horizon])).sum())
-                    persistence_count = int((mask & np.isfinite(last[:, :horizon])).sum())
-                    self.assertEqual(model_count, persistence_count)
+                    self.assertEqual(int((mask & np.isfinite(bundle.y_raw[:, :horizon])).sum()),
+                                     int((mask & np.isfinite(last[:, :horizon])).sum()))
 
     def test_10_origin_equals_target_start_minus_five_minutes(self):
         for protocol in self.protocols.values():
             for bundle in protocol.evaluation_windows.values():
                 self.assertTrue(np.all(bundle.forecast_origin == bundle.target_start - np.timedelta64(5, "m")))
 
-    def test_11_horizon_specific_windows_stay_inside_split(self):
+    def test_11_horizon_specific_targets_stay_inside_test(self):
         for protocol in self.protocols.values():
-            for split, bundle in protocol.evaluation_windows.items():
-                split_end = np.datetime64(self.cfg["splits"][split][1])
-                for horizon in self.cfg["evaluation_horizons"]:
-                    eligible = bundle.target_valid[:, :horizon].all(axis=1)
-                    end = bundle.target_start[eligible] + np.timedelta64((horizon - 1) * 5, "m")
-                    self.assertTrue(np.all(end <= split_end))
+            bundle = protocol.evaluation_windows["test"]
+            split_start = np.datetime64(self.cfg["splits"]["test"][0])
+            split_end = np.datetime64(self.cfg["splits"]["test"][1])
+            for horizon in self.cfg["evaluation_horizons"]:
+                eligible = bundle.target_valid[:, :horizon].all(axis=1)
+                end = bundle.target_start[eligible] + np.timedelta64((horizon - 1) * 5, "m")
+                self.assertTrue(np.all(bundle.target_start[eligible] >= split_start))
+                self.assertTrue(np.all(end <= split_end))
 
-    def test_12_inputs_and_fitted_arrays_are_finite(self):
+    def test_12_validation_checkpoint_uses_complete_h144_windows(self):
+        for protocol in self.protocols.values():
+            self.assertEqual(protocol.validation_windows.y_raw.shape[1], 144)
+            self.assertTrue(protocol.validation_windows.target_valid.all())
+
+    def test_13_inputs_for_preprocessing_are_finite(self):
         for protocol in self.protocols.values():
             self.assertTrue(np.isfinite(protocol.train_windows.x).all())
             self.assertTrue(np.isfinite(protocol.validation_windows.x).all())
             self.assertTrue(np.isfinite(protocol.evaluation_windows["test"].x).all())
 
-    def test_13_daylight_is_evaluation_only(self):
+    def test_14_daylight_is_evaluation_only(self):
         for protocol in self.protocols.values():
-            expected = 0.01 * protocol.train_target_max
-            self.assertAlmostEqual(protocol.daylight_threshold, expected)
+            self.assertAlmostEqual(protocol.daylight_threshold, 0.01 * protocol.train_target_max)
             self.assertNotIn("daylight", "|".join(protocol.feature_columns).lower())
 
-    def test_14_source_files_are_not_written(self):
-        before = {p.data_path: (p.data_path.stat().st_size, p.data_path.stat().st_mtime_ns)
-                  for p in self.protocols.values()}
-        for path, signature in before.items():
+    def test_15_daily_matched_mask_removes_daily_missing_points_for_every_method(self):
+        for protocol in self.protocols.values():
+            bundle = protocol.evaluation_windows["test"]
+            _, daily = bench.persistence_arrays(protocol, bundle)
+            for horizon in self.cfg["evaluation_horizons"]:
+                for scope in ("regular_full_timeline", "daylight"):
+                    mask = bench.daily_matched_point_mask(
+                        bundle, daily, horizon, scope, protocol.daylight_threshold
+                    )
+                    self.assertFalse(np.any(mask & ~np.isfinite(daily[:, :horizon])))
+
+    def test_16_stale_array_is_rejected(self):
+        with self.assertRaises(bench.StaleArtifactError):
+            bench._array_equal("labels", np.array([1.0]), np.array([2.0]))
+
+
+class ArtifactIntegrityTests(unittest.TestCase):
+    """Tests that require all 36 local completed runs; absence is a failure, not a skip."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.cfg = bench.load_config()
+        cls.protocols = protocols()
+        cls.root = bench.RESULTS
+        cls.markers = sorted(cls.root.glob("*/completed.json"))
+        if len(cls.markers) != 36:
+            raise AssertionError(f"Expected 36 completed artifacts, found {len(cls.markers)} at {cls.root}")
+        cls.signatures = {
+            p: (p.stat().st_size, p.stat().st_mtime_ns)
+            for marker in cls.markers
+            for p in (marker, marker.parent / "test_H144.npz", marker.parent / "best_validation.pt")
+        }
+
+    def test_01_all_run_identities_and_checkpoint_inputs_match(self):
+        for marker in self.markers:
+            info = json.loads(marker.read_text(encoding="utf-8"))
+            _, _, model = bench.validate_completed_artifact(
+                self.protocols[info["dataset"]], info["model"], int(info["seed"]),
+                self.cfg, torch.device("cpu"), marker.parent, reforward=False,
+            )
+            self.assertEqual(bench.parameter_count(model), int(info["parameter_count"]))
+
+    def test_02_saved_arrays_equal_current_protocol(self):
+        for marker in self.markers:
+            info = json.loads(marker.read_text(encoding="utf-8"))
+            bundle = self.protocols[info["dataset"]].evaluation_windows["test"]
+            with np.load(marker.parent / "test_H144.npz") as saved:
+                self.assertTrue(np.array_equal(saved["labels"], bundle.y_raw, equal_nan=True))
+                self.assertTrue(np.array_equal(saved["target_valid"], bundle.target_valid))
+                self.assertTrue(np.array_equal(saved["forecast_origin"].astype("datetime64[ns]"),
+                                               bundle.forecast_origin.astype("datetime64[ns]")))
+                self.assertTrue(np.array_equal(saved["target_start"].astype("datetime64[ns]"),
+                                               bundle.target_start.astype("datetime64[ns]")))
+
+    def test_03_predictions_are_finite_h144(self):
+        for marker in self.markers:
+            with np.load(marker.parent / "test_H144.npz") as saved:
+                self.assertEqual(saved["predictions"].shape[1], 144)
+                self.assertTrue(np.isfinite(saved["predictions"]).all())
+
+    def test_04_checkpoint_is_validation_selected(self):
+        for marker in self.markers:
+            info = json.loads(marker.read_text(encoding="utf-8"))
+            state = torch.load(marker.parent / "best_validation.pt", map_location="cpu", weights_only=False)
+            self.assertEqual(int(state["epoch"]), int(info["best_epoch"]))
+            self.assertAlmostEqual(float(state["validation_global_mse"]),
+                                   float(info["best_validation_mse"]), places=10)
+
+    def test_05_all_models_share_labels_origins_and_masks_by_dataset(self):
+        references = {}
+        for marker in self.markers:
+            info = json.loads(marker.read_text(encoding="utf-8"))
+            with np.load(marker.parent / "test_H144.npz") as saved:
+                arrays = (saved["labels"].copy(), saved["target_valid"].copy(),
+                          saved["forecast_origin"].copy())
+            if info["dataset"] not in references:
+                references[info["dataset"]] = arrays
+            else:
+                ref = references[info["dataset"]]
+                self.assertTrue(np.array_equal(arrays[0], ref[0], equal_nan=True))
+                self.assertTrue(np.array_equal(arrays[1], ref[1]))
+                self.assertTrue(np.array_equal(arrays[2], ref[2]))
+
+    def test_06_daily_matched_counts_are_identical_for_every_method(self):
+        metrics = bench.pd.read_csv(bench.METRICS_PATH)
+        q = metrics[
+            metrics.analysis.eq("supplementary_daily_matched") &
+            metrics.metric.eq("RMSE") &
+            metrics.statistic.isin(["per_seed", "deterministic"])
+        ]
+        for _, group in q.groupby(["dataset", "horizon_steps", "scope"]):
+            self.assertEqual(group.forecast_origin_count.nunique(), 1)
+            self.assertEqual(group.valid_target_count.nunique(), 1)
+            self.assertEqual(len(group), 14)
+
+    def test_07_recomputed_metrics_are_finite(self):
+        metrics = bench.pd.read_csv(bench.METRICS_PATH)
+        self.assertTrue(np.isfinite(metrics["value"].astype(float)).all())
+
+    def test_08_no_protected_artifact_was_modified(self):
+        for path, signature in self.signatures.items():
             self.assertEqual((path.stat().st_size, path.stat().st_mtime_ns), signature)
 
-    def test_15_completed_artifacts_are_finite_and_fair(self):
-        completed = list(bench.RESULTS.glob("*/completed.json"))
-        if not completed:
-            self.skipTest("full experiment has not completed yet")
-        self.assertEqual(len(completed), 36)
-        references = {}
-        for marker in completed:
-            artifact = marker.parent / "test_H144.npz"
-            self.assertTrue(artifact.exists())
-            with np.load(artifact) as saved:
-                prediction = saved["predictions"]
-                labels = saved["labels"]
-                valid = saved["target_valid"]
-                origins = saved["forecast_origin"]
-                starts = saved["target_start"]
-            self.assertEqual(prediction.shape[1], 144)
-            self.assertTrue(np.isfinite(prediction).all())
-            self.assertTrue(np.all(starts - origins == np.timedelta64(5, "m")))
-            dataset = marker.parent.name.rsplit("_", 2)[-2]
-            if dataset not in references:
-                references[dataset] = (labels, valid, origins)
-            else:
-                ref = references[dataset]
-                self.assertTrue(np.array_equal(labels, ref[0], equal_nan=True))
-                self.assertTrue(np.array_equal(valid, ref[1]))
-                self.assertTrue(np.array_equal(origins, ref[2]))
+    def test_09_completed_artifact_reuse_never_calls_training(self):
+        marker = self.markers[0]
+        info = json.loads(marker.read_text(encoding="utf-8"))
+        original = bench.train_model
+        bench.train_model = lambda *args, **kwargs: self.fail("train_model was called")
+        try:
+            bench.run_one(self.protocols[info["dataset"]], info["model"], int(info["seed"]),
+                          self.cfg, torch.device("cpu"), allow_training=False)
+        finally:
+            bench.train_model = original
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--unit-only", action="store_true")
+    parser.add_argument("--artifact-only", action="store_true")
+    args = parser.parse_args()
+    if args.unit_only and args.artifact_only:
+        raise SystemExit("Choose only one test subset")
+    loader = unittest.TestLoader()
+    if args.unit_only:
+        suite = loader.loadTestsFromTestCase(OrdinaryUnitTests)
+    elif args.artifact_only:
+        suite = loader.loadTestsFromTestCase(ArtifactIntegrityTests)
+    else:
+        suite = unittest.TestSuite([
+            loader.loadTestsFromTestCase(OrdinaryUnitTests),
+            loader.loadTestsFromTestCase(ArtifactIntegrityTests),
+        ])
+    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    raise SystemExit(0 if result.wasSuccessful() else 1)
 
 
 if __name__ == "__main__":
-    unittest.main(verbosity=2)
+    main()

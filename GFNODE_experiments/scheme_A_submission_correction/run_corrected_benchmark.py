@@ -32,7 +32,7 @@ from torch.utils.data import DataLoader, TensorDataset
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
-RESULTS = HERE / "results"
+RESULTS = Path(os.environ.get("SCHEME_A_CORRECTION_RESULTS_ROOT", HERE / "results")).resolve()
 CONFIG_PATH = HERE / "config.json"
 METRICS_PATH = HERE / "corrected_metrics.csv"
 MODEL_NAMES = (
@@ -42,6 +42,15 @@ MODEL_NAMES = (
     "Depthwise convolutional TCN",
 )
 DATASETS = ("Sanyo", "Hanwha", "Qcells")
+
+
+class StaleArtifactError(RuntimeError):
+    """Raised when a completed run is inconsistent with the active protocol."""
+
+
+def artifact_reference(run_id: str) -> str:
+    """Stable provenance label without committing a machine-specific absolute path."""
+    return f"local_results/{run_id}/test_H144.npz"
 
 
 def load_config() -> dict:
@@ -626,7 +635,7 @@ def evaluate_prediction(rows: list[dict], protocol: CorrectedProtocol, model: st
 
 
 def evaluate_persistence(rows: list[dict], protocol: CorrectedProtocol, bundle: WindowBundle) -> None:
-    last, daily = persistence_arrays(protocol, bundle)
+    last, _ = persistence_arrays(protocol, bundle)
     for analysis, full_h144_only in (("primary_horizon_specific", False), ("secondary_h144_common", True)):
         for horizon in protocol.cfg["evaluation_horizons"]:
             for scope in ("regular_full_timeline", "daylight"):
@@ -638,25 +647,72 @@ def evaluate_persistence(rows: list[dict], protocol: CorrectedProtocol, bundle: 
                                        analysis, horizon, scope, "deterministic", origin_count,
                                        values["valid_target_count"], "causal_last_observed_power")
                 emit_metric_rows(rows, base, values)
+
+
+def evaluate_daily_matched(rows: list[dict], protocol: CorrectedProtocol, bundle: WindowBundle,
+                           predictions: dict[tuple[str, int], np.ndarray]) -> None:
+    """Evaluate every method on the exact point mask available to Daily Persistence."""
+    last, daily = persistence_arrays(protocol, bundle)
     for horizon in protocol.cfg["evaluation_horizons"]:
         for scope in ("regular_full_timeline", "daylight"):
-            eligible = bundle.target_valid[:, :horizon].all(axis=1)
-            mask = np.repeat(eligible[:, None], horizon, axis=1) & np.isfinite(daily[:, :horizon])
-            if scope == "daylight":
-                mask &= bundle.y_raw[:, :horizon] > protocol.daylight_threshold
-            values = metric_values(bundle.y_raw[:, :horizon], daily[:, :horizon], mask,
-                                   protocol.train_target_range)
-            origin_count = int(np.any(mask, axis=1).sum())
-            base = base_metric_row(protocol.dataset, "Daily Persistence", "DETERMINISTIC",
-                                   "supplementary_daily", horizon, scope, "deterministic", origin_count,
-                                   values["valid_target_count"], "exact_24h_lag_no_interpolation")
-            emit_metric_rows(rows, base, values)
+            matched_mask = daily_matched_point_mask(
+                bundle, daily, horizon, scope, protocol.daylight_threshold
+            )
+            origin_count = int(np.any(matched_mask, axis=1).sum())
+            daily_values = metric_values(
+                bundle.y_raw[:, :horizon], daily[:, :horizon], matched_mask,
+                protocol.train_target_range,
+            )
+            daily_base = base_metric_row(
+                protocol.dataset, "Daily Persistence", "DETERMINISTIC",
+                "supplementary_daily_matched", horizon, scope, "deterministic",
+                origin_count, daily_values["valid_target_count"],
+                "exact_24h_lag_no_interpolation; common point mask",
+            )
+            emit_metric_rows(rows, daily_base, daily_values)
+
+            last_values = metric_values(
+                bundle.y_raw[:, :horizon], last[:, :horizon], matched_mask,
+                protocol.train_target_range,
+            )
+            last_base = base_metric_row(
+                protocol.dataset, "Last-value Persistence", "DETERMINISTIC",
+                "supplementary_daily_matched", horizon, scope, "deterministic",
+                origin_count, last_values["valid_target_count"],
+                "causal_last_observed_power; Daily-matched point mask",
+            )
+            emit_metric_rows(rows, last_base, last_values, daily_values)
+
+            for (model_name, seed), prediction in predictions.items():
+                values = metric_values(
+                    bundle.y_raw[:, :horizon], prediction[:, :horizon], matched_mask,
+                    protocol.train_target_range,
+                )
+                run_id = (
+                    f"{model_name.replace(' ', '_').replace('-', '_')}_"
+                    f"{protocol.dataset}_{seed}"
+                )
+                base = base_metric_row(
+                    protocol.dataset, model_name, seed, "supplementary_daily_matched",
+                    horizon, scope, "per_seed", origin_count,
+                    values["valid_target_count"], artifact_reference(run_id),
+                )
+                emit_metric_rows(rows, base, values, daily_values)
+
+
+def daily_matched_point_mask(bundle: WindowBundle, daily: np.ndarray, horizon: int,
+                             scope: str, daylight_threshold: float) -> np.ndarray:
+    """One shared point mask for Daily, Last-value, and every neural forecast."""
+    _, base_mask = evaluation_mask(bundle, horizon, scope, daylight_threshold, False)
+    return base_mask & np.isfinite(daily[:, :horizon])
 
 
 def add_persistence_skill_zero(rows: list[dict]) -> None:
     additions = []
     for row in rows:
-        if row["model"] == "Last-value Persistence" and row["metric"] in ("RMSE", "MAE"):
+        if (row["model"] == "Last-value Persistence" and
+                row["analysis"] != "supplementary_daily_matched" and
+                row["metric"] in ("RMSE", "MAE")):
             added = dict(row)
             added["metric"] = f"{row['metric']}_skill"
             added["value"] = 0.0
@@ -722,7 +778,7 @@ def add_run_information_rows(rows: list[dict], run_information: list[dict]) -> N
                 "scope": "not_applicable", "statistic": "per_seed", "metric": metric,
                 "value": value, "unit": units[metric], "forecast_origin_count": "",
                 "valid_target_count": "", "normalization_definition": "not_applicable",
-                "prediction_artifact": str((RESULTS / info["run_id"]).relative_to(REPO)),
+                "prediction_artifact": artifact_reference(info["run_id"]),
             })
 
 
@@ -760,22 +816,112 @@ def efficiency_measurement(model: nn.Module, sample: np.ndarray, device: torch.d
     }
 
 
+def _array_equal(name: str, actual: np.ndarray, expected: np.ndarray) -> None:
+    if actual.shape != expected.shape:
+        raise StaleArtifactError(f"STALE_ARTIFACT: {name} shape {actual.shape} != {expected.shape}")
+    if np.issubdtype(actual.dtype, np.floating):
+        equal = np.array_equal(actual, expected, equal_nan=True)
+    else:
+        equal = np.array_equal(actual, expected)
+    if not equal:
+        raise StaleArtifactError(f"STALE_ARTIFACT: {name} differs from current protocol")
+
+
+def validate_completed_artifact(protocol: CorrectedProtocol, model_name: str, seed: int,
+                                cfg: dict, device: torch.device, run_dir: Path,
+                                reforward: bool = False) -> tuple[dict, np.ndarray, nn.Module]:
+    """Validate a completed artifact before any prediction is reused."""
+    run_id = f"{model_name.replace(' ', '_').replace('-', '_')}_{protocol.dataset}_{seed}"
+    complete = run_dir / "completed.json"
+    artifact = run_dir / "test_H144.npz"
+    checkpoint = run_dir / "best_validation.pt"
+    missing = [str(path) for path in (complete, artifact, checkpoint) if not path.is_file()]
+    if missing:
+        raise StaleArtifactError(f"STALE_ARTIFACT: missing required files for {run_id}: {missing}")
+    info = json.loads(complete.read_text(encoding="utf-8"))
+    expected_identity = {
+        "run_id": run_id, "model": model_name, "dataset": protocol.dataset, "seed": seed,
+    }
+    for key, expected in expected_identity.items():
+        if info.get(key) != expected:
+            raise StaleArtifactError(
+                f"STALE_ARTIFACT: completed.json {key}={info.get(key)!r}, expected {expected!r}"
+            )
+    if cfg["lookback"] != 72 or cfg["output_horizon"] != 144:
+        raise StaleArtifactError("STALE_ARTIFACT: active lookback/Horizon differs from 72/144")
+    expected_splits = {
+        "train": ["2018-04-01 00:00:00", "2018-07-15 23:55:00"],
+        "validation": ["2018-07-16 00:00:00", "2018-08-07 23:55:00"],
+        "test": ["2018-08-08 00:00:00", "2018-08-31 23:55:00"],
+    }
+    if cfg["splits"] != expected_splits:
+        raise StaleArtifactError("STALE_ARTIFACT: active split dates differ from completed protocol")
+
+    bundle = protocol.evaluation_windows["test"]
+    with np.load(artifact) as saved:
+        required = {"predictions", "labels", "target_valid", "forecast_origin", "target_start"}
+        if not required.issubset(saved.files):
+            raise StaleArtifactError(f"STALE_ARTIFACT: missing arrays {sorted(required-set(saved.files))}")
+        prediction = saved["predictions"].copy()
+        labels = saved["labels"].copy()
+        target_valid = saved["target_valid"].copy()
+        origins = saved["forecast_origin"].astype("datetime64[ns]")
+        starts = saved["target_start"].astype("datetime64[ns]")
+    if prediction.shape != bundle.y_raw.shape or prediction.shape[1] != cfg["output_horizon"]:
+        raise StaleArtifactError(
+            f"STALE_ARTIFACT: prediction shape {prediction.shape} != {bundle.y_raw.shape}"
+        )
+    if not np.isfinite(prediction).all():
+        raise StaleArtifactError("STALE_ARTIFACT: predictions contain non-finite values")
+    _array_equal("labels", labels, bundle.y_raw)
+    _array_equal("target_valid", target_valid, bundle.target_valid)
+    _array_equal("forecast_origin", origins, bundle.forecast_origin.astype("datetime64[ns]"))
+    _array_equal("target_start", starts, bundle.target_start.astype("datetime64[ns]"))
+
+    state = torch.load(checkpoint, map_location=device, weights_only=False)
+    if int(state.get("epoch", -1)) != int(info.get("best_epoch", -2)):
+        raise StaleArtifactError("STALE_ARTIFACT: checkpoint epoch differs from completed.json")
+    if not math.isclose(float(state.get("validation_global_mse", math.nan)),
+                        float(info.get("best_validation_mse", math.inf)),
+                        rel_tol=1e-7, abs_tol=1e-10):
+        raise StaleArtifactError("STALE_ARTIFACT: checkpoint Validation MSE differs from completed.json")
+    model = make_model(model_name, 17, cfg).to(device)
+    try:
+        model.load_state_dict(state["state_dict"], strict=True)
+    except Exception as exc:
+        raise StaleArtifactError(f"STALE_ARTIFACT: checkpoint is not a 17-input model: {exc}") from exc
+    if parameter_count(model) != int(info.get("parameter_count", -1)):
+        raise StaleArtifactError("STALE_ARTIFACT: parameter count differs from completed.json")
+    if reforward:
+        scaled, _ = predict_scaled(model, bundle.x, cfg["training"]["batch_size"], device)
+        regenerated = inverse_target(protocol, scaled)
+        if not np.allclose(regenerated, prediction, rtol=2e-5, atol=2e-5):
+            delta = float(np.max(np.abs(regenerated.astype(float) - prediction.astype(float))))
+            raise StaleArtifactError(
+                f"STALE_ARTIFACT: best checkpoint does not reproduce saved prediction; max_abs={delta}"
+            )
+    return info, prediction, model
+
+
 def run_one(protocol: CorrectedProtocol, model_name: str, seed: int, cfg: dict,
-            device: torch.device) -> tuple[dict, np.ndarray, dict]:
+            device: torch.device, allow_training: bool = True) -> tuple[dict, np.ndarray, dict]:
     run_id = f"{model_name.replace(' ', '_').replace('-', '_')}_{protocol.dataset}_{seed}"
     run_dir = RESULTS / run_id
     run_dir.mkdir(parents=True, exist_ok=True)
     artifact = run_dir / "test_H144.npz"
     complete = run_dir / "completed.json"
     model = make_model(model_name, protocol.train_windows.x.shape[-1], cfg).to(device)
-    if complete.exists() and artifact.exists() and (run_dir / "best_validation.pt").exists():
-        info = json.loads(complete.read_text(encoding="utf-8"))
-        state = torch.load(run_dir / "best_validation.pt", map_location=device, weights_only=False)
-        model.load_state_dict(state["state_dict"])
-        with np.load(artifact) as saved:
-            prediction = saved["predictions"]
+    existing = [complete.exists(), artifact.exists(), (run_dir / "best_validation.pt").exists()]
+    if any(existing):
+        if not all(existing):
+            raise StaleArtifactError(f"STALE_ARTIFACT: partial completed run {run_id}")
+        info, prediction, model = validate_completed_artifact(
+            protocol, model_name, seed, cfg, device, run_dir, reforward=False
+        )
         efficiency = info["efficiency"]
         return info, prediction, efficiency
+    if not allow_training:
+        raise StaleArtifactError(f"STALE_ARTIFACT: completed artifact is absent for {run_id}")
     train_cfg = cfg["training"]
     train_loader = training_loader(protocol.train_windows, train_cfg["batch_size"], True)
     validation_loader = training_loader(protocol.validation_windows, train_cfg["batch_size"], False)
@@ -853,7 +999,7 @@ def run_all() -> None:
                           np.array_equal(bundle.target_valid, reference[1]) and
                           np.array_equal(bundle.forecast_origin, reference[2])):
                     raise AssertionError("Model fairness arrays differ")
-                artifact = str((RESULTS / info["run_id"] / "test_H144.npz").relative_to(REPO))
+                artifact = artifact_reference(info["run_id"])
                 evaluate_prediction(rows, protocol, model_name, seed, prediction, bundle, artifact)
                 run_information.append(info)
                 print(json.dumps({"completed": len(run_information), "of": 36, "run": info["run_id"],
@@ -869,6 +1015,59 @@ def run_all() -> None:
             raise AssertionError(f"Source data changed: {path}")
     print(json.dumps({"status": "completed", "runs": len(run_information),
                       "metric_rows": len(rows), "device": str(device)}), flush=True)
+
+
+def evidence_only(reforward: bool = True) -> None:
+    """Recompute final evidence from completed runs without training or mutating artifacts."""
+    cfg = load_config()
+    protocols = preflight(cfg)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    completed = sorted(RESULTS.glob("*/completed.json"))
+    if len(completed) != 36:
+        raise StaleArtifactError(f"STALE_ARTIFACT: expected 36 completed runs, found {len(completed)}")
+    protected = [p for marker in completed for p in (
+        marker, marker.parent / "test_H144.npz", marker.parent / "best_validation.pt"
+    )]
+    before = {p: (p.stat().st_size, p.stat().st_mtime_ns) for p in protected}
+    source_before = {
+        p.data_path: (p.data_path.stat().st_size, p.data_path.stat().st_mtime_ns)
+        for p in protocols.values()
+    }
+    rows: list[dict] = []
+    run_information: list[dict] = []
+    reproduced = 0
+    for protocol in protocols.values():
+        bundle = protocol.evaluation_windows["test"]
+        evaluate_persistence(rows, protocol, bundle)
+        predictions: dict[tuple[str, int], np.ndarray] = {}
+        for model_name in MODEL_NAMES:
+            for seed in cfg["seeds"]:
+                run_id = f"{model_name.replace(' ', '_').replace('-', '_')}_{protocol.dataset}_{seed}"
+                info, prediction, _ = validate_completed_artifact(
+                    protocol, model_name, seed, cfg, device, RESULTS / run_id,
+                    reforward=reforward,
+                )
+                reproduced += int(reforward)
+                predictions[(model_name, seed)] = prediction
+                evaluate_prediction(
+                    rows, protocol, model_name, seed, prediction, bundle,
+                    artifact_reference(run_id),
+                )
+                run_information.append(info)
+        evaluate_daily_matched(rows, protocol, bundle, predictions)
+    add_persistence_skill_zero(rows)
+    aggregate_neural_rows(rows, cfg["seeds"])
+    add_rank_rows(rows)
+    add_run_information_rows(rows, run_information)
+    write_metrics(rows)
+    for path, signature in {**before, **source_before}.items():
+        if (path.stat().st_size, path.stat().st_mtime_ns) != signature:
+            raise AssertionError(f"Protected source changed during evidence audit: {path}")
+    print(json.dumps({
+        "status": "evidence_recomputed", "runs": len(run_information),
+        "checkpoint_predictions_reproduced": reproduced,
+        "metric_rows": len(rows), "device": str(device), "training_executed": False,
+    }), flush=True)
 
 
 def inventory_only() -> None:
@@ -901,9 +1100,16 @@ def inventory_only() -> None:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--inventory-only", action="store_true")
+    parser.add_argument("--evidence-only", action="store_true")
+    parser.add_argument("--skip-reforward", action="store_true")
     return parser.parse_args()
 
 
 if __name__ == "__main__":
     arguments = parse_args()
-    inventory_only() if arguments.inventory_only else run_all()
+    if arguments.inventory_only:
+        inventory_only()
+    elif arguments.evidence_only:
+        evidence_only(reforward=not arguments.skip_reforward)
+    else:
+        run_all()

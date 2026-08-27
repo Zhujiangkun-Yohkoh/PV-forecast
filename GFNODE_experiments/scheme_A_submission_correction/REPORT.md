@@ -1,32 +1,32 @@
-# Scheme A submission-critical correction report
+# Scheme A submission-final evidence audit
 
-## Decision
+## Final decision
 
-**GO_FOR_CORRECTED_BENCHMARK_APPLICATION_MANUSCRIPT; NO-GO for an algorithm-superiority manuscript.** The corrected experiment supports a leakage-aware application benchmark, but not a claim that any evaluated architecture is new or uniformly superior. Last-value persistence is beaten in most, but not all, combinations; supplementary daily persistence remains stronger than the best neural result in 22 of 24 array--horizon--scope combinations on its slightly different eligible sample set.
+**SCHEME_A_EVIDENCE_READY_FOR_SUBMISSION_PACKAGE.** This means that the numerical evidence and manuscript descriptions are internally consistent enough to prepare a submission package. It does not authorize filling unconfirmed authorship, CRediT, funding, indexing, or submission-system declarations.
 
-## Corrections implemented
+No neural-network training, optimizer step, backward pass, epoch loop, checkpoint modification, or Test-driven model change was performed in this audit.
 
-- Fixed the seven original numerical inputs, in order: `Performance_Ratio`, `Weather_Temperature_Celsius`, `Weather_Relative_Humidity`, `Global_Horizontal_Radiation`, `Diffuse_Horizontal_Radiation`, `Radiation_Global_Tilted`, and `Radiation_Diffuse_Tilted`.
-- Confirmed that the previous 15-channel tensor comprised seven numerical values, their seven missing-value masks, and one Isolation Forest indicator. It contained neither cyclical time features nor historical `Active_Power`.
-- Added causal historical `Active_Power` and its missing-value mask. The corrected tensor has eight numerical values, eight masks, and one Isolation Forest indicator (17 channels). Future power is never an input.
-- Fit the Active Power imputer/scaler, all other imputers/scalers, and Isolation Forest on Train only.
-- Replaced equal averaging of batch validation means with global masked MSE: accumulated target SSE divided by accumulated valid-target count.
-- Kept the original date splits, lookback 72, H144 output, seeds 42/43/44, AdamW settings, epoch budget, and Validation-only checkpoint selection. The training API has no Test loader argument.
-- Replaced misleading family names with implementation-level descriptions: **Discrete recurrent decoder**, **Inverted-variate Transformer**, **Joint-patch Transformer**, and **Depthwise convolutional TCN**. The published iTransformer, PatchTST, and ModernTCN papers remain architectural inspirations, not implementation-identity claims.
-- Made horizon-specific valid origins the primary analysis. H12/H48/H96/H144 require L72 and only the evaluated target prefix to be valid, although every neural model still outputs H144. Full-H144-common prefixes are retained as a secondary sensitivity analysis.
-- Constructed Last-value Persistence on exactly the same origins, labels, and masks as each neural comparison. Daily Persistence remains supplementary because its 24-hour lag changes eligible counts.
+## Artifact and code audit
 
-## Execution and tests
+- Completed runs found: **36/36**.
+- Required files found per run: `completed.json`, `test_H144.npz`, and `best_validation.pt`.
+- Saved labels, `target_valid`, forecast origins, and target starts agree elementwise with the current 17-channel protocol for all 36 runs.
+- Every checkpoint loads strictly into its expected 17-input model, and its model, array, seed, parameter count, best epoch, and Validation global MSE agree with `completed.json`.
+- All 36 best checkpoints reproduced their saved predictions by no-gradient GPU inference within the declared floating-point tolerance.
+- Lookback 72, output H144, Train/Validation/Test dates, and H144 Validation selection agree with the active configuration.
+- `run_one()` now validates all identity, array, shape, checkpoint, and protocol fields before reuse. A mismatch raises `STALE_ARTIFACT`; evidence-only execution never falls back to training.
+- Protected raw PV files, checkpoints, prediction arrays, and completion markers retained their original sizes and modification times.
 
-- Real GPU runs: **36/36 completed** (4 models x 3 arrays x 3 seeds).
-- Numerical divergence/non-finite outputs: **none**.
-- Ordinary protocol tests: **15/15 passed**.
-- Device: NVIDIA GeForce RTX 3060 Laptop GPU; float32.
-- Local `results/` contains checkpoints, predictions, labels, origins, masks, and epoch logs and is intentionally excluded from Git.
+## Tests
 
-## Primary common sample counts
+- Ordinary tests not requiring local results: **16/16 passed**.
+- Full tests requiring all 36 local artifacts: **9/9 passed**.
+- Skipped tests: **0**.
+- The test suite itself uses inference only and does not execute backward or an optimizer.
 
-Counts are identical for every neural model and Last-value Persistence within each array/horizon. `valid_target_count` is for the full timeline; daylight counts use true target power above 1% of the Train maximum and are evaluation-only.
+## Primary horizon-specific evidence
+
+All models are trained and selected on complete H144 Train/Validation windows. Horizon-specific eligibility is used only for the primary Test prefixes. Last-value Persistence and every neural method use identical origins, labels, and point masks in each primary comparison.
 
 | Array | Horizon | Origins | Valid targets | Daylight origins | Daylight targets |
 |---|---:|---:|---:|---:|---:|
@@ -43,63 +43,78 @@ Counts are identical for every neural model and Last-value Persistence within ea
 | Qcells | H96 | 4,227 | 405,792 | 2,927 | 184,959 |
 | Qcells | H144 | 2,996 | 431,424 | 2,800 | 187,950 |
 
-## Qcells H12 correction
+Qcells H12 remains corrected at 6,463 common origins and 77,556 full-timeline targets. Its 36,504 daylight targets are 47.067% of full target points. Full/daylight Last-value RMSE is 0.471/0.682 kW; Inverted-variate is 0.327/0.457 kW; Depthwise TCN is 0.416/0.599 kW.
 
-The old evidence used 3,019 neural origins but 2,996 Last-value Persistence origins, so the comparison was not sample matched. It also contained only 42 daylight target points (0.116% of the old 36,228 neural target points), producing an unrepresentative near-zero full-timeline persistence error.
+The independently recomputed 24-combination primary ranking remains:
 
-The corrected primary comparison has 6,463 common origins and 77,556 common target points. It contains 3,173 daylight origins and 36,504 daylight target points: **49.095% of origins** and **47.067% of target points**, respectively. Corrected Qcells H12 full-timeline RMSE is 0.471 kW for Last-value Persistence versus 0.327 kW for the Inverted-variate Transformer and 0.416 kW for the Depthwise convolutional TCN. The Discrete recurrent decoder (0.923 kW) and Joint-patch Transformer (0.532 kW) remain worse than Last-value Persistence. The previous 0.004 kW persistence result is withdrawn.
+| Method | RMSE wins | Mean rank | Arithmetic mean RMSE skill vs Last |
+|---|---:|---:|---:|
+| Inverted-variate Transformer | 12 | 1.875 | 0.549 |
+| Depthwise convolutional TCN | 9 | 2.167 | 0.515 |
+| Joint-patch Transformer | 2 | 2.458 | 0.493 |
+| Discrete recurrent decoder | 1 | 3.667 | 0.399 |
+| Last-value Persistence | 0 | 4.833 | 0 (reference) |
 
-## Corrected ranking and persistence results
+The arithmetic mean of ratio-based skill is not the same statistic as macro mean RMSE or macro Train-range nRMSE.
 
-Across the 24 primary array x horizon x scope combinations, including Last-value Persistence:
+## Daily Persistence: corrected same-mask comparison
 
-| Method | RMSE wins | Mean rank | Arithmetic mean RMSE skill vs Last | Positive-skill combinations |
+The previous statement used Daily Persistence on its own valid points while neural values came from a different mask. It is retained only as correction history and is not evidence for a win count.
+
+The new analysis is named `supplementary_daily_matched`. For every array, horizon, and scope, the actual finite Daily-Persistence point mask is intersected with label and daylight validity and then applied unchanged to Daily Persistence, Last-value Persistence, and all 12 neural predictions. Thus every method has the same origins, labels, target points, and daylight points within a comparison.
+
+| Array | H | Scope | Origins | Points | Daily RMSE | Best neural (RMSE) | Winner |
+|---|---:|---|---:|---:|---:|---|---|
+| Sanyo | 12 | Full | 6,589 | 79,005 | 0.175 | Discrete recurrent (0.207) | Daily |
+| Sanyo | 12 | Daylight | 3,201 | 36,190 | 0.259 | Depthwise TCN (0.291) | Daily |
+| Sanyo | 48 | Full | 5,905 | 283,197 | 0.160 | Joint-patch (0.615) | Daily |
+| Sanyo | 48 | Daylight | 3,389 | 129,528 | 0.236 | Joint-patch (0.864) | Daily |
+| Sanyo | 96 | Full | 5,024 | 481,821 | 0.129 | Inverted-variate (0.826) | Daily |
+| Sanyo | 96 | Daylight | 3,629 | 215,712 | 0.193 | Inverted-variate (1.134) | Daily |
+| Sanyo | 144 | Full | 4,160 | 598,317 | 0.118 | Inverted-variate (0.775) | Daily |
+| Sanyo | 144 | Daylight | 3,869 | 259,345 | 0.179 | Inverted-variate (1.057) | Daily |
+| Hanwha | 12 | Full | 6,625 | 79,392 | 0.185 | Depthwise TCN (0.176) | Neural |
+| Hanwha | 12 | Daylight | 3,225 | 36,421 | 0.273 | Depthwise TCN (0.231) | Neural |
+| Hanwha | 48 | Full | 6,049 | 289,920 | 0.193 | Inverted-variate (0.575) | Daily |
+| Hanwha | 48 | Daylight | 3,522 | 132,649 | 0.286 | Inverted-variate (0.817) | Daily |
+| Hanwha | 96 | Full | 5,281 | 506,112 | 0.204 | Depthwise TCN (0.804) | Daily |
+| Hanwha | 96 | Daylight | 3,881 | 228,420 | 0.303 | Depthwise TCN (1.136) | Daily |
+| Hanwha | 144 | Full | 4,521 | 649,735 | 0.203 | Depthwise TCN (0.743) | Daily |
+| Hanwha | 144 | Daylight | 4,225 | 287,368 | 0.305 | Depthwise TCN (1.039) | Daily |
+| Qcells | 12 | Full | 6,463 | 77,530 | 0.281 | Inverted-variate (0.327) | Daily |
+| Qcells | 12 | Daylight | 3,173 | 36,504 | 0.409 | Inverted-variate (0.457) | Daily |
+| Qcells | 48 | Full | 5,491 | 263,470 | 0.281 | Inverted-variate (0.808) | Daily |
+| Qcells | 48 | Daylight | 3,071 | 123,447 | 0.410 | Inverted-variate (1.160) | Daily |
+| Qcells | 96 | Full | 4,227 | 405,598 | 0.255 | Inverted-variate (1.137) | Daily |
+| Qcells | 96 | Daylight | 2,927 | 184,959 | 0.378 | Inverted-variate (1.647) | Daily |
+| Qcells | 144 | Full | 2,996 | 431,150 | 0.244 | Depthwise TCN (0.789) | Daily |
+| Qcells | 144 | Daylight | 2,800 | 187,950 | 0.369 | Depthwise TCN (1.152) | Daily |
+
+**Fair result:** Daily Persistence outperforms the best neural implementation in **22/24 matched comparisons**; the best neural implementation wins **2/24**, both at Hanwha H12. The numerical count is unchanged from the historical statement, but its evidentiary basis is now valid because every method uses the same point mask. `corrected_metrics.csv` additionally records MAE, Train-range nRMSE, per-seed RMSE skill relative to Daily Persistence, three-seed means, and sample SD for every matched combination.
+
+## Efficiency source correction
+
+Efficiency rows are read directly from the 36 `completed.json` files. Mean values are:
+
+| Method | Parameters | Mean latency (ms) | Throughput (samples/s) | Peak memory (MiB) |
 |---|---:|---:|---:|---:|
-| Inverted-variate Transformer | 12 | 1.875 | 0.549 | 24/24 |
-| Depthwise convolutional TCN | 9 | 2.167 | 0.515 | 24/24 |
-| Joint-patch Transformer | 2 | 2.458 | 0.493 | 22/24 |
-| Discrete recurrent decoder | 1 | 3.667 | 0.399 | 22/24 |
-| Last-value Persistence | 0 | 4.833 | 0 | reference |
+| Discrete recurrent decoder | 99,362 | 32.204 | 1,116 | 121.12 |
+| Inverted-variate Transformer | 194,960 | 0.558 | 377,131 | 27.31 |
+| Joint-patch Transformer | 148,112 | 0.535 | 421,929 | 26.47 |
+| Depthwise convolutional TCN | 683,024 | 0.706 | 197,426 | 35.27 |
 
-The arithmetic mean of per-combination ratio-based skill is not the same quantity as the mean absolute or Train-range-normalized error. Mean Train-range nRMSE across the 24 combinations is 0.135 for the Inverted-variate Transformer, 0.143 for the Joint-patch Transformer, 0.144 for the Depthwise convolutional TCN, 0.161 for the Discrete recurrent decoder, and 0.329 for Last-value Persistence.
+The manuscript table was updated to these independently re-read values. The prior rounded latency values are withdrawn.
 
-Daily Persistence is a stringent supplementary challenge. Because the exact 24-hour lag slightly changes sample availability, it is not ranked in the primary table. On its eligible sample set, it beats the best neural result in 22/24 combinations; only Hanwha H12 full and daylight favor the Depthwise convolutional TCN. This result must remain prominent in the paper.
+## Manuscript disposition
 
-Restricting all prefixes to complete H144 windows lowers the macro RMSE of every method (for example, 0.808 kW versus 0.771 kW for the Inverted-variate Transformer in primary versus sensitivity summaries). The sensitivity therefore demonstrates sample-selection effects and cannot remain the sole primary analysis.
-
-## Efficiency
-
-| Method | Parameters | Mean batch-1 latency (ms) | Throughput (samples/s) | Mean run training time (s) |
-|---|---:|---:|---:|---:|
-| Discrete recurrent decoder | 99,362 | 31.023 | 1,116 | 563.88 |
-| Inverted-variate Transformer | 194,960 | 0.496 | 377,131 | 23.66 |
-| Joint-patch Transformer | 148,112 | 0.499 | 421,929 | 18.80 |
-| Depthwise convolutional TCN | 683,024 | 0.670 | 197,426 | 24.24 |
-
-These are descriptive measurements on one GPU and exclude loading and disk I/O.
-
-## Disposition of previous conclusions
-
-### Retained
-
-- Train-only preprocessing, split-local windows, Validation-only checkpoint selection, explicit masks, and persistence challenges are necessary.
-- Rankings depend on array, forecast horizon, and evaluation scope.
-- This work is an evaluation/application study, not a new architecture contribution or cross-site generalization study.
-- Daily seasonal persistence is materially stronger than Last-value Persistence and must not be hidden.
-
-### Modified
-
-- Neural models do outperform Last-value Persistence on average after causal history power is supplied and samples are matched; this is expressed separately as absolute error and ratio-based skill.
-- The strongest learned implementation is the Inverted-variate Transformer in this corrected benchmark, not the prior model labeled ModernTCN.
-- Test is described only as excluded from preprocessing fitting, training, and checkpoint selection; it is not described as untouched or evaluated once at project level.
-
-### Withdrawn
-
-- The old 18/24 neural-win claim for “ModernTCN.”
-- The conclusion that no neural model beats Last-value Persistence on average.
-- The old Qcells H12 full/daylight results and any ranking based on their unmatched and tiny daylight sample.
-- Claims that the three compact implementations are complete official iTransformer, PatchTST, or ModernTCN reproductions.
+- **Retained:** title, primary ranking, Last-value Persistence skills, Qcells H12 correction, and application/benchmark positioning.
+- **Strengthened:** Daily Persistence is now a same-mask result rather than an unmatched contextual comparison.
+- **Corrected:** Methods explicitly state complete-H144 Train/Validation checkpoint selection and horizon-specific Test-only eligibility; regular-grid missing rows, masks, and Train-only imputation are explicit; efficiency values come directly from run metadata.
+- **Withdrawn:** any inference based on different Daily and neural point masks, including the former wording “on its own eligible sample set.”
+- **Unchanged boundary:** the four neural models are compact project implementations, not official full reproductions or new architectures; Test has been repeatedly inspected during development and is not an independent external confirmation.
 
 ## Reviewer-style judgment
 
-The corrected evidence is sufficient for a transparent benchmark/application manuscript if the paper foregrounds sample fairness, the causal power-history correction, horizon-specific eligibility, and both persistence references. It is not sufficient for a new-algorithm paper or a universal neural-superiority claim. The strongest publishable finding is conditional: learned H144 trajectory models consistently beat Last-value Persistence after correction, yet Daily Persistence remains the dominant supplementary comparator in 22/24 settings. A paper that reports both facts is defensible; a paper that suppresses the second is not.
+The evidence is internally coherent for a transparent benchmark/application submission package. The result is scientifically challenging rather than favorable: the learned models beat Last-value Persistence, but Daily Persistence wins 22/24 strictly matched supplementary comparisons. This must remain prominent in the abstract, results, discussion, limitations, and conclusion. The manuscript is not evidence for algorithmic novelty, universal neural superiority, or cross-site generalization.
+
+No new training is justified or authorized by this audit. Remaining work is human submission metadata and editorial positioning, not numerical repair.
