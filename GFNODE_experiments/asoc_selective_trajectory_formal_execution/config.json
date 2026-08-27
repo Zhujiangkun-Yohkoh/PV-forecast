@@ -1,0 +1,64 @@
+{
+  "study_id": "C1-S3",
+  "timezone": {"authoritative_clock": "UTC", "analysis_clock": "ACST", "utc_to_acst_minutes": 570, "use_exported_local": false},
+  "fresh_download_roots": {
+    "2021": "C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PV_improve_v1/原始Dataset/高分辨率气象数据集/C1_fresh_downloads/2021",
+    "2023": "C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PV_improve_v1/原始Dataset/高分辨率气象数据集/C1_fresh_downloads/2023"
+  },
+  "irradiance_files": {
+    "2021": "C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PV_improve_v1/原始Dataset/高分辨率气象数据集/C1_fresh_downloads/2021/fsm1m_7111_ekistica-alice-springs-ekistica-alice-springs_irradiancedata_1sec_2021.csv",
+    "2022": "C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PV_improve_v1/GFNODE_experiments/asoc_multirate_redownload_validation/fsm1m_7111_ekistica-alice-springs-ekistica-alice-springs_irradiancedata_1sec_2022.csv",
+    "2023": "C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PV_improve_v1/原始Dataset/高分辨率气象数据集/C1_fresh_downloads/2023/fsm1m_7111_ekistica-alice-springs-ekistica-alice-springs_irradiancedata_1sec_2023.csv"
+  },
+  "excluded_sources": ["C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PV_improve_v1/原始Dataset/高分辨率气象数据集/fsm1m_7111_ekistica-alice-springs-ekistica-alice-springs_irradiancedata_1sec_2023.csv"],
+  "pv_files": {
+    "Site 17 Sanyo": "C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PV_improve_v1/原始Dataset/5min pv active power data/17 Sanyo.csv",
+    "Site 25 Hanwha": "C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PV_improve_v1/原始Dataset/5min pv active power data/25 Hanwha.csv",
+    "Site 38 Q CELLS": "C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PV_improve_v1/原始Dataset/5min pv active power data/38 Q CELLS.csv"
+  },
+  "stages": {
+    "BASE_TRAIN": ["2021-01-01 00:00:00", "2022-01-01 00:00:00"],
+    "BASE_MODEL_VALIDATION": ["2022-01-01 00:00:00", "2022-05-01 00:00:00"],
+    "RISK_FIT": ["2022-05-01 00:00:00", "2022-09-01 00:00:00"],
+    "RISK_CALIBRATION": ["2022-09-01 00:00:00", "2023-01-01 00:00:00"],
+    "FINAL_TEST": ["2023-01-01 00:00:00", "2024-01-01 00:00:00"]
+  },
+  "lookback": 72,
+  "horizon": 12,
+  "seeds": [42, 43, 44],
+  "input_features": ["Active_Power", "sin_time_of_day", "cos_time_of_day", "sin_day_of_year", "cos_day_of_year", "MB0_mean", "MB0_valid_fraction", "MB0_valid_mask", "MB1_mean", "MB1_valid_fraction", "MB1_valid_mask", "MB2_mean", "MB2_valid_fraction", "MB2_valid_mask"],
+  "frozen_daylight_threshold_kw": {"Site 17 Sanyo": 0.059843, "Site 25 Hanwha": 0.055657, "Site 38 Q CELLS": 0.056049},
+  "daylight_threshold_policy": "0.01 * BASE_TRAIN positive Active_Power p99.9 (numpy higher)",
+  "base_forecaster": {
+    "formal_name": "DEPTHWISE_TCN_TRAJECTORY", "input_channels": 14, "hidden_channels": 64,
+    "layers": 4, "kernel_size": 5, "dilation_schedule": [1, 1, 1, 1],
+    "padding": "symmetric_same_within_past_only_input_window", "cropping": "none", "activation": "GELU",
+    "normalization": "none", "residual": false, "dropout": 0.0,
+    "readout": "flatten_64x72_then_linear_to_12", "initialization": "PyTorch_default",
+    "output_steps": 12, "evaluation_clipping": "none"
+  },
+  "preprocessing": {
+    "fit_stage": "BASE_TRAIN", "input_imputation": "per-feature BASE_TRAIN median",
+    "input_scaler": "BASE_TRAIN mean/std; valid fraction and mask unscaled", "target_scaler": "BASE_TRAIN target mean/std",
+    "zero_variance": "scale=1.0 when std<=1e-8", "risk_target_range": "max(BASE_TRAIN target values)-min(BASE_TRAIN target values); fail if <=0"
+  },
+  "training": {
+    "authorized_only_if_data_ready_and_tests_pass": true, "optimizer": "AdamW", "learning_rate": 0.001,
+    "weight_decay": 0.00001, "batch_size": 256, "max_epochs": 25, "patience": 5, "min_delta": 1e-8,
+    "checkpoint_tie_rule": "strictly lower BASE_MODEL_VALIDATION RMSE kW replaces best", "gradient_clipping": 1.0,
+    "scheduler": null, "mixed_precision": false, "num_workers": 0, "shuffle_train": true, "shuffle_eval": false,
+    "loss": "target-scaled MSE", "checkpoint_metric": "BASE_MODEL_VALIDATION RMSE kW",
+    "random_seed": "Python NumPy torch CPU/CUDA; cudnn deterministic=True benchmark=False"
+  },
+  "risk_estimator": {"class": "HistGradientBoostingRegressor", "loss": "squared_error", "learning_rate": 0.05, "max_iter": 100, "max_leaf_nodes": 15, "max_depth": null, "min_samples_leaf": 30, "l2_regularization": 1.0, "early_stopping": false, "random_state": "current_seed"},
+  "risk_methods": ["FULL_RISK_MODEL", "RECENT_VARIATION", "MODEL_PERSISTENCE_DISAGREEMENT"],
+  "risk_target": "log1p(H12 trajectory RMSE / array-specific BASE_TRAIN target range)",
+  "risk_fit_stage": "RISK_FIT",
+  "calibration": {"stage": "RISK_CALIBRATION", "scope": "PRIMARY_DAYLIGHT_COMMON", "nominal_coverage": 0.8, "quantile_method": "higher", "index": "ceil(0.8*(n-1))", "accept_rule": "score <= threshold", "coverage_claim": "empirical only"},
+  "aurc": {"coverage_grid": "0.05:0.01:1.00 (96 points)", "window_loss": "physical-kW H12 trajectory RMSE", "tie_rule": "stable forecast-origin time", "integration": "trapezoid", "normalization": "0.95 * unselected mean per-window RMSE", "direction": "lower is better"},
+  "high_error_quantile": 0.8,
+  "high_change_quantile": 0.9,
+  "bootstrap": {"primary": "continuous 7-day moving block", "sensitivity": "natural-day cluster", "replicates": 1000, "acceptance_mask_fixed": true},
+  "success_conditions": {"macro_coverage": [0.75, 0.85], "minimum_array_coverage": 0.70, "macro_aurc_improvement": 0.05, "arrays_aurc_direction": 2, "arrays_beating_persistence": 2, "mean_seed_macro_rmse_reduction": 0.10, "seeds_with_aurc_direction": 2},
+  "output_files": ["run_c1_formal.py", "config.json", "test_protocol.py", "DATA_CONFIRMATION_SUMMARY.csv", "metrics_per_seed.csv", "metrics_summary_mean_sd.csv", "decision.json", "REPORT.md"]
+}
