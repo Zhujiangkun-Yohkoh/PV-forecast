@@ -11,14 +11,13 @@
 
 \begin{document}
 
+\preprint{WORKING MANUSCRIPT FOR REVISION}
+
 \title{Leakage-Aware Multi-Horizon Benchmarking of Deterministic PV Forecasts Across Co-Located Technologies}
 
 \author{Jiangkun Zhu}
+\thanks{ORCID: \href{https://orcid.org/0009-0009-5335-2345}{0009-0009-5335-2345}}
 \affiliation{College of Advanced Manufacturing, Fuzhou University, 1 Shuicheng Road, Quanzhou 362251, China}
-\author{Yongming Cai}
-\affiliation{Fujian Provincial Institute of Architectural Design and Research Co., Ltd., 5 Hongshanyuan Road, Fuzhou 350001, China}
-\author{Zhende Wu}
-\affiliation{Fujian Provincial Institute of Architectural Design and Research Co., Ltd., 5 Hongshanyuan Road, Fuzhou 350001, China}
 \author{Mengling Yang}
 \affiliation{College of Advanced Manufacturing, Fuzhou University, 1 Shuicheng Road, Quanzhou 362251, China}
 \author{Zhicong Chen}
@@ -30,7 +29,7 @@
 \affiliation{College of Advanced Manufacturing, Fuzhou University, 1 Shuicheng Road, Quanzhou 362251, China}
 \affiliation{College of Physics and Information Engineering, Fuzhou University, 2 Xueyuan Road, Fuzhou 350116, China}
 
-\date{August 27, 2026}
+\date{August 27, 2026 --- WORKING MANUSCRIPT FOR REVISION}
 
 \begin{abstract}
 Comparisons of photovoltaic (PV) forecasts can be distorted by preprocessing fitted outside the training period, windows that cross temporal splits, unequal valid samples, or weak naive references. We conduct a leakage-aware deterministic benchmark on three co-located PV arrays at the DKA Solar Centre in Alice Springs. Four compact direct multi-output implementations receive six hours of causal history, including past Active Power, and produce one 144-step trajectory whose 1, 4, 8, and 12 h prefixes are evaluated. Preprocessing is fitted on Train only, windows are built independently within each temporal split, checkpoints are selected only on Validation, and Test is excluded from fitting, training, and checkpoint selection. Horizon-specific valid origins form the primary sample set, while complete-H144 origins provide sensitivity analysis. Across 24 array--horizon--scope combinations, an inverted-variate Transformer implementation ranks first 12 times and a depthwise convolutional TCN nine times when Last-value Persistence is included. Their arithmetic mean RMSE skills relative to Last-value Persistence are 0.549 and 0.515, respectively. In a separate point-matched supplementary analysis, Daily Persistence beats the best neural result in 22 of 24 combinations. Rankings vary with array, horizon, and daylight masking, and efficiency rankings differ from accuracy rankings. The main contribution is therefore an auditable evaluation and a persistence-centered application finding, not a new architecture or a claim of universal neural superiority.
@@ -288,7 +287,7 @@ Table~\ref{tab:eff} and Fig.~\ref{fig:efficiency} compare neural efficiency. Joi
 \small\textbf{TABLE \Roman{table}. Unified GPU efficiency measurements.} Latency excludes model loading, data loading, disk I/O, and host-to-device transfer. Values are hardware-specific descriptive measurements.\par\medskip
 \begin{tabular}{lrrrr}
 \toprule
-Model & Parameters & Mean latency (ms) & Throughput (samples/s) & Peak GPU memory (MB) \\
+Model & Parameters & Mean latency (ms) & Throughput (samples/s) & Peak GPU memory (MiB) \\
 \midrule
 Discrete recurrent & 99,362 & 32.204 & 1,116 & 121.12 \\
 Inverted-variate & 194,960 & 0.558 & 377,131 & 27.31 \\
@@ -364,16 +363,30 @@ The principal conclusion is methodological: credible PV forecasting claims requi
 The source PV and meteorological observations are available from the DKA Solar Centre data service and associated official metadata pages.\cite{DKASC2026} The manuscript reports derived aggregate evidence only; the original data remain subject to the provider's terms. Exact split dates, feature definitions, window counts, and artifact provenance are provided in the accompanying repository.
 
 \section*{Code Availability}
-The leakage-aware evaluation code, evidence tables, figure-generation script, and manuscript source are available in the project repository at \url{https://github.com/Zhujiangkun-Yohkoh/PV-forecast}. Large checkpoints and prediction arrays are not included in the manuscript branch.
+% FINAL_AUTHOR_CONFIRMATION_REQUIRED: align this wording with the dedicated
+% public repository actually released for the paper.
+A dedicated public release of the leakage-aware evaluation code, aggregate evidence tables, and reproduction instructions is planned after manuscript revision. Raw data, large checkpoints, and prediction arrays will not be redistributed. The final repository URL and release scope must be confirmed before submission.
+
+% FINAL_AUTHOR_CONFIRMATION_REQUIRED: The following declaration drafts were
+% adapted from the authors' earlier manuscript and must be confirmed by all
+% four authors as applicable to this Scheme A manuscript before submission.
+\section*{Funding}
+This work is supported by the National Natural Science Foundation of China (Grant Nos. 62271151 and W2421092).
 
 \section*{Conflict of Interest}
-The authors have no conflicts to disclose.
+The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.
 
-% TODO: AUTHOR CONFIRMATION REQUIRED -- insert the verified CRediT statement before submission.
+\section*{Author Contributions}
+Jiangkun Zhu: Conceptualization, Methodology, Software, Validation, Formal analysis, Investigation, Data curation, Writing -- Original Draft, Visualization. Mengling Yang: Validation, Writing -- Review \& Editing. Zhicong Chen: Conceptualization, Supervision, Project administration, Funding acquisition, Writing -- Review \& Editing. Lijun Wu: Supervision, Resources, Project administration, Funding acquisition, Writing -- Review \& Editing.
+
+% FINAL_AUTHOR_CONFIRMATION_REQUIRED: AIP requires exact AI tool name,
+% version, manufacturer, use, and reason when AI may affect findings or
+% conclusions. The provider/model version must be confirmed before upload.
+\section*{Declaration of AI-Assisted Tools}
+AI-assisted tools were used during code review, evidence organization, language editing, and manuscript preparation. All numerical experiments and verification procedures were executed under author supervision, all AI-assisted outputs were reviewed by the authors, and the authors take full responsibility for the manuscript and reported results. AI tools are not listed as authors. The exact tool name, version, provider, and task-specific rationale will be confirmed by the authors before submission in accordance with AIP Publishing policy.
 
 \section*{Acknowledgments}
 The authors acknowledge the DKA Solar Centre for making the Alice Springs PV and meteorological observations available.
-% TODO: AUTHOR CONFIRMATION REQUIRED -- insert verified funding agency and grant numbers, if applicable.
 
 \bibliography{references}
 

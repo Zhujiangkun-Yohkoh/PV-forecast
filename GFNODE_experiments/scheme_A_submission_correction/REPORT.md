@@ -45,7 +45,7 @@ All models are trained and selected on complete H144 Train/Validation windows. H
 
 Qcells H12 remains corrected at 6,463 common origins and 77,556 full-timeline targets. Its 36,504 daylight targets are 47.067% of full target points. Full/daylight Last-value RMSE is 0.471/0.682 kW; Inverted-variate is 0.327/0.457 kW; Depthwise TCN is 0.416/0.599 kW.
 
-The independently recomputed 24-combination primary ranking remains:
+The independently verified 24-combination primary ranking remains:
 
 | Method | RMSE wins | Mean rank | Arithmetic mean RMSE skill vs Last |
 |---|---:|---:|---:|
@@ -103,7 +103,20 @@ Efficiency rows are read directly from the 36 `completed.json` files. Mean value
 | Joint-patch Transformer | 148,112 | 0.535 | 421,929 | 26.47 |
 | Depthwise convolutional TCN | 683,024 | 0.706 | 197,426 | 35.27 |
 
-The manuscript table was updated to these independently re-read values. The prior rounded latency values are withdrawn.
+The manuscript table was updated to these artifact-derived values. The prior rounded latency values are withdrawn. A separate NumPy/Pandas implementation subsequently verified all submission-critical metric rows without importing the production evaluation functions.
+
+## Independent submission evidence verification
+
+`independent_verify_evidence.py` directly read the 36 saved NPZ files, 36 run metadata files, the three source Active Power series, and `corrected_metrics.csv`. It independently rebuilt the horizon-specific and Daily-matched masks, Last-value and exact-lag Daily Persistence, RMSE, MAE, Train-range nRMSE, rankings, and skills. It did not import or call the production metric or mask functions.
+
+- Comparisons: **4,414/4,414 passed**.
+- Maximum absolute difference: **8.51e-12**.
+- Maximum relative difference: **3.23e-11**.
+- Primary win counts: 12 Inverted-variate, 9 Depthwise TCN, 2 Joint-patch, 1 Discrete recurrent, and 0 Last-value.
+- Daily-matched outcome: **22/24 Daily Persistence**, with the two neural wins still limited to Hanwha H12 full/daylight.
+- Qcells H12: 6,463 origins, 77,556 full targets, and 36,504 daylight targets.
+- Training, optimizer, backward, and checkpoint loading: **not executed**.
+- The source data, checkpoints, and prediction artifacts retained their exact sizes and nanosecond modification times.
 
 ## Manuscript disposition
 
@@ -118,3 +131,30 @@ The manuscript table was updated to these independently re-read values. The prio
 The evidence is internally coherent for a transparent benchmark/application submission package. The result is scientifically challenging rather than favorable: the learned models beat Last-value Persistence, but Daily Persistence wins 22/24 strictly matched supplementary comparisons. This must remain prominent in the abstract, results, discussion, limitations, and conclusion. The manuscript is not evidence for algorithmic novelty, universal neural superiority, or cross-site generalization.
 
 No new training is justified or authorized by this audit. Remaining work is human submission metadata and editorial positioning, not numerical repair.
+
+## Final independent verification and submission package
+
+**SCHEME_A_SUBMISSION_PACKAGE_READY.** The submission package was prepared without neural-network training or checkpoint modification.
+
+- Original ordinary protocol tests: **16/16 passed**.
+- Completed-artifact tests: **9/9 passed**.
+- Refreshed independent-evidence tests: **15/15 passed**. The suite executes the verifier as a subprocess and includes path, authorship, and package-hygiene checks.
+- Skipped tests: **0**.
+- Independent numerical comparisons: **4,414/4,414 passed**.
+- PDF: **12 pages**, all reported fonts embedded; no missing citations, undefined references, overfull boxes, or visual page-boundary failures were found.
+- Table IV memory unit: corrected from MB to **MiB** with values unchanged, matching the `bytes / 1024**2` implementation.
+- Official JRSE/AIP requirements were checked on **2026-08-27**. JRSE remains a hybrid journal; its official charge page states no page charges and lists optional Author Select open access at USD 3,800. Current Clarivate indexing must still be confirmed by the author or library.
+- The package records the user's exclusive-submission confirmation and supplied four-author metadata, but does not assert final all-author approval, final CRediT/funding/Conflict-of-Interest/AI wording, ethics applicability, unknown ORCIDs, reviewer nominations, or optional fee authorization.
+
+## Submission-file organization and public-release preparation
+
+- Confirmed author order: Jiangkun Zhu, Mengling Yang, Zhicong Chen, and Lijun Wu. Yongming Cai and Zhende Wu were removed without transfer to Acknowledgments.
+- Corresponding authors: Zhicong Chen (`zhicong.chen@fzu.edu.cn`) and Lijun Wu (`lijun.wu@fzu.edu.cn`). Jiangkun Zhu's ORCID is 0009-0009-5335-2345; no other ORCID was inferred.
+- Exclusive submission is user-confirmed. Suggested reviewers are “None provided,” opposed reviewers are “None,” and `TRADITIONAL_ROUTE_PLANNED` is recorded without authorizing optional Author Select OA.
+- Funding, Conflict of Interest, CRediT, and AI-use wording is included only as `FINAL_AUTHOR_CONFIRMATION_REQUIRED` draft content. AIP's AI policy was checked on 2026-08-27 and the final disclosure still requires exact tool/version/provider/task details.
+- Independent-evidence tests now regenerate `INDEPENDENT_EVIDENCE_AUDIT.json` in a subprocess; stale JSON alone can no longer satisfy the suite. The committed JSON uses `<local-results-root>` and `<local-data-root>` placeholders.
+- Whole-repository audit verdict: `DEDICATED_PUBLIC_RELEASE_RECOMMENDED`. Eleven remote branches and ten open Draft PRs include unrelated C1/NWP work, historical local paths, and submission material. No blob over 20 MiB, deleted historical path, or high-confidence credential/private-key pattern was found, but changing repository visibility would disclose far more than Scheme A.
+- Repository visibility was not changed. A future `leakage-aware-pv-benchmark` release should follow `manuscript/clean_pv_benchmark/PUBLIC_RELEASE_MANIFEST.md` after manuscript revision and license selection.
+- Neural-network training, optimizer, backward, checkpoint modification, and scientific-result adjustment: **none**.
+- Final refreshed test totals: ordinary **16/16**, artifact **9/9**, independent **15/15**, skipped **0**. The regenerated audit remains **4,414/4,414** comparisons passed.
+- Recompiled working manuscript: **13 pages**, all fonts embedded, no undefined reference, missing citation, or overfull box; all pages were rendered and visually checked.

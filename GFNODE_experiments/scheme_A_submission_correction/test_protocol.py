@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import inspect
 import json
+import subprocess
 import sys
 import unittest
 from pathlib import Path
@@ -262,22 +263,137 @@ class ArtifactIntegrityTests(unittest.TestCase):
             bench.train_model = original
 
 
+class IndependentEvidenceTests(unittest.TestCase):
+    """Checks for the separate NumPy/Pandas evidence implementation and final PDF."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.script_path = HERE / "independent_verify_evidence.py"
+        cls.audit_path = HERE / "INDEPENDENT_EVIDENCE_AUDIT.json"
+        completed = subprocess.run(
+            [sys.executable, str(cls.script_path)],
+            cwd=str(HERE), capture_output=True, text=True,
+            encoding="utf-8", errors="replace",
+        )
+        if completed.returncode != 0:
+            raise AssertionError(
+                "Independent evidence verifier failed during test setup:\n"
+                f"stdout:\n{completed.stdout}\nstderr:\n{completed.stderr}"
+            )
+        if not cls.audit_path.is_file():
+            raise AssertionError("Independent audit JSON was not regenerated")
+        cls.source = cls.script_path.read_text(encoding="utf-8")
+        cls.audit = json.loads(cls.audit_path.read_text(encoding="utf-8"))
+        cls.manuscript = HERE.parents[1] / "manuscript/clean_pv_benchmark"
+
+    def test_01_independent_script_does_not_import_production_metrics(self):
+        self.assertNotIn("import run_corrected_benchmark", self.source)
+        self.assertNotIn("from run_corrected_benchmark", self.source)
+        for name in ("metric_values", "evaluation_mask", "daily_matched_point_mask",
+                     "evaluate_prediction", "evaluate_daily_matched", "aggregate_neural_rows",
+                     "add_rank_rows", "write_metrics", "evidence_only"):
+            self.assertNotIn(f"bench.{name}", self.source)
+
+    def test_02_independent_script_has_no_training_calls(self):
+        for token in (".backward(", "optimizer.step(", "train_model(", "torch.optim"):
+            self.assertNotIn(token, self.source)
+        self.assertFalse(self.audit["training_executed"])
+
+    def test_03_primary_combinations_complete(self):
+        self.assertEqual(self.audit["primary_combination_count"], 24)
+
+    def test_04_daily_matched_combinations_complete(self):
+        self.assertEqual(self.audit["daily_matched_combination_count"], 24)
+
+    def test_05_daily_matched_counts_are_common(self):
+        self.assertEqual(self.audit["failed_comparisons"], 0)
+        count_checks = [item for item in self.audit["comparisons"]
+                        if item["key"].endswith("|origins") or item["key"].endswith("|points")]
+        self.assertGreater(len(count_checks), 0)
+        self.assertTrue(all(item["status"] == "PASS" for item in count_checks))
+
+    def test_06_daily_win_count_is_22_of_24(self):
+        self.assertEqual(self.audit["daily_matched_daily_wins"], 22)
+        self.assertEqual(self.audit["daily_matched_neural_wins"], 2)
+
+    def test_07_neural_daily_wins_are_hanwha_h12(self):
+        identities = {(item["dataset"], item["horizon"], item["scope"])
+                      for item in self.audit["daily_matched_neural_win_details"]}
+        self.assertEqual(identities, {
+            ("Hanwha", 12, "regular_full_timeline"), ("Hanwha", 12, "daylight")})
+
+    def test_08_qcells_h12_counts(self):
+        q = self.audit["qcells_h12"]
+        self.assertEqual((q["origins"], q["full_target_points"],
+                          q["daylight_target_points"]), (6463, 77556, 36504))
+
+    def test_09_all_csv_comparisons_pass(self):
+        self.assertEqual(self.audit["verdict"], "INDEPENDENT_EVIDENCE_PASS")
+        self.assertEqual(self.audit["comparison_count"], self.audit["passed_comparisons"])
+        self.assertEqual(self.audit["failed_comparisons"], 0)
+
+    def test_10_protected_sources_are_unchanged(self):
+        self.assertFalse(self.audit["checkpoint_modified"])
+        self.assertFalse(self.audit["prediction_artifact_modified"])
+        self.assertFalse(self.audit["raw_data_modified"])
+
+    def test_11_final_pdf_fonts_are_embedded(self):
+        pdf = self.manuscript / "main.pdf"
+        result = subprocess.run(["pdffonts", str(pdf)], capture_output=True, text=True,
+                                encoding="utf-8", errors="replace", check=True)
+        rows = [line.split() for line in result.stdout.splitlines()[2:] if line.strip()]
+        self.assertGreater(len(rows), 0)
+        self.assertTrue(all("yes" in [cell.lower() for cell in row] for row in rows))
+
+    def test_12_efficiency_memory_unit_is_mib(self):
+        tex = (self.manuscript / "main.tex").read_text(encoding="utf-8")
+        self.assertIn("Peak GPU memory (MiB)", tex)
+        self.assertNotIn("Peak GPU memory (MB)", tex)
+
+    def test_13_committed_audit_has_no_local_absolute_paths(self):
+        serialized = self.audit_path.read_text(encoding="utf-8")
+        self.assertEqual(self.audit["results_root"], "<local-results-root>")
+        self.assertEqual(self.audit["data_root"], "<local-data-root>")
+        for forbidden in ("C:\\\\Users\\\\", "Desktop", "Zhujiangkun-Yohkoh"):
+            self.assertNotIn(forbidden, serialized)
+
+    def test_14_author_metadata_is_the_confirmed_four_author_set(self):
+        tex = (self.manuscript / "main.tex").read_text(encoding="utf-8")
+        authors = [line.split("{", 1)[1].rsplit("}", 1)[0]
+                   for line in tex.splitlines() if line.startswith("\\author{")]
+        self.assertEqual(authors, ["Jiangkun Zhu", "Mengling Yang", "Zhicong Chen", "Lijun Wu"])
+        self.assertNotIn("Yongming Cai", tex)
+        self.assertNotIn("Zhende Wu", tex)
+        self.assertIn("0009-0009-5335-2345", tex)
+
+    def test_15_submission_package_excludes_artifacts(self):
+        package = self.manuscript / "submission_package"
+        forbidden_suffixes = {".npz", ".pt", ".pth", ".ckpt"}
+        self.assertFalse(any(path.suffix.lower() in forbidden_suffixes for path in package.rglob("*")))
+        self.assertFalse(any(path.name.lower() in {"results", "__pycache__"}
+                             for path in package.rglob("*")))
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--unit-only", action="store_true")
     parser.add_argument("--artifact-only", action="store_true")
+    parser.add_argument("--independent-only", action="store_true")
     args = parser.parse_args()
-    if args.unit_only and args.artifact_only:
+    if sum((args.unit_only, args.artifact_only, args.independent_only)) > 1:
         raise SystemExit("Choose only one test subset")
     loader = unittest.TestLoader()
     if args.unit_only:
         suite = loader.loadTestsFromTestCase(OrdinaryUnitTests)
     elif args.artifact_only:
         suite = loader.loadTestsFromTestCase(ArtifactIntegrityTests)
+    elif args.independent_only:
+        suite = loader.loadTestsFromTestCase(IndependentEvidenceTests)
     else:
         suite = unittest.TestSuite([
             loader.loadTestsFromTestCase(OrdinaryUnitTests),
             loader.loadTestsFromTestCase(ArtifactIntegrityTests),
+            loader.loadTestsFromTestCase(IndependentEvidenceTests),
         ])
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     raise SystemExit(0 if result.wasSuccessful() else 1)
