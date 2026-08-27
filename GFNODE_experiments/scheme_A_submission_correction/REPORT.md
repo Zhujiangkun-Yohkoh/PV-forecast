@@ -138,10 +138,23 @@ No new training is justified or authorized by this audit. Remaining work is huma
 
 - Original ordinary protocol tests: **16/16 passed**.
 - Completed-artifact tests: **9/9 passed**.
-- New independent-evidence tests: **12/12 passed**.
+- Refreshed independent-evidence tests: **15/15 passed**. The suite executes the verifier as a subprocess and includes path, authorship, and package-hygiene checks.
 - Skipped tests: **0**.
 - Independent numerical comparisons: **4,414/4,414 passed**.
 - PDF: **12 pages**, all reported fonts embedded; no missing citations, undefined references, overfull boxes, or visual page-boundary failures were found.
 - Table IV memory unit: corrected from MB to **MiB** with values unchanged, matching the `bytes / 1024**2` implementation.
 - Official JRSE/AIP requirements were checked on **2026-08-27**. JRSE remains a hybrid journal; its official charge page states no page charges and lists optional Author Select open access at USD 3,800. Current Clarivate indexing must still be confirmed by the author or library.
-- The package intentionally does not assert author approval, exclusive submission, CRediT roles, funding, Conflict of Interest, ethics applicability, ORCID, reviewer nominations, or fee authorization.
+- The package records the user's exclusive-submission confirmation and supplied four-author metadata, but does not assert final all-author approval, final CRediT/funding/Conflict-of-Interest/AI wording, ethics applicability, unknown ORCIDs, reviewer nominations, or optional fee authorization.
+
+## Submission-file organization and public-release preparation
+
+- Confirmed author order: Jiangkun Zhu, Mengling Yang, Zhicong Chen, and Lijun Wu. Yongming Cai and Zhende Wu were removed without transfer to Acknowledgments.
+- Corresponding authors: Zhicong Chen (`zhicong.chen@fzu.edu.cn`) and Lijun Wu (`lijun.wu@fzu.edu.cn`). Jiangkun Zhu's ORCID is 0009-0009-5335-2345; no other ORCID was inferred.
+- Exclusive submission is user-confirmed. Suggested reviewers are “None provided,” opposed reviewers are “None,” and `TRADITIONAL_ROUTE_PLANNED` is recorded without authorizing optional Author Select OA.
+- Funding, Conflict of Interest, CRediT, and AI-use wording is included only as `FINAL_AUTHOR_CONFIRMATION_REQUIRED` draft content. AIP's AI policy was checked on 2026-08-27 and the final disclosure still requires exact tool/version/provider/task details.
+- Independent-evidence tests now regenerate `INDEPENDENT_EVIDENCE_AUDIT.json` in a subprocess; stale JSON alone can no longer satisfy the suite. The committed JSON uses `<local-results-root>` and `<local-data-root>` placeholders.
+- Whole-repository audit verdict: `DEDICATED_PUBLIC_RELEASE_RECOMMENDED`. Eleven remote branches and ten open Draft PRs include unrelated C1/NWP work, historical local paths, and submission material. No blob over 20 MiB, deleted historical path, or high-confidence credential/private-key pattern was found, but changing repository visibility would disclose far more than Scheme A.
+- Repository visibility was not changed. A future `leakage-aware-pv-benchmark` release should follow `manuscript/clean_pv_benchmark/PUBLIC_RELEASE_MANIFEST.md` after manuscript revision and license selection.
+- Neural-network training, optimizer, backward, checkpoint modification, and scientific-result adjustment: **none**.
+- Final refreshed test totals: ordinary **16/16**, artifact **9/9**, independent **15/15**, skipped **0**. The regenerated audit remains **4,414/4,414** comparisons passed.
+- Recompiled working manuscript: **13 pages**, all fonts embedded, no undefined reference, missing citation, or overfull box; all pages were rendered and visually checked.

@@ -270,8 +270,18 @@ class IndependentEvidenceTests(unittest.TestCase):
     def setUpClass(cls):
         cls.script_path = HERE / "independent_verify_evidence.py"
         cls.audit_path = HERE / "INDEPENDENT_EVIDENCE_AUDIT.json"
+        completed = subprocess.run(
+            [sys.executable, str(cls.script_path)],
+            cwd=str(HERE), capture_output=True, text=True,
+            encoding="utf-8", errors="replace",
+        )
+        if completed.returncode != 0:
+            raise AssertionError(
+                "Independent evidence verifier failed during test setup:\n"
+                f"stdout:\n{completed.stdout}\nstderr:\n{completed.stderr}"
+            )
         if not cls.audit_path.is_file():
-            raise AssertionError("Independent audit JSON is missing")
+            raise AssertionError("Independent audit JSON was not regenerated")
         cls.source = cls.script_path.read_text(encoding="utf-8")
         cls.audit = json.loads(cls.audit_path.read_text(encoding="utf-8"))
         cls.manuscript = HERE.parents[1] / "manuscript/clean_pv_benchmark"
@@ -339,6 +349,29 @@ class IndependentEvidenceTests(unittest.TestCase):
         tex = (self.manuscript / "main.tex").read_text(encoding="utf-8")
         self.assertIn("Peak GPU memory (MiB)", tex)
         self.assertNotIn("Peak GPU memory (MB)", tex)
+
+    def test_13_committed_audit_has_no_local_absolute_paths(self):
+        serialized = self.audit_path.read_text(encoding="utf-8")
+        self.assertEqual(self.audit["results_root"], "<local-results-root>")
+        self.assertEqual(self.audit["data_root"], "<local-data-root>")
+        for forbidden in ("C:\\\\Users\\\\", "Desktop", "Zhujiangkun-Yohkoh"):
+            self.assertNotIn(forbidden, serialized)
+
+    def test_14_author_metadata_is_the_confirmed_four_author_set(self):
+        tex = (self.manuscript / "main.tex").read_text(encoding="utf-8")
+        authors = [line.split("{", 1)[1].rsplit("}", 1)[0]
+                   for line in tex.splitlines() if line.startswith("\\author{")]
+        self.assertEqual(authors, ["Jiangkun Zhu", "Mengling Yang", "Zhicong Chen", "Lijun Wu"])
+        self.assertNotIn("Yongming Cai", tex)
+        self.assertNotIn("Zhende Wu", tex)
+        self.assertIn("0009-0009-5335-2345", tex)
+
+    def test_15_submission_package_excludes_artifacts(self):
+        package = self.manuscript / "submission_package"
+        forbidden_suffixes = {".npz", ".pt", ".pth", ".ckpt"}
+        self.assertFalse(any(path.suffix.lower() in forbidden_suffixes for path in package.rglob("*")))
+        self.assertFalse(any(path.name.lower() in {"results", "__pycache__"}
+                             for path in package.rglob("*")))
 
 
 def main() -> None:

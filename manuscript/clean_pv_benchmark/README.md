@@ -39,7 +39,7 @@ python build_figures.py
 latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
 ```
 
-The checked build produces `main.pdf` with no missing citations, no undefined references, and no overfull boxes. The vector figures are regenerated without neural-network training.
+The checked build produces a 13-page `main.pdf` with no missing citations, no undefined references, and no overfull boxes. All fonts are embedded. The visible date line marks it `WORKING MANUSCRIPT FOR REVISION`; it is not the final upload version.
 
 ## Files
 
@@ -49,17 +49,22 @@ The checked build produces `main.pdf` with no missing citations, no undefined re
 - `figures/`: final vector figures.
 - `main.pdf`: compiled manuscript.
 - `REVIEW.md`: independent reviewer-style audit and remaining submission actions.
-- `submission_package/`: cover-letter draft, author-owned metadata checklist, upload manifest, and a copy of the final compiled manuscript PDF.
+- `submission_package/`: cover-letter draft, author-owned metadata/declaration drafts, upload manifest, and a copy of the compiled working manuscript PDF.
+- `PUBLIC_RELEASE_MANIFEST.md`: reviewed scope for a future dedicated public code repository.
 
 ## Human confirmation required
 
-The following are intentionally not guessed:
+The following remain subject to final author action:
 
-1. Final CRediT author-contribution statement and author approval/order.
-2. Funding agency names and grant numbers.
+1. Final approval of the confirmed four-author order and complete revised manuscript.
+2. Confirmation that the draft CRediT roles and Funding Grant Nos. 62271151 and W2421092 apply to this Scheme A paper.
 3. Institutional confirmation of current SCIE indexing and JCR quartile.
 4. Corresponding-author confirmation of subscription-route production charges at the point of submission.
-5. Final confirmation that the repository/data-availability wording matches the release policy.
-6. Conflict of Interest, CRediT, funding, ethics applicability, ORCID, exclusive-submission, and all-author-approval declarations. They are intentionally not guessed in the manuscript or cover letter.
+5. Final confirmation that the dedicated repository and Data/Code Availability wording match the release policy.
+6. Conflict of Interest and AI-use drafts, ethics applicability, optional ORCIDs for three authors, and all-author approval.
+
+Exclusive submission has been confirmed by the user. The planned publishing route is traditional/subscription, and no optional Author Select purchase is authorized. Suggested reviewers were not provided and opposed reviewers are none.
+
+The existing multi-branch `PV-forecast` repository is **not** recommended for a visibility change. See `PUBLIC_RELEASE_MANIFEST.md`; a dedicated `leakage-aware-pv-benchmark` repository should be prepared only after the next manuscript revision and license selection.
 
 The submission correction trained 36 runs in the isolated Scheme-A worktree. It did not modify the old GFNODE manuscript, raw data, prior artifacts, master worktree, Scheme C1, or NWP branches. New checkpoints and predictions remain local and untracked.

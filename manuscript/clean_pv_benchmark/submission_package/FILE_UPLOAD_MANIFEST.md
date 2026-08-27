@@ -1,33 +1,24 @@
 # JRSE file upload manifest
 
-Checked against official AIP/JRSE instructions on **2026-08-27**.
+## Current preparation package
 
-## Initial submission
-
-| File | Status | Purpose |
+| File | Current status | Upload status |
 |---|---|---|
-| `main.pdf` | Prepared; author approval required | Single compiled manuscript PDF with embedded figures. |
-| `COVER_LETTER_DRAFT.md` | Draft only | Convert or paste only after the corresponding author confirms all declarations. A JRSE-specific mandatory cover-letter rule was not found. |
+| `main.pdf` | `WORKING_MANUSCRIPT_FOR_REVISION`; four-author metadata inserted; declarations remain drafts | Do not upload until scientific revision and all-author approval are complete |
+| `COVER_LETTER_DRAFT.md` | Four-author and two-corresponding-author draft; exclusive-submission status recorded | Final signature and all-author approval required |
+| `SUBMISSION_METADATA_CHECKLIST.md` | Author-facing checklist | Internal preparation file, not a manuscript attachment |
+| `AUTHOR_AND_DECLARATIONS_DRAFT.md` | Consolidated source for author metadata and declaration drafts | Internal preparation file; transfer only after confirmation |
 
-No supplementary-material PDF, Highlights file, or graphical abstract is included because none is required by the official instructions reviewed and no supplementary analysis is being submitted.
+## Final upload set after the next revision
 
-## Source bundle when requested by the submission/production system
+- Author-approved compiled manuscript PDF.
+- Cover letter if requested or used by the live submission workflow.
+- When requested: `main.tex`, `references.bib`, and the four vector figure PDFs.
+- Separate supplementary or accessibility files only if the live JRSE workflow requires them.
 
-Do not create a duplicate metric source. Package the repository versions of:
-
-- `main.tex`
-- `references.bib`
-- `figures/fig1_leakage_free_protocol.pdf`
-- `figures/fig2_multihorizon_nrmse.pdf`
-- `figures/fig3_rank_heatmap.pdf`
-- `figures/fig4_accuracy_efficiency.pdf`
-
-The project uses the installed REVTeX 4.2 AIP style and does not redistribute publisher class/style files. AIP’s initial-submission instruction permits a single compiled PDF; source/figure upload should follow the live submission system if it asks for them.
-
-## Revision-stage accessibility item
-
-AIP requires alt text for figures and tables and asks for a separate TXT or DOCX upon revision. It is not included yet because the authors must review the scientific descriptions and the current package is for initial submission preparation.
+The current PDF is not named or represented as a final submission file. No final author approval is asserted.
 
 ## Explicit exclusions
 
-The upload set must not contain raw PV data, checkpoints, NPZ predictions, local `results/`, caches, LaTeX auxiliary files, Git credentials, or unconfirmed author/funding/declaration metadata.
+Do not upload raw PV data, local `results/`, checkpoints, NPZ predictions, caches, LaTeX auxiliary files, Git credentials, submission-system account information, or unconfirmed declarations.
+

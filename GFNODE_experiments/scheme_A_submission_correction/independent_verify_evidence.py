@@ -355,7 +355,10 @@ def run(args: argparse.Namespace) -> dict:
         "daily_matched_daily_wins": daily_wins["Daily Persistence"],
         "daily_matched_neural_wins": len(neural_daily_wins),
         "daily_matched_neural_win_details": neural_daily_wins,
-        "qcells_h12": q_counts, "results_root": str(results_root), "data_root": str(data_root),
+        # Keep the committed audit portable: runtime paths are used for loading but
+        # must not disclose a workstation username or local directory layout.
+        "qcells_h12": q_counts, "results_root": "<local-results-root>",
+        "data_root": "<local-data-root>",
         "checkpoint_count": 36, "prediction_artifact_count": 36,
         "checkpoint_content_read": False, "checkpoint_modified": False,
         "prediction_artifact_modified": False, "raw_data_modified": False,

@@ -54,8 +54,8 @@
     "daylight_target_points": 36504,
     "daylight_fraction": 0.47067925112177006
   },
-  "results_root": "C:\\Users\\Zhujiangkun-Yohkoh\\Desktop\\光伏项目_最新\\PVforecast16_scheme_A_manuscript\\GFNODE_experiments\\scheme_A_submission_correction\\results",
-  "data_root": "C:\\Users\\Zhujiangkun-Yohkoh\\Desktop\\光伏项目_最新\\PVforecast16\\GFNODE_experiments",
+  "results_root": "<local-results-root>",
+  "data_root": "<local-data-root>",
   "checkpoint_count": 36,
   "prediction_artifact_count": 36,
   "checkpoint_content_read": false,

@@ -59,12 +59,13 @@ These ratio-based skills are not described as arithmetic mean absolute or normal
 3. **External validity:** one co-located site, April--August 2018, three arrays, and three seeds cannot support cross-climate or broad technology-generalization claims.
 4. **No pristine external confirmation:** the Test period was excluded from learning but repeatedly inspected during development.
 
-## Human confirmation still required
+## Author and release status
 
-- Author order, affiliations, corresponding author, and CRediT roles.
-- Funding agencies and grant numbers.
+- Confirmed metadata now records four authors in this order: Jiangkun Zhu, Mengling Yang, Zhicong Chen, and Lijun Wu. Zhicong Chen and Lijun Wu are corresponding authors; Jiangkun Zhu's ORCID is recorded.
+- CRediT roles and Funding Grant Nos. 62271151 and W2421092 remain drafts inherited from an earlier manuscript and require final confirmation by all authors.
 - Institutional confirmation of current SCIE/JCR status and subscription-route charges.
-- Final data/code release language and submission-system declarations.
-- Conflict of Interest, CRediT roles, funding, ethics applicability, ORCID identifiers, exclusive-submission status, and explicit approval by all authors.
+- Final Data/Code Availability language, exact AIP-compliant AI-tool disclosure, ethics applicability, optional ORCIDs for the other authors, and explicit approval by all authors.
+- Exclusive submission is user-confirmed; traditional/subscription publication is planned. Suggested reviewers were not provided and opposed reviewers are none.
+- The existing multi-branch repository should remain private; a dedicated Scheme A public release is recommended after revision and license selection.
 
-No unconfirmed item should be inserted into the submission PDF by Codex. With that boundary, the final decision is **SCHEME_A_SUBMISSION_PACKAGE_READY**: the numerical evidence, rendered manuscript, and author-facing submission checklist are ready for human completion, but no journal submission has been made.
+The current PDF is explicitly a `WORKING MANUSCRIPT FOR REVISION`. With that boundary, the organizational decision is **SUBMISSION_FILES_ORGANIZED_READY_FOR_MANUSCRIPT_REVISION**: the numerical evidence, author metadata, declaration drafts, and submission checklist are organized, but scientific revision and final author approval remain outstanding and no journal submission has been made.
