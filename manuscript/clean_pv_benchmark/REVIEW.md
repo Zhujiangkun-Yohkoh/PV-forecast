@@ -48,7 +48,7 @@ The estimand is limited to one Alice Springs facility, April–August 2018, hist
 
 Funding, CRediT, conflict-of-interest, AI-use wording, ethics applicability, code/data release wording, and final approval remain `FINAL_AUTHOR_CONFIRMATION_REQUIRED`. These drafts must not be treated as approved statements. Current indexing and optional/conditional fee details also require author or library confirmation.
 
-Public release status is **PUBLIC_RELEASE_REQUIRES_ACTION**. A dedicated repository is preferable, but license selection, dependency/environment documentation, path-independent inputs, DKASC redistribution/download instructions, and a final secret/path scan remain outstanding. No repository visibility change or release was made.
+Public release status is **PUBLIC_RELEASE_REQUIRES_ACTION**. GitHub reported the existing multi-branch repository as public on 2026-08-28; no visibility change was made in this revision. That repository is not a curated Scheme A release. A dedicated repository is preferable, but license selection, dependency/environment documentation, path-independent inputs, DKASC redistribution/download instructions, and a final secret/path scan remain outstanding.
 
 ## Decision
 

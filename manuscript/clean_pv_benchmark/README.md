@@ -48,4 +48,4 @@ Before upload, all authors must confirm the author list, CRediT roles, Funding G
 
 ## Public release status
 
-`PUBLIC_RELEASE_REQUIRES_ACTION`. The existing multi-branch repository should remain private. A dedicated release still requires license selection, a reviewed dependency specification, path-independent public configuration, provider-compliant data download instructions, and an author-approved release scope. No release or visibility change is performed here.
+`PUBLIC_RELEASE_REQUIRES_ACTION`. GitHub reported the existing multi-branch repository as publicly visible on 2026-08-28; this task did not change that setting. It must not be represented as a curated Scheme A reproducibility release because it also exposes unrelated branches and Draft PRs. A dedicated release still requires license selection, a reviewed dependency specification, path-independent public configuration, provider-compliant data download instructions, and an author-approved release scope.
