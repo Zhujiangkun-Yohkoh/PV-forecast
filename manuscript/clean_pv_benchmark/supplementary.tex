@@ -6,7 +6,7 @@
 \usepackage{array}
 \usepackage{hyperref}
 \usepackage{amsmath,amssymb}
-\hypersetup{colorlinks=true,linkcolor=blue!45!black,urlcolor=blue!45!black,pdftitle={Supplementary Material: Leakage-Aware Multi-Horizon Benchmarking of Compact Neural PV Forecasts}}
+\hypersetup{colorlinks=true,linkcolor=blue!45!black,urlcolor=blue!45!black,pdftitle={Supplementary Material: Leakage-Aware Multi-Horizon Benchmarking of Compact Neural PV Forecasts},pdfauthor={Jiangkun Zhu, Mengling Yang, Zhicong Chen, and Lijun Wu}}
 \begin{document}
 \renewcommand{\thetable}{S\arabic{table}}
 \renewcommand{\thefigure}{S\arabic{figure}}
@@ -28,6 +28,7 @@ Each history has 72 time steps and 17 channels: Performance Ratio; ambient tempe
 
 \begin{table}[h]
 \caption{Fixed optimization configuration for all compact neural implementations.}
+\par\small\textit{Alt text: The shared optimization configuration fixes the optimizer, learning rate, batch size, epoch budget, early-stopping rule, gradient clipping, H144 validation objective, and three random seeds for all four compact implementations.}\par
 \centering
 \begin{tabular}{ll}
 \toprule Setting & Value\\
@@ -71,7 +72,8 @@ The following tables are generated directly from the frozen \texttt{corrected\_m
 \begin{figure}[p]
 \centering
 \includegraphics[width=0.86\textwidth]{figures/figS1_rank_heatmap.pdf}
-\caption{RMSE ranks for all 24 primary array--horizon--scope combinations. Rank one denotes the smallest error. The changing colors within every implementation column show that no compact architecture has a constant rank across the controlled conditions.}
+\caption{RMSE ranks for all 24 primary array--horizon--scope combinations. Rank one denotes the smallest error. Short column names correspond to Last-value Persistence, Discrete recurrent decoder, Inverted-variate Transformer, Joint-patch Transformer, and Depthwise convolutional TCN.}
+\par\small\textit{Alt text: Heat map of RMSE ranks across 24 array, horizon, and scope combinations. Columns denote Last-value Persistence, Discrete recurrent, Inverted-variate, Joint-patch, and Depthwise TCN; rankings change across conditions.}\par
 \end{figure}
 
 \section{Independent evidence verification}

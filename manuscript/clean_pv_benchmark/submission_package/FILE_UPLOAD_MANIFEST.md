@@ -4,8 +4,8 @@
 
 | File | Current status | Upload status |
 |---|---|---|
-| `main.pdf` | Scientifically revised working article; declarations remain drafts | Do not upload until all-author approval is complete |
-| `supplementary.pdf` | Separate Supplementary Material with configurations, metrics, counts, sensitivity, and verification summary | Do not upload until all-author approval is complete |
+| `main.pdf` | Twelve-page, accessibility-corrected working article; declarations remain drafts | Do not upload until all-author approval is complete |
+| `supplementary.pdf` | Nineteen-page Supplementary Material with S1--S10 table alt text, Figure S1 alt text, configurations, metrics, counts, sensitivity, and verification summary | Do not upload until all-author approval is complete |
 | `FIGURE_ALT_TEXT.txt` | 25--50-word descriptions for all figures and principal tables | Supply through the live workflow or as requested by AIP |
 | `COVER_LETTER_DRAFT.md` | Four-author and two-corresponding-author draft; exclusive-submission status recorded | Final signature and all-author approval required |
 | `SUBMISSION_METADATA_CHECKLIST.md` | Author-facing checklist | Internal preparation file, not a manuscript attachment |

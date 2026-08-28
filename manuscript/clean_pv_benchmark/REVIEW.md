@@ -48,3 +48,9 @@ The visible working-manuscript marker is intentional. Funding, CRediT, conflict 
 ## Final decision
 
 Subject to the explicit author-owned confirmations, the polished scientific and production files support **SCHEME_A_JRSE_FINAL_POLISH_READY_FOR_AUTHOR_SIGNOFF**. This decision does not authorize journal submission, a GitHub release, or completion of any unconfirmed declaration.
+
+## Visual-accessibility correction before signoff
+
+The signoff files were rechecked after a limited accessibility correction. Figure 1 now states matching only within each array and no longer implies a three-array origin intersection. Figure 2 places its 24/24 and 22/24 annotations inside the corresponding panels and retains the complete observed ratio range. Figure 4 has four labeled vertical ticks. Supplementary Figure S1 shows all five complete model names without clipping. Main-text alt descriptions now map correctly to Tables I--IV, and the generated Supplementary Material places concise alt text below Tables S1--S10 and Figure S1.
+
+Both PDFs were rebuilt and every page was rendered for inspection. The main article remains 12 pages; the inline supplementary alt text increases the Supplementary Material to 19 pages. All fonts are embedded. Ordinary tests passed 16/16, artifact tests passed 9/9, and independent evidence tests passed 15/15, including 4,414/4,414 numerical comparisons. No model training or protected-artifact modification occurred. The updated files support **SCHEME_A_JRSE_AUTHOR_SIGNOFF_FILES_READY**, subject to the unchanged author-confirmation requirements above.
