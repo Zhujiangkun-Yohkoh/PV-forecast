@@ -1,14 +1,14 @@
 {
-  "study_id": "C1-S3",
+  "study_id": "C1-S4",
   "timezone": {"authoritative_clock": "UTC", "analysis_clock": "ACST", "utc_to_acst_minutes": 570, "use_exported_local": false},
   "fresh_download_roots": {
     "2021": "C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PV_improve_v1/原始Dataset/高分辨率气象数据集/C1_fresh_downloads/2021",
     "2023": "C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PV_improve_v1/原始Dataset/高分辨率气象数据集/C1_fresh_downloads/2023"
   },
-  "irradiance_files": {
-    "2021": "C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PV_improve_v1/原始Dataset/高分辨率气象数据集/C1_fresh_downloads/2021/fsm1m_7111_ekistica-alice-springs-ekistica-alice-springs_irradiancedata_1sec_2021.csv",
-    "2022": "C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PV_improve_v1/GFNODE_experiments/asoc_multirate_redownload_validation/fsm1m_7111_ekistica-alice-springs-ekistica-alice-springs_irradiancedata_1sec_2022.csv",
-    "2023": "C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PV_improve_v1/原始Dataset/高分辨率气象数据集/C1_fresh_downloads/2023/fsm1m_7111_ekistica-alice-springs-ekistica-alice-springs_irradiancedata_1sec_2023.csv"
+  "irradiance_sources": {
+    "2021": ["C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PV_improve_v1/原始Dataset/高分辨率气象数据集/C1_fresh_downloads/2021/fsm1m_7111_ekistica-alice-springs-ekistica-alice-springs_irradiancedata_1sec_2021.csv"],
+    "2022": ["C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PV_improve_v1/GFNODE_experiments/asoc_multirate_redownload_validation/fsm1m_7111_ekistica-alice-springs-ekistica-alice-springs_irradiancedata_1sec_2022.csv"],
+    "2023": ["C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PV_improve_v1/原始Dataset/高分辨率气象数据集/C1_fresh_downloads/2023/fsm1m_7111_ekistica-alice-springs-ekistica-alice-springs_irradiancedata_1sec_2023.csv"]
   },
   "excluded_sources": ["C:/Users/Zhujiangkun-Yohkoh/Desktop/光伏项目_最新/PV_improve_v1/原始Dataset/高分辨率气象数据集/fsm1m_7111_ekistica-alice-springs-ekistica-alice-springs_irradiancedata_1sec_2023.csv"],
   "pv_files": {
@@ -25,9 +25,14 @@
   },
   "lookback": 72,
   "horizon": 12,
+  "arrays": ["Site 17 Sanyo", "Site 25 Hanwha", "Site 38 Q CELLS"],
   "seeds": [42, 43, 44],
   "input_features": ["Active_Power", "sin_time_of_day", "cos_time_of_day", "sin_day_of_year", "cos_day_of_year", "MB0_mean", "MB0_valid_fraction", "MB0_valid_mask", "MB1_mean", "MB1_valid_fraction", "MB1_valid_mask", "MB2_mean", "MB2_valid_fraction", "MB2_valid_mask"],
   "frozen_daylight_threshold_kw": {"Site 17 Sanyo": 0.059843, "Site 25 Hanwha": 0.055657, "Site 38 Q CELLS": 0.056049},
+  "primary_population": "THREE_ARRAY_COMMON_MASK_AVAILABLE_ORIGIN_DAYLIGHT",
+  "strict_300_of_300_population_role": "data_quality_sensitivity_only",
+  "partial_mb_policy": "retain channel mean plus valid fraction and valid mask; zero-timestamp interval breaks windows",
+  "success_condition_population": "PRIMARY_DAYLIGHT_COMMON H12 only",
   "daylight_threshold_policy": "0.01 * BASE_TRAIN positive Active_Power p99.9 (numpy higher)",
   "base_forecaster": {
     "formal_name": "DEPTHWISE_TCN_TRAJECTORY", "input_channels": 14, "hidden_channels": 64,
@@ -60,5 +65,7 @@
   "high_change_quantile": 0.9,
   "bootstrap": {"primary": "continuous 7-day moving block", "sensitivity": "natural-day cluster", "replicates": 1000, "acceptance_mask_fixed": true},
   "success_conditions": {"macro_coverage": [0.75, 0.85], "minimum_array_coverage": 0.70, "macro_aurc_improvement": 0.05, "arrays_aurc_direction": 2, "arrays_beating_persistence": 2, "mean_seed_macro_rmse_reduction": 0.10, "seeds_with_aurc_direction": 2},
-  "output_files": ["run_c1_formal.py", "config.json", "test_protocol.py", "DATA_CONFIRMATION_SUMMARY.csv", "metrics_per_seed.csv", "metrics_summary_mean_sd.csv", "decision.json", "REPORT.md"]
+  "execution_authorized_this_stage": false,
+  "official_source_urls": ["https://www.dkasolarcentre.com.au/download?location=nt-solar-resource", "https://nt-solar-resource.fulcrum3d.com/download"],
+  "output_files": ["run_c1_formal.py", "c1_formal_pipeline.py", "config.json", "test_protocol.py", "DATA_CONFIRMATION_SUMMARY.csv", "metrics_per_seed.csv", "metrics_summary_mean_sd.csv", "decision.json", "REPORT.md"]
 }
