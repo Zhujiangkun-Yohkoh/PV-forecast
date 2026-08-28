@@ -6,7 +6,7 @@ Official requirements checked on **2026-08-28** against the JRSE scope and charg
 
 - Target: *Journal of Renewable and Sustainable Energy*; Research Article.
 - Title: *Leakage-Aware Multi-Horizon Benchmarking of Compact Neural PV Forecasts Across Co-Located Technologies*.
-- Status: `JRSE_SCIENTIFIC_REVISION_READY_FOR_AUTHOR_APPROVAL`; declarations are not final.
+- Status: `WORKING_MANUSCRIPT_FOR_AUTHOR_SIGNOFF`; declarations are not final.
 - Author order: Jiangkun Zhu; Mengling Yang; Zhicong Chen; Lijun Wu.
 - Affiliation 1: College of Advanced Manufacturing, Fuzhou University, 1 Shuicheng Road, Quanzhou 362251, China.
 - Affiliation 2: College of Physics and Information Engineering, Fuzhou University, 2 Xueyuan Road, Fuzhou 350116, China.

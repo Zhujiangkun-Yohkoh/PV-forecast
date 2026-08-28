@@ -11,7 +11,7 @@
 \sisetup{detect-all,round-mode=places,round-precision=3}
 
 \begin{document}
-\preprint{WORKING MANUSCRIPT FOR REVISION}
+\preprint{WORKING MANUSCRIPT --- AUTHOR DECLARATIONS PENDING CONFIRMATION}
 \title{Leakage-Aware Multi-Horizon Benchmarking of Compact Neural PV Forecasts Across Co-Located Technologies}
 
 \author{Jiangkun Zhu}
@@ -27,10 +27,10 @@
 \email{lijun.wu@fzu.edu.cn}
 \affiliation{College of Advanced Manufacturing, Fuzhou University, 1 Shuicheng Road, Quanzhou 362251, China}
 \affiliation{College of Physics and Information Engineering, Fuzhou University, 2 Xueyuan Road, Fuzhou 350116, China}
-\date{August 28, 2026 --- WORKING MANUSCRIPT FOR REVISION}
+\date{August 28, 2026 --- WORKING MANUSCRIPT; AUTHOR DECLARATIONS PENDING CONFIRMATION}
 
 \begin{abstract}
-Photovoltaic (PV) forecasting benchmarks can favor a model through future-aware preprocessing, unequal eligible samples, or an undemanding reference rather than through forecasting skill. We evaluate four compact neural implementations on three co-located PV technologies at the DKA Solar Centre in Alice Springs. Every forecaster receives the same 17-channel, six-hour history and directly predicts 144 five-minute power values. The 1, 4, 8, and 12 h prefixes are evaluated on full-timeline and daylight scopes. Preprocessing is fitted on Train only, windows remain inside chronological splits, checkpoint selection uses Validation only, and every comparison shares forecast origins, labels, and point masks. All four neural implementations outperform Last-value Persistence on most primary comparisons; the inverted-variate implementation records 12 of 24 lowest-RMSE outcomes and the depthwise temporal convolutional implementation records nine. A stronger, separately matched 24 h seasonal reference reverses the practical conclusion: Daily Persistence outperforms the best neural implementation in 22 of 24 comparisons, with neural wins confined to Hanwha at the 1 h horizon. Rankings also vary by array, horizon, and evaluation scope, while accuracy and computational efficiency favor different implementations. These results show that causal preprocessing, elementwise sample matching, and a strong persistence challenge materially determine benchmark conclusions. The study is limited to co-located, history-only data and compact project implementations rather than full official architecture reproductions.
+Photovoltaic (PV) forecasting benchmarks can favor a model through future-aware preprocessing, unequal eligible samples, or an undemanding reference rather than through forecasting skill. We evaluate four compact neural implementations on three co-located PV technologies at the DKA Solar Centre in Alice Springs. Each forecaster receives the same 17-channel, six-hour history and directly predicts 144 five-minute power values. The 1, 4, 8, and 12 h prefixes are evaluated on full-timeline and daylight scopes. Preprocessing is fitted on Train only, windows remain inside chronological splits, checkpoint selection uses Validation only, and every comparison shares forecast origins, labels, and point masks. For every primary combination, the lowest-RMSE compact neural implementation outperforms Last-value Persistence; the inverted-variate and depthwise implementations rank first in 12 and nine combinations, respectively. This Test-derived, post hoc best-of-four neural envelope is descriptive and is not a prespecified deployable model. Against a separately matched 24 h seasonal reference, Daily Persistence remains better than even this favorable envelope in 22 of 24 comparisons; the two envelope wins are Hanwha at the 1 h horizon under full-timeline and daylight evaluation. Rankings also vary by array, horizon, and scope. The findings show that causal preprocessing, elementwise sample matching, and a strong persistence challenge materially determine benchmark conclusions. The study is limited to co-located, history-only data and compact project implementations rather than full official architecture reproductions.
 \end{abstract}
 \keywords{photovoltaic power forecasting, multi-horizon forecasting, data leakage, persistence benchmark, reproducibility, co-located PV arrays}
 \maketitle
@@ -81,7 +81,7 @@ Table~\ref{tab:related} positions the present study against recent direct compet
 
 \begin{table*}[t]
 \caption{Positioning against directly related PV forecasting studies. ``Future information'' refers to exogenous variables available after the forecast origin but issued beforehand.}
-\label{tab:related}\centering\scriptsize
+\label{tab:related}\centering\footnotesize
 \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lclllll}
 \toprule Study & Year & Systems & Forecast-time information & Horizons & Scope / reference & Main distinction\\
 \midrule
@@ -101,7 +101,7 @@ This study & 2026 & \makecell[l]{Three co-\\located arrays} & \makecell[l]{6 h c
 
 \subsection{Co-located PV systems and temporal splits}
 
-The DKA Solar Centre in Alice Springs, Australia, provides five-minute PV and meteorological measurements.\cite{DKASC2026} We use Site 17 Sanyo HIT-210NKHE5 hybrid-silicon modules (6.30 kW rated DC), Site 25 Hanwha HSL 60S polycrystalline-silicon modules (5.83 kW DC), and Site 38 Q CELLS Q.PEAK-G4.1 monocrystalline-silicon modules (5.90 kW DC). The target is Active Power in kW AC. Official AC capacities were unavailable, so DC ratings are reported descriptively and never used to normalize AC prediction error.
+The DKA Solar Centre in Alice Springs, Australia, provides five-minute PV and meteorological measurements through its official data service and system metadata pages (accessed August 28, 2026).\cite{DKASC2026} We use Site 17 Sanyo HIT-210NKHE5 hybrid-silicon modules (6.30 kW rated DC), Site 25 Hanwha HSL 60S polycrystalline-silicon modules (5.83 kW DC), and Site 38 Q CELLS Q.PEAK-G4.1 monocrystalline-silicon modules (5.90 kW DC). The target is Active Power in kW AC. Official AC capacities were unavailable, so DC ratings are reported descriptively and never used to normalize AC prediction error.
 
 The aligned systems share six meteorological fields: ambient temperature, relative humidity, global and diffuse horizontal radiation, and global and diffuse tilted radiation. Each array retains its own Active Power, Performance Ratio, and missingness. Co-location controls much of the weather and site context but does not isolate module technology as a randomized causal treatment. Orientation, balance-of-system behavior, and sensing can also contribute to differences.
 
@@ -124,11 +124,11 @@ Qcells (38) & Monocrystalline silicon & 5.90 kW & Active Power (kW AC) & 6,463 &
 
 Raw records are reindexed to a regular five-minute coordinate without deleting nighttime rows. A missing timestamp remains explicitly missing rather than becoming adjacent to a distant observation. The eight causal numerical inputs are Performance Ratio, six weather fields, and historical Active Power. Each numerical channel has a missing indicator, and one Isolation Forest indicator is added, giving 17 channels. There are no cyclical time channels. The Isolation Forest, five-neighbor imputer, feature scaler, and target scaler are fitted on Train only and then applied unchanged to Validation and Test.\cite{Troyanskaya2001,Liu2008Isolation}
 
-Each input contains 72 consecutive timestamps (6 h). The forecast origin is the final input timestamp, and the first target is exactly five minutes later. Future Active Power never enters the input. Windows are constructed independently inside each chronological split, so neither the input nor target crosses a boundary or a missing interval. Figure~\ref{fig:protocol} summarizes the design.
+Each input contains 72 consecutive positions on the regular five-minute coordinate (6 h). The forecast origin is the final input timestamp, and the first target is exactly five minutes later. Future Active Power never enters the input. Windows are constructed independently inside each chronological split and never cross split boundaries. Missing input observations remain on the regular coordinate and are represented by missingness masks plus Train-only imputation; they are not treated as breaks in time. Target eligibility is evaluated independently for each requested horizon. Figure~\ref{fig:protocol} summarizes the design.
 
 \begin{figure*}[t]
 \centering\includegraphics[width=0.98\textwidth]{figures/fig1_leakage_free_protocol.pdf}
-\caption{Three-layer benchmark design. Co-located arrays share meteorological context but retain array-specific power and missingness. Train-only transformations and split-local windows preserve causality. Neural and persistence forecasts are evaluated on common origins, labels, and masks.}
+\caption{Three-layer benchmark design. Co-located arrays share meteorological context but retain array-specific power and missingness. Train-only transformations and split-local windows preserve causality. Within each array, neural and persistence forecasts use the same origins, labels, and point masks.}
 \label{fig:protocol}
 \end{figure*}
 
@@ -173,9 +173,15 @@ Negative $R^2$ is retained. Because AC nameplate capacity is unknown, normalized
 \begin{equation}
 \mathrm{range\mbox{-}nRMSE}=\frac{\mathrm{RMSE}}{y_{\max,\mathrm{Train}}-y_{\min,\mathrm{Train}}}.
 \end{equation}
-The denominator is never fitted on Test. RMSE skill relative to reference $b$ is $1-\mathrm{RMSE}_{model}/\mathrm{RMSE}_{b}$; positive values favor the model. Neural values are means with sample standard deviations over three seeds. The 24 array--horizon--scope combinations are dependent summaries, not 24 independent trials, so we do not attach naive $p$-values.
+The denominator is never fitted on Test. RMSE skill relative to reference $b$ is $1-\mathrm{RMSE}_{model}/\mathrm{RMSE}_{b}$; positive values favor the model. Neural values are means with sample standard deviations over three seeds. The 24 array--horizon--scope combinations are dependent summaries, not 24 independent trials, so we do not attach naive $p$-values. We also compute a post hoc best-of-four neural envelope by taking, within each Test combination, the smallest three-seed mean RMSE among the four implementations. This descriptive upper bound favors the neural group and is neither a prespecified model choice nor a deployable forecaster.
 
 Inference is measured in float32 on one NVIDIA GeForce RTX 3060 Laptop GPU under Windows and PyTorch. Batch-one latency uses evaluation mode, warm-up, synchronized repetitions, and input shape $[1,72,17]$. Throughput uses batch 256. Timing excludes model loading, disk I/O, data loading, and host-to-device transfer. The recorded field is Peak GPU memory (MiB). These values describe the stated hardware rather than general deployment speed.
+
+\subsection{AI-assisted workflow disclosure draft}
+
+% FINAL_AUTHOR_CONFIRMATION_REQUIRED: confirm exact product/version/model,
+% tasks, and verification wording against the AIP policy before submission.
+\textbf{Author confirmation required.} OpenAI Codex (provider: OpenAI; exact application version and model designation to be confirmed by the authors) assisted with code review, organization of evidence-recalculation checks, extraction of bibliographic metadata, and language editing. It was used to improve consistency and traceability, not to create or alter source observations, trained weights, or frozen numerical results. The authors executed the analysis and verification scripts, checked quantitative outputs against saved artifacts, checked bibliographic claims against source publications, and retain responsibility for the study. AI tools are not authors. This draft must be confirmed or revised by all authors before submission.
 
 \section{Results}
 
@@ -191,19 +197,19 @@ Across the 24 primary combinations, the Inverted-variate Transformer records 12 
 
 \input{main_result_tables.tex}
 
-Table~\ref{tab:primarysummary} shows H12 and H144 endpoints; complete H12/H48/H96/H144 results are given in the supplement. At full H144, the lowest neural RMSE is 0.776 kW for Sanyo, 0.743 kW for Hanwha, and 0.789 kW for Qcells, compared with Last-value values of 2.729, 2.561, and 2.418 kW. At Qcells H12, Last-value RMSE is 0.471 kW; the Inverted-variate implementation reaches 0.327 kW, whereas two compact implementations remain worse than Last-value. Thus, ``all neural models beat Last-value'' is not a valid per-combination statement even though the best neural implementation wins each primary combination.
+Table~\ref{tab:primarysummary} shows H12 and H144 endpoints; complete H12/H48/H96/H144 results are given in the supplement. At full H144, the post hoc neural-envelope RMSE is 0.776 kW for Sanyo, 0.743 kW for Hanwha, and 0.789 kW for Qcells, compared with Last-value values of 2.729, 2.561, and 2.418 kW. At Qcells H12, Last-value RMSE is 0.471 kW; the Inverted-variate implementation reaches 0.327 kW, whereas two compact implementations remain worse than Last-value. Thus, ``all neural models beat Last-value'' is not a valid per-combination statement even though the post hoc best-of-four neural envelope is lower in each primary comparison.
 
 \subsection{Strong-baseline reversal under Daily Persistence}
 
-Figure~\ref{fig:reversal} contrasts the best neural implementation against two causal references. Relative to Last-value Persistence, all 24 best-neural skills are positive. Relative to Daily Persistence on its elementwise-matched mask, 22 are negative. The two exceptions are Hanwha H12: full-timeline RMSE is 0.176 kW for the Depthwise TCN versus 0.185 kW for Daily Persistence, and daylight RMSE is 0.231 versus 0.273 kW.
+Figure~\ref{fig:reversal} contrasts the post hoc best-of-four neural envelope against two causal references. Its RMSE ratio to Last-value Persistence is below one in all 24 primary comparisons. On the elementwise Daily-matched mask, the ratio to Daily Persistence exceeds one in 22 comparisons. The two exceptions are Hanwha H12: full-timeline RMSE is 0.176 kW for the Depthwise TCN versus 0.185 kW for Daily Persistence, and daylight RMSE is 0.231 versus 0.273 kW. Because the envelope selects its member after Test results are available, it is a favorable descriptive bound rather than a deployable model.
 
 \begin{figure*}[t]
 \centering\includegraphics[width=0.98\textwidth]{figures/fig2_persistence_reversal.pdf}
-\caption{Baseline reversal across the same 24 array--horizon--scope orderings. Panel A compares the lowest neural three-seed mean with Last-value Persistence on primary horizon-specific support. Panel B compares it with Daily Persistence after applying the Daily-valid point mask identically to every method. Positive skill favors the neural forecast.}
+\caption{Baseline reversal across the same 24 array--horizon--scope orderings. Each point is the RMSE of the post hoc best-of-four neural envelope divided by the reference RMSE. Panel A uses Last-value Persistence on primary support; panel B uses Daily Persistence on its elementwise-matched support. Ratios below one favor the envelope, one is a tie, and ratios above one favor Persistence.}
 \label{fig:reversal}
 \end{figure*}
 
-The findings are compatible rather than contradictory. Last-value Persistence measures improvement beyond local continuity at the forecast origin. Daily Persistence measures improvement beyond a strong 24 h seasonal pattern. Neural training is effective relative to the first reference, while its additional value relative to the second is limited to short Hanwha forecasts in this archive. The result restricts claims of practical advantage without implying that optimization failed.
+The findings are compatible rather than contradictory. Last-value Persistence measures improvement beyond local continuity at the forecast origin. Daily Persistence measures improvement beyond a strong 24 h seasonal pattern. Neural training is effective relative to the first reference, while its additional value relative to the second is limited to short-horizon Hanwha forecasts in the present evaluation. The result restricts claims of practical advantage without implying that optimization failed.
 
 \subsection{Dependence on technology, horizon, and daylight scope}
 
@@ -211,7 +217,7 @@ Figure~\ref{fig:horizons} shows that errors grow with horizon and rise when near
 
 \begin{figure*}[t]
 \centering\includegraphics[width=0.98\textwidth]{figures/fig3_horizon_technology.pdf}
-\caption{Primary Train-range nRMSE across horizon and array. Solid lines denote full-timeline evaluation and dashed lines denote daylight evaluation. Every point within a panel uses model-matched horizon-specific origins and masks.}
+\caption{Primary Train-range nRMSE across horizons, arrays, and evaluation scopes. Rows separate full-timeline and daylight results, and columns separate the three co-located arrays. Every point uses horizon-specific origins and masks shared by all methods in its panel.}
 \label{fig:horizons}
 \end{figure*}
 
@@ -277,7 +283,7 @@ Computational results come from one laptop GPU and omit the surrounding pipeline
 
 \section{Conclusion}
 
-Under Train-only preprocessing, causal split-local windows, and elementwise-matched evaluation, the compact neural implementations consistently provide a best-model improvement over Last-value Persistence. The Inverted-variate implementation records 12 of 24 primary RMSE wins, the Depthwise TCN nine, and rankings change with array, horizon, and daylight scope. The stronger matched Daily Persistence reference reverses the practical conclusion in 22 of 24 comparisons; neural wins are limited to Hanwha H12 full-timeline and daylight evaluation.
+Under Train-only preprocessing, causal split-local windows, and elementwise-matched evaluation, every primary comparison contains at least one compact neural implementation with lower RMSE than Last-value Persistence. The Inverted-variate implementation records 12 of 24 primary RMSE wins, the Depthwise TCN nine, and rankings change with array, horizon, and daylight scope. The stronger matched Daily Persistence reference is lower than the favorable post hoc neural envelope in 22 of 24 comparisons; envelope wins are limited to Hanwha H12 full-timeline and daylight evaluation.
 
 Accordingly, the main result is not a universal architecture advantage. It is that credible PV benchmarks require causal preprocessing, common evaluation support, explicit horizon and scope definitions, and persistence references that reflect both local continuity and daily seasonality. These controls reveal where compact neural forecasts add value and where a simple reference remains stronger. The evidence supports more disciplined evaluation practice for co-located history-only PV forecasting, while broader operational claims require future exogenous information, additional sites, and an independent temporal confirmation set.
 
@@ -290,28 +296,28 @@ The authors acknowledge the DKA Solar Centre for making the Alice Springs PV and
 % FINAL_AUTHOR_CONFIRMATION_REQUIRED: declaration drafts are retained from the
 % authors' prior materials and must be approved for this manuscript before upload.
 \section*{Funding}
-This work is supported by the National Natural Science Foundation of China (Grant Nos. 62271151 and W2421092).
+\textbf{Author confirmation required.} Draft: This work is supported by the National Natural Science Foundation of China (Grant Nos. 62271151 and W2421092).
 
 \section*{Conflict of Interest}
-The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.
+\textbf{Author confirmation required.} Draft: The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.
 
 \section*{Ethics Approval}
-This study analyzes publicly accessible photovoltaic and meteorological records and involves no human participants or animals; ethics approval was not applicable.
+\textbf{Author confirmation required.} Draft: This study analyzes publicly accessible photovoltaic and meteorological records and involves no human participants or animals; ethics approval was not applicable.
 
 \section*{Author Contributions}
-Jiangkun Zhu: Conceptualization, Methodology, Software, Validation, Formal analysis, Investigation, Data curation, Writing -- Original Draft, Visualization. Mengling Yang: Validation, Writing -- Review \& Editing. Zhicong Chen: Conceptualization, Supervision, Project administration, Funding acquisition, Writing -- Review \& Editing. Lijun Wu: Supervision, Resources, Project administration, Funding acquisition, Writing -- Review \& Editing.
+\textbf{Author confirmation required.} Draft: Jiangkun Zhu: Conceptualization, Methodology, Software, Validation, Formal analysis, Investigation, Data curation, Writing -- Original Draft, Visualization. Mengling Yang: Validation, Writing -- Review \& Editing. Zhicong Chen: Conceptualization, Supervision, Project administration, Funding acquisition, Writing -- Review \& Editing. Lijun Wu: Supervision, Resources, Project administration, Funding acquisition, Writing -- Review \& Editing.
 
 % FINAL_AUTHOR_CONFIRMATION_REQUIRED: exact AI tool name, version, provider,
 % purpose, and wording must be confirmed against AIP policy before upload.
 \section*{Declaration of AI-Assisted Tools}
-AI-assisted tools were used during code review, evidence organization, language editing, and manuscript preparation. Numerical experiments and verification procedures were executed under author supervision, all AI-assisted outputs were reviewed by the authors, and the authors take responsibility for the manuscript and reported results. AI tools are not listed as authors. Exact tool, version, provider, and task-specific details will be confirmed before submission.
+\textbf{Author confirmation required.} The draft disclosure and verification responsibilities are stated in Methods. All authors must confirm the exact tool/version record and final wording before submission.
 
 \section*{Data Availability}
-The source PV and meteorological observations are available from the DKA Solar Centre data service and official metadata pages.\cite{DKASC2026} The original data remain subject to provider terms. Aggregate evidence, split definitions, and reproduction instructions are planned for a dedicated code release.
+\textbf{Author confirmation required.} Draft: The source PV and meteorological observations are available from the DKA Solar Centre data service and official metadata pages.\cite{DKASC2026} The original data remain subject to provider terms. Aggregate evidence, split definitions, and reproduction instructions are planned for a dedicated code release.
 
 \section*{Code Availability}
 % FINAL_AUTHOR_CONFIRMATION_REQUIRED: replace with the released repository URL.
-A dedicated public release of evaluation code, aggregate metrics, figure generation, and ordinary protocol tests is planned after manuscript approval and license selection. Raw data, checkpoints, and prediction arrays will not be redistributed. The final repository URL must be confirmed before submission.
+\textbf{Author confirmation required.} Draft: A dedicated public release of evaluation code, aggregate metrics, figure generation, and ordinary protocol tests is planned after manuscript approval and license selection. Raw data, checkpoints, and prediction arrays will not be redistributed. The final repository URL must be confirmed before submission.
 
 \bibliography{references}
 \end{document}
