@@ -30,7 +30,7 @@ The estimand remains limited to one co-located facility, April--August 2018, his
 ## Production and accessibility audit
 
 - Main and Supplementary PDFs compile independently; all fonts are embedded.
-- The main article is 12 pages with four main figures and four main tables; the supplement is 18 pages with S-numbered tables and figure.
+- The main article is 12 pages with four main figures and four main tables; the supplement is 19 pages with S-numbered tables and figure.
 - Figure 2 covers the complete observed ratio range; the previous lower-axis truncation is removed.
 - Table I is set in `footnotesize` and is readable at 100% PDF scale.
 - Main and supplement display the same four authors, order, affiliations, corresponding authors, emails, and confirmed Jiangkun Zhu ORCID.

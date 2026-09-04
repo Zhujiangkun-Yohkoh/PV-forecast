@@ -6,7 +6,7 @@ This is an internal confirmation record for the working JRSE manuscript. Check *
 
 - Draft PR: `https://github.com/Zhujiangkun-Yohkoh/PV-forecast/pull/14`
 - Branch: `manuscript/clean-pv-benchmark-jrse-final-polish`
-- Exact PR head commit and tree: verify against PR #14 immediately before circulation and record here: Commit __________; Tree __________.
+- Exact PR head commit and tree verified immediately before circulation: Commit `ede66987e56eb8863287624476f8b8ff3e201897`; Tree `a3224dc352ee0f6d3a2020ff3d7739350bb30e7c`.
 - Files covered: `main.pdf` (SHA-256 `17E9066D352C3CB8622362BE76D1735639BA1249E29E3B6FD1C55BD47965E34D`) and `supplementary.pdf` (SHA-256 `518F6AB9C375B57A6694CBB272F86AA9553C214B52FD682E7F9BD2A83FB05687`) in `manuscript/clean_pv_benchmark/`.
 - Any later scientific-content change invalidates this signoff and requires circulation of newly identified PDFs.
 
