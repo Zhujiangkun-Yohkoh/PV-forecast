@@ -1,0 +1,309 @@
+{
+  "stage": "Scheme A-M1",
+  "source_commit": "ede66987e56eb8863287624476f8b8ff3e201897",
+  "execution": "audit_and_synthetic_forward_only",
+  "input_channels": [
+    "historical_ac_active_power",
+    "ambient_temperature",
+    "global_horizontal_irradiance",
+    "power_missing",
+    "temperature_missing",
+    "ghi_missing",
+    "isolation_forest_flag"
+  ],
+  "input_dim": 7,
+  "lookback": 72,
+  "output_horizon": 144,
+  "evaluation_horizons": [
+    12,
+    48,
+    96,
+    144
+  ],
+  "frequency_minutes": 5,
+  "splits": {
+    "train": [
+      "2017-01-01 00:00:00",
+      "2017-08-31 23:59:59"
+    ],
+    "validation": [
+      "2017-09-01 00:00:00",
+      "2017-09-30 23:59:59"
+    ],
+    "test": [
+      "2017-10-01 00:00:00",
+      "2017-12-31 23:59:59"
+    ]
+  },
+  "primary_model": "INVERTED_VARIATE_TRAJECTORY",
+  "models": {
+    "DISCRETE_RECURRENT_TRAJECTORY": "Discrete recurrent decoder",
+    "INVERTED_VARIATE_TRAJECTORY": "Inverted-variate Transformer",
+    "JOINT_PATCH_TRAJECTORY": "Joint-patch Transformer",
+    "DEPTHWISE_TCN_TRAJECTORY": "Depthwise convolutional TCN"
+  },
+  "seeds": [
+    42,
+    43,
+    44
+  ],
+  "run_matrix": [
+    {
+      "run_id": "YULARA_COMBINED__DISCRETE_RECURRENT_TRAJECTORY__seed42",
+      "site": "YULARA_COMBINED",
+      "model": "DISCRETE_RECURRENT_TRAJECTORY",
+      "seed": 42,
+      "input_dim": 7
+    },
+    {
+      "run_id": "YULARA_COMBINED__DISCRETE_RECURRENT_TRAJECTORY__seed43",
+      "site": "YULARA_COMBINED",
+      "model": "DISCRETE_RECURRENT_TRAJECTORY",
+      "seed": 43,
+      "input_dim": 7
+    },
+    {
+      "run_id": "YULARA_COMBINED__DISCRETE_RECURRENT_TRAJECTORY__seed44",
+      "site": "YULARA_COMBINED",
+      "model": "DISCRETE_RECURRENT_TRAJECTORY",
+      "seed": 44,
+      "input_dim": 7
+    },
+    {
+      "run_id": "YULARA_COMBINED__INVERTED_VARIATE_TRAJECTORY__seed42",
+      "site": "YULARA_COMBINED",
+      "model": "INVERTED_VARIATE_TRAJECTORY",
+      "seed": 42,
+      "input_dim": 7
+    },
+    {
+      "run_id": "YULARA_COMBINED__INVERTED_VARIATE_TRAJECTORY__seed43",
+      "site": "YULARA_COMBINED",
+      "model": "INVERTED_VARIATE_TRAJECTORY",
+      "seed": 43,
+      "input_dim": 7
+    },
+    {
+      "run_id": "YULARA_COMBINED__INVERTED_VARIATE_TRAJECTORY__seed44",
+      "site": "YULARA_COMBINED",
+      "model": "INVERTED_VARIATE_TRAJECTORY",
+      "seed": 44,
+      "input_dim": 7
+    },
+    {
+      "run_id": "YULARA_COMBINED__JOINT_PATCH_TRAJECTORY__seed42",
+      "site": "YULARA_COMBINED",
+      "model": "JOINT_PATCH_TRAJECTORY",
+      "seed": 42,
+      "input_dim": 7
+    },
+    {
+      "run_id": "YULARA_COMBINED__JOINT_PATCH_TRAJECTORY__seed43",
+      "site": "YULARA_COMBINED",
+      "model": "JOINT_PATCH_TRAJECTORY",
+      "seed": 43,
+      "input_dim": 7
+    },
+    {
+      "run_id": "YULARA_COMBINED__JOINT_PATCH_TRAJECTORY__seed44",
+      "site": "YULARA_COMBINED",
+      "model": "JOINT_PATCH_TRAJECTORY",
+      "seed": 44,
+      "input_dim": 7
+    },
+    {
+      "run_id": "YULARA_COMBINED__DEPTHWISE_TCN_TRAJECTORY__seed42",
+      "site": "YULARA_COMBINED",
+      "model": "DEPTHWISE_TCN_TRAJECTORY",
+      "seed": 42,
+      "input_dim": 7
+    },
+    {
+      "run_id": "YULARA_COMBINED__DEPTHWISE_TCN_TRAJECTORY__seed43",
+      "site": "YULARA_COMBINED",
+      "model": "DEPTHWISE_TCN_TRAJECTORY",
+      "seed": 43,
+      "input_dim": 7
+    },
+    {
+      "run_id": "YULARA_COMBINED__DEPTHWISE_TCN_TRAJECTORY__seed44",
+      "site": "YULARA_COMBINED",
+      "model": "DEPTHWISE_TCN_TRAJECTORY",
+      "seed": 44,
+      "input_dim": 7
+    },
+    {
+      "run_id": "NIST_GROUND__DISCRETE_RECURRENT_TRAJECTORY__seed42",
+      "site": "NIST_GROUND",
+      "model": "DISCRETE_RECURRENT_TRAJECTORY",
+      "seed": 42,
+      "input_dim": 7
+    },
+    {
+      "run_id": "NIST_GROUND__DISCRETE_RECURRENT_TRAJECTORY__seed43",
+      "site": "NIST_GROUND",
+      "model": "DISCRETE_RECURRENT_TRAJECTORY",
+      "seed": 43,
+      "input_dim": 7
+    },
+    {
+      "run_id": "NIST_GROUND__DISCRETE_RECURRENT_TRAJECTORY__seed44",
+      "site": "NIST_GROUND",
+      "model": "DISCRETE_RECURRENT_TRAJECTORY",
+      "seed": 44,
+      "input_dim": 7
+    },
+    {
+      "run_id": "NIST_GROUND__INVERTED_VARIATE_TRAJECTORY__seed42",
+      "site": "NIST_GROUND",
+      "model": "INVERTED_VARIATE_TRAJECTORY",
+      "seed": 42,
+      "input_dim": 7
+    },
+    {
+      "run_id": "NIST_GROUND__INVERTED_VARIATE_TRAJECTORY__seed43",
+      "site": "NIST_GROUND",
+      "model": "INVERTED_VARIATE_TRAJECTORY",
+      "seed": 43,
+      "input_dim": 7
+    },
+    {
+      "run_id": "NIST_GROUND__INVERTED_VARIATE_TRAJECTORY__seed44",
+      "site": "NIST_GROUND",
+      "model": "INVERTED_VARIATE_TRAJECTORY",
+      "seed": 44,
+      "input_dim": 7
+    },
+    {
+      "run_id": "NIST_GROUND__JOINT_PATCH_TRAJECTORY__seed42",
+      "site": "NIST_GROUND",
+      "model": "JOINT_PATCH_TRAJECTORY",
+      "seed": 42,
+      "input_dim": 7
+    },
+    {
+      "run_id": "NIST_GROUND__JOINT_PATCH_TRAJECTORY__seed43",
+      "site": "NIST_GROUND",
+      "model": "JOINT_PATCH_TRAJECTORY",
+      "seed": 43,
+      "input_dim": 7
+    },
+    {
+      "run_id": "NIST_GROUND__JOINT_PATCH_TRAJECTORY__seed44",
+      "site": "NIST_GROUND",
+      "model": "JOINT_PATCH_TRAJECTORY",
+      "seed": 44,
+      "input_dim": 7
+    },
+    {
+      "run_id": "NIST_GROUND__DEPTHWISE_TCN_TRAJECTORY__seed42",
+      "site": "NIST_GROUND",
+      "model": "DEPTHWISE_TCN_TRAJECTORY",
+      "seed": 42,
+      "input_dim": 7
+    },
+    {
+      "run_id": "NIST_GROUND__DEPTHWISE_TCN_TRAJECTORY__seed43",
+      "site": "NIST_GROUND",
+      "model": "DEPTHWISE_TCN_TRAJECTORY",
+      "seed": 43,
+      "input_dim": 7
+    },
+    {
+      "run_id": "NIST_GROUND__DEPTHWISE_TCN_TRAJECTORY__seed44",
+      "site": "NIST_GROUND",
+      "model": "DEPTHWISE_TCN_TRAJECTORY",
+      "seed": 44,
+      "input_dim": 7
+    }
+  ],
+  "future_training": {
+    "batch_size": 256,
+    "learning_rate": 0.001,
+    "weight_decay": 1e-05,
+    "max_epochs": 25,
+    "patience": 5,
+    "min_delta": 1e-08,
+    "gradient_clip_norm": 1.0,
+    "num_workers": 0,
+    "optimizer": "AdamW",
+    "checkpoint_metric": "validation_global_masked_mse"
+  },
+  "knn_neighbors": 5,
+  "isolation_forest": {
+    "enabled": true,
+    "contamination": 0.01,
+    "random_state": 42,
+    "n_estimators": 100
+  },
+  "model_configuration": {
+    "discrete_recurrent_decoder": {
+      "embedding_dim": 64,
+      "tcn_branch_channels": 24,
+      "transformer_heads": 4,
+      "transformer_layers": 1,
+      "dropout": 0.1
+    },
+    "inverted_variate_transformer": {
+      "d_model": 64,
+      "heads": 4,
+      "layers": 1
+    },
+    "joint_patch_transformer": {
+      "d_model": 64,
+      "heads": 4,
+      "layers": 1,
+      "patch_length": 12,
+      "stride": 6
+    },
+    "depthwise_convolutional_tcn": {
+      "channels": 64,
+      "layers": 4,
+      "kernel_size": 5
+    }
+  },
+  "retain_negative_finite_values": true,
+  "official_invalid_codes_common_fields": [],
+  "unconfirmed_sentinel_policy": "fail if candidate -999 or -7999 occurs in a common field; do not auto-delete",
+  "nist": {
+    "timezone": "UTC-05:00_FIXED_NO_DST",
+    "raw_interval_minutes": 1,
+    "anchor": "local midnight",
+    "origin": "2017-01-01 00:00:00-05:00",
+    "closed": "left",
+    "label": "right",
+    "membership": "[T-5min,T): T-5,T-4,T-3,T-2,T-1",
+    "availability": "T; conservative end of latest possible raw minute interval",
+    "timestamp": "TIMESTAMP",
+    "fields": [
+      "PwrMtrP_kW_Avg",
+      "AmbTemp_C_Avg",
+      "Pyra1_Wm2_Avg"
+    ],
+    "required_distinct_minutes": 5,
+    "partial_mean_allowed": false,
+    "convert_mV": false
+  },
+  "yulara": {
+    "timezone": "PROVIDER_LOCAL_TIME_OFFSET_UNCONFIRMED",
+    "raw_interval_minutes": 5,
+    "timestamp": "timestamp",
+    "fields": [
+      "Active_Power",
+      "Weather_Temperature_Celsius",
+      "Global_Horizontal_Radiation"
+    ],
+    "off_grid": "exclude_without_rounding",
+    "availability": "raw timestamp + 5 minutes; conservative latest possible interval end",
+    "output_timestamp": "availability time on unchanged fixed local grid; no UTC invention"
+  },
+  "preprocess_order": [
+    "KNN fit/transform Train numeric fields",
+    "IsolationForest fit Train imputed numeric fields",
+    "append original missing masks and IF flag",
+    "feature MinMaxScaler fit Train augmented 7 columns",
+    "target MinMaxScaler fit finite un-imputed Train target"
+  ],
+  "label_imputation": false,
+  "authorization_next_round": false
+}
