@@ -1,5 +1,5 @@
 {
-  "stage": "Scheme A-M1",
+  "stage": "Scheme A-M1-R",
   "source_commit": "ede66987e56eb8863287624476f8b8ff3e201897",
   "execution": "audit_and_synthetic_forward_only",
   "input_channels": [
@@ -264,7 +264,7 @@
   },
   "retain_negative_finite_values": true,
   "official_invalid_codes_common_fields": [],
-  "unconfirmed_sentinel_policy": "fail if candidate -999 or -7999 occurs in a common field; do not auto-delete",
+  "unconfirmed_sentinel_policy": "Retain finite values absent provider-defined invalid codes; report candidates. Large ambiguous code populations require review, not heuristic deletion.",
   "nist": {
     "timezone": "UTC-05:00_FIXED_NO_DST",
     "raw_interval_minutes": 1,
@@ -282,7 +282,23 @@
     ],
     "required_distinct_minutes": 5,
     "partial_mean_allowed": false,
-    "convert_mV": false
+    "convert_mV": false,
+    "time_basis": "FIXED_EST_LST",
+    "utc_offset": "-05:00",
+    "split_bounds": {
+      "train": [
+        "2017-01-01 00:00:00-05:00",
+        "2017-08-31 23:59:59-05:00"
+      ],
+      "validation": [
+        "2017-09-01 00:00:00-05:00",
+        "2017-09-30 23:59:59-05:00"
+      ],
+      "test": [
+        "2017-10-01 00:00:00-05:00",
+        "2017-12-31 23:59:59-05:00"
+      ]
+    }
   },
   "yulara": {
     "timezone": "PROVIDER_LOCAL_TIME_OFFSET_UNCONFIRMED",
@@ -295,7 +311,8 @@
     ],
     "off_grid": "exclude_without_rounding",
     "availability": "raw timestamp + 5 minutes; conservative latest possible interval end",
-    "output_timestamp": "availability time on unchanged fixed local grid; no UTC invention"
+    "output_timestamp": "availability time on unchanged fixed local grid; no UTC invention",
+    "resource_fallback": "Celsius by field name; GHI provider-native numeric values; no conversion or cross-site absolute GHI inference; Train-only scaling."
   },
   "preprocess_order": [
     "KNN fit/transform Train numeric fields",
@@ -305,5 +322,12 @@
     "target MinMaxScaler fit finite un-imputed Train target"
   ],
   "label_imputation": false,
-  "authorization_next_round": false
+  "authorization_next_round": true,
+  "m1_source_commit": "626b664b9083df2685e29868cf1409d4b547059e",
+  "authorization_scope": "NEXT_TURN_ONLY_FROZEN_24_GPU_RUNS",
+  "training_this_round": false,
+  "documentation_status": {
+    "nist": "NIST_2017_OPERATION_LOG_UNAVAILABLE_NONBLOCKING",
+    "yulara": "YULARA_PROVIDER_METADATA_PARTIAL_NONBLOCKING"
+  }
 }

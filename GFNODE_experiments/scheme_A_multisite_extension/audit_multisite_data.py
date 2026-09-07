@@ -64,6 +64,9 @@ def time_audit(index, expected):
 def aggregate_nist(frame):
     """Raw timestamps t in [T-5,T) map to availability T; never a default resample."""
     idx = frame.index
+    if idx.tz != EST:
+        raise ValueError('NIST requires a fixed EST tz-aware index')
+    frame = frame.where(np.isfinite(frame))
     if not idx.is_unique or not idx.is_monotonic_increasing:
         raise ValueError('Duplicate or reversed raw minutes')
     if ((idx.second != 0) | (idx.microsecond != 0) | (idx.nanosecond != 0)).any():
@@ -108,14 +111,24 @@ def label_values(values):
     return a, np.isfinite(a)  # finite negatives retained, unlike original Scheme A
 
 def threshold_from_train(frame, cfg):
-    train = frame.loc[slice(*cfg['splits']['train'])]
+    train = frame.loc[slice(*split_coordinates(frame.index, cfg['splits']['train']))]
     values = train.power.to_numpy(float)
     if not np.isfinite(values).any():
         raise ValueError('No valid Train target')
     return .01 * float(np.nanmax(values))
 
+def split_coordinates(index, bounds):
+    values = [pd.Timestamp(v) for v in bounds]
+    if index.tz is not None:
+        if index.tz != EST:
+            raise ValueError('Unexpected time basis')
+        values = [v.tz_localize(EST) if v.tz is None else v for v in values]
+        if any(v.utcoffset() != timedelta(hours=-5) for v in values):
+            raise ValueError('Split must use fixed EST')
+    return values
+
 def eligible(frame, horizon, split_bounds):
-    start,end = map(pd.Timestamp, split_bounds)
+    start,end = split_coordinates(frame.index, split_bounds)
     f = frame.loc[start:end]
     if not f.index.equals(pd.date_range(start, end.floor('5min'),freq='5min')):
         raise ValueError('Timeline must be reindexed, never stitched')
@@ -150,7 +163,8 @@ def support_counts(frame, cfg):
             y=f.power.to_numpy(float); x=f[FIELDS].to_numpy(float)
             tv=y[t]; daylight=tv>threshold
             inputs=o[:,None]-np.arange(71,-1,-1)
-            daily=daily_lookup(frame.power, f.index.to_numpy()[t])
+            # Join each unique timeline coordinate once, then index overlapping windows.
+            daily=daily_lookup(frame.power, f.index.to_numpy())[t]
             for analysis,mask in [('primary',np.isfinite(tv)),('daily_matched',np.isfinite(tv)&np.isfinite(daily))]:
                 for scope,m in [('full',mask),('daylight',mask&daylight)]:
                     selected=m.any(axis=1); oo=o[selected]
@@ -168,7 +182,8 @@ def support_counts(frame, cfg):
 
 def energy_diagnostics(raw):
     """Only Jan-Aug data. Diagnose endpoints; never pick rules using held-out scores."""
-    f = raw.loc['2017-01-01':'2017-08-31 23:59:59'].copy()
+    start,end = split_coordinates(raw.index, ['2017-01-01','2017-08-31 23:59:59'])
+    f = raw.loc[start:end].copy()
     f=f.reindex(pd.date_range(f.index.min(),f.index.max(),freq='min'))
     net=f.PwrMtrErec_kWh_Max-f.PwrMtrEdel_kWh_Max
     delta=net-net.shift(5)
@@ -184,6 +199,16 @@ def energy_diagnostics(raw):
             'energy_delta_outside_diagnostic_bounds':int(((delta<-1)|(delta>30)).sum()),
             'note':'Diagnostic-only finite/reset bounds; no source rows deleted. No automatic boundary selection. Conservative closed-left/right-label availability frozen.'}
 
+def common_frame(raw, index, source_fields):
+    return pd.DataFrame({name:numeric(raw[source])[0].to_numpy()
+                         for name,source in zip(FIELDS,source_fields)},index=index)
+
+def operating_counts(frame):
+    return {'negative_power':int(frame.power.lt(0).sum()),
+            'negative_ghi':int(frame.ghi.lt(0).sum()),
+            'ghi_above_500_native_and_power_nonpositive':int((frame.ghi.gt(500)&frame.power.le(0)).sum()),
+            'note':'Descriptive native-field threshold only; no filtering or cross-site absolute inference; no diagnosis of snow/maintenance.'}
+
 def audit(paths):
     cfg=config(); y,n,files=validate_paths(paths); allfiles=[y,*files]
     before={f:stats(f) for f in allfiles};inventory=[]; raw=[]; header=None
@@ -198,12 +223,12 @@ def audit(paths):
     expected=pd.date_range('2017-01-01','2017-12-31 23:59',freq='min',tz=EST)
     nt=time_audit(idx,expected)
     if nt['duplicates'] or nt['reverse_steps']:raise ValueError('NIST ordering invalid')
-    fields={};nf=pd.DataFrame(index=idx.tz_localize(None));aux={}
+    fields={};nf=common_frame(ns,idx,cfg['nist']['fields']);aux={}
     for name in cfg['nist']['fields']+['InvPAC_kW_Avg','PwrMtrErec_kWh_Max','PwrMtrEdel_kWh_Max']:
         values,detail=numeric(ns[name]);fields[name]=detail;aux[name]=values.to_numpy()
     for name,source in zip(FIELDS,cfg['nist']['fields']):nf[name]=aux[source]
     nr=pd.DataFrame(aux,index=nf.index)
-    ng=aggregate_nist(nf).reindex(pd.date_range('2017-01-01','2017-12-31 23:55',freq='5min'))
+    ng=aggregate_nist(nf).reindex(pd.date_range('2017-01-01','2017-12-31 23:55',freq='5min',tz=EST))
     ys=pd.read_csv(y,dtype=str,keep_default_na=False);yi=pd.DatetimeIndex(pd.to_datetime(ys.timestamp,errors='raise'))
     full_y={'first':str(yi.min()),'last':str(yi.max()),'rows':len(ys),'header':list(ys.columns)}
     select=(yi>=pd.Timestamp('2017-01-01'))&(yi<pd.Timestamp('2018-01-01'));ys=ys.loc[select].copy();yi=yi[select]
@@ -227,8 +252,12 @@ def audit(paths):
     extras={'nist':[f.relative_to(n).as_posix() for f in n.rglob('*') if f.is_file() and f.suffix.lower()!='.csv'],
             'yulara':[f.name for f in y.parent.iterdir() if f.is_file() and f!=y]}
     return {'nist':{'inventory':inventory,'header':header,'time':nt,'fields':fields,'mV_present':'Pyra1_mV_Avg' in header,
-                    'Wm2_direct_in_csv':'Pyra1_Wm2_Avg' in header,'train_semantics':energy_diagnostics(nr)},
-            'yulara':{'file':y.name,**before[y],'full_file':full_y,'time_2017':yt,'fields':yfields,'excluded':ex},
+                    'Wm2_direct_in_csv':'Pyra1_Wm2_Avg' in header,'train_semantics':energy_diagnostics(nr),
+                    'time_basis':'FIXED_EST_LST','utc_offset':'-05:00',
+                    'raw_and_aggregate_fixed_est':bool(nf.index.tz==EST and ng.index.tz==EST),
+                    'operating_counts_raw':operating_counts(nf)},
+            'yulara':{'file':y.name,**before[y],'full_file':full_y,'time_2017':yt,'fields':yfields,'excluded':ex,
+                      'operating_counts_raw':operating_counts(yf)},
             'counts':counts,'accompanying_files':extras,'raw_size_mtime_unchanged':unchanged}
 
 def load_model_module():

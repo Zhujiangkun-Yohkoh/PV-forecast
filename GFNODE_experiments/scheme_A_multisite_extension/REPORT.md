@@ -1,21 +1,29 @@
-# Scheme A-M1 数据确认、协议冻结和训练授权审查
+# Scheme A Multisite M1-R 审核报告
 
-## 最终判定
+## 判定与授权
 
-**SCHEME_A_MULTISITE_DATA_REQUIRES_CORRECTION**
+**SCHEME_A_MULTISITE_DATA_READY_FOR_FROZEN_TRAINING**
 
-这不是数据规模不足，也不是模型不支持七通道。候选协议和精确 24-run 矩阵已冻结，27 项普通测试通过，但以下提供方证据尚未闭合，故下一轮训练授权仍为 false：
+仅授权下一轮执行冻结的24次GPU训练。本轮训练执行：否；未执行风险模型拟合、Validation/Test预测、checkpoint选择或论文结果改写。
 
-1. **NIST Ground 2017 运行/质量日志尚未取得。** 本地 365 CSV 之外没有随附 metadata、readme 或 quality log。官方数据说明明确提到维护数据丢失/错误及清洗日志，但当前门户在 web 工具中不返回可解析正文，直接只读请求返回 HTTP 403；针对日志的公开检索未得到可核实的 2017 Ground 事件清单。不能把“未取得日志”写成“没有事件”。需提供或取得该日志/对应官方说明，确认哪些异常属于仪器无效记录，哪些属于真实停机、维护或积雪。不得根据本轮诊断自动删除事件。
-2. **Yulara 资源字段数据谱系尚不完整。** 官网确认联合系统身份和 AC 功率五分钟平均；资源部分列出气温/GHI字段，但要求向提供方索取进一步说明，没有给出对应传感器单位、聚合区间和无效码的完整说明。当前气温/GHI单位候选由字段名称和观测范围支持，不能冒充已获完整官方确认。需补充下载附带元数据或提供方资源字段说明。
+唯一来源 origin/research/scheme-a-multisite-data-confirmation，commit 626b664b9083df2685e29868cf1409d4b547059e；独立分支 research/scheme-a-multisite-data-confirmation-r1。Draft PR base 为 research/scheme-a-multisite-data-confirmation。未修改PR #14/#16、master、C1、NWP、原Scheme A结果或原始文件；不合并、不rebase、不force push。仅更新六个审核文件，本地路径配置不提交。
 
-Yulara 的未知 UTC 偏移本身不是失败原因；已按用户允许的固定本地坐标处理。区间起止不确定本身也采用允许的保守 availability-time 假设，未通过查看 Test 预测选边界。上述待修正项聚焦提供方字段/质量证据，不通过标签插值、Test调规则或换新场址绕过。
+## 文档缺口重新分级
 
-## Git 与内容隔离
+- **NIST_2017_OPERATION_LOG_UNAVAILABLE_NONBLOCKING**：2026-09-07复核官方论文、字典、目录并检索日志；门户仍无可解析正文，未取得2017 Ground运行清单。未找到不等于没有维护、停机或异常。全部有限电表功率、气温与GHI保留，不根据人工观察或功率-GHI关系清洗。登记为非阻塞数据限制，须在未来论文限制中披露；本轮不改论文。
+- **YULARA_PROVIDER_METADATA_PARTIAL_NONBLOCKING**：官方术语页将 Weather Temperature Celsius 与 Global Horizontal Radiation 列于Yulara的 Environment.DG_Weather_Station。温度按Celsius字段使用；GHI采用原生数值，不换算，仅Train拟合输入缩放，不作跨场址绝对辐照量推断。GHI的完整单位、采样/聚合和无效码定义仍未确认，不声称传感器型号、不确定度或完整质量标志。
 
-已 fetch origin。以 ede66987e56eb8863287624476f8b8ff3e201897 创建独立 research/scheme-a-multisite-data-confirmation 分支/worktree。目标 Draft PR base 为 manuscript/clean-pv-benchmark-jrse-final-polish。不合并 PR #14，不读取或修改 master 主工作树，不修改 C1/NWP/旧稿或原 Scheme A 数据和指标。提交范围限新增扩展目录与忽略本地配置/运行环境的 .gitignore。
+仅功率标签含义/单位不明、非唯一时间顺序、错误物理字段、大量不明无效码改变样本定义或不安全聚合继续阻塞。本轮未发现这些情形，两项文档缺口按用户回退规则不再阻止训练。
 
-指定 base 的正文不是前一任务本地已润色正文；这属于用户明确要求的内容来源选择，不擅自搬运稿件更改。原始数据仅按用户此前明确提供路径读入忽略的 .local/multisite_paths.json，不提交机器绝对路径。
+## 时间语义修正
+
+NIST解析、聚合、规则网格、split、窗口及summary均保留固定UTC−05:00；time_basis=FIXED_EST_LST，utc_offset=-05:00。删除读取后的naive转换；聚合入口拒绝naive或其他时区。配置保存显式−05:00的三组split边界。无DST规则。Daily先对唯一时间轴精确−24小时连接，再索引窗口，减少重叠时间戳重复查找，不改变配对。
+
+NIST仍使用[T−5,T)、五个不同且有限的一分钟观测、availability=T。Yulara仍排除两条离网格记录、不取整，availability仍为原时间+5分钟。字段、标签和可用时间没有变化。
+
+## 有限值与运行状态
+
+负功率、负GHI、高GHI非正功率及超经验范围有限值保留。只有空值、非有限值、明确结构错误或官方定义的无效码作为缺失。公共字段没有−999/−7999候选码，InvPAC不进入输入或目标。未来输入通过Train-only处理和IF表达异常，不删除标签。负值不自动等于夜间；没有日志不虚构维护/积雪/停机数量。描述性GHI>500使用各场址原生坐标，只计数，不筛选或作跨场址绝对量推断。
 
 ## 数据结论
 
@@ -94,13 +102,13 @@ Train 功率与 GHI 的 -5/0/+5 分钟相关系数为 0.929261 / 0.972166 / 0.92
 
 ## 普通测试及执行边界
 
-27/27 passed，0 failures，0 errors，0 skipped。包括真实365文件/精确缺口、显式bin成员、缺一个分钟或一个变量值时不接受部分均值、Wm2不重复转换、目标字段和sentinel检查、离网格不round、时间缺口不拼接、真实mask及7列顺序、标签不插补、Train-only fit拒绝测试、availability、目标方向和split边界、按timestamp的Daily join、全方法逐元素mask、Train daylight阈值、四模型forward及参数参与、17维随机state拒绝、Test score sentinel及held-out数据变更不影响冻结配置/Train诊断、原始size/mtime保持一致。
+M1原27项保留；本轮完整结果见文末。包括真实365文件/精确缺口、显式bin成员、缺一个分钟或一个变量值时不接受部分均值、Wm2不重复转换、目标字段和sentinel检查、离网格不round、时间缺口不拼接、真实mask及7列顺序、标签不插补、Train-only fit拒绝测试、availability、目标方向和split边界、按timestamp的Daily join、全方法逐元素mask、Train daylight阈值、四模型forward及参数参与、17维随机state拒绝、Test score sentinel及held-out数据变更不影响冻结配置/Train诊断、原始size/mtime保持一致。
 
 预处理fit测试用记录数组的test double，并未对实际KNN、scaler、IF拟合；M1不宣称完成下一轮训练runner的端到端验证。Forward运行时将实际fit、训练/真实预测helper、backward、AdamW及torch save/load设为拒绝调用。测试没有以源码字符串检查替代数组行为。数据审核代码不计算实际模型或基线Test误差；Test支持计数是本轮明确要求的只读检查。
 
 ## 主次分析与24-run矩阵
 
-主模型已锁定 INVERTED_VARIATE_TRAJECTORY：原冻结CSV 11,328行复核的primary mean RMSE排序为12/9/2/1，原报告平均排名1.875最佳；在外部Test预测前选定。主要比较为三个seed均值和sample SD，以及分别对Last-value、Daily的matched RMSE skill。其他三模型、排名、每seed、MAE/nRMSE/bias/R²和scope差异为次要；best-of-four包络仅描述性。完整24-run矩阵在 MULTISITE_PROTOCOL.md 和 multisite_config.json 中，候选预算/输入/划分已冻结，authorization_next_round=false。
+主模型已锁定 INVERTED_VARIATE_TRAJECTORY：原冻结CSV 11,328行复核的primary mean RMSE排序为12/9/2/1，原报告平均排名1.875最佳；在外部Test预测前选定。主要比较为三个seed均值和sample SD，以及分别对Last-value、Daily的matched RMSE skill。其他三模型、排名、每seed、MAE/nRMSE/bias/R²和scope差异为次要；best-of-four包络仅描述性。完整24-run矩阵在 MULTISITE_PROTOCOL.md 和 multisite_config.json 中，候选预算/输入/划分已冻结，authorization_next_round=true（仅下一轮）。
 
 ## 官方来源、已确认与未确认边界
 
@@ -112,4 +120,30 @@ Train 功率与 GHI 的 -5/0/+5 分钟相关系数为 0.929261 / 0.972166 / 0.92
 - [DKASC Glossary](https://dkasolarcentre.com.au/glossary)：AC功率五分钟平均；Yulara resource部分需提供方进一步说明。没有从Alice Springs气象传感器段落直接套用其参数给Yulara。
 - [Notes on the Data](https://dkasolarcentre.com.au/download/notes-on-the-data)及[2017相关页](https://dkasolarcentre.com.au/download/notes-on-the-data/p8)、[相邻记录页](https://dkasolarcentre.com.au/download/notes-on-the-data/p7)：2017-02-14网站迁移影响两处数据访问；2017-05-09 pyranometer角度调整明确属于Alice Springs，不能套给Yulara。日志并非穷尽所有短时事件，不据此删数据。
 
-核查日期 2026-09-05。没有联系提供方或发送邮件。可以在获得缺失文档后继续M1 correction，复核受影响规则和计数，再决定是否READY；当前不授权下一轮训练。
+
+## 2026-09-07官方复核与数据使用条款
+
+上列NIST论文、字典、Data.gov目录，以及DKASC下载页、术语页和联合系统metadata本轮均已复核。NIST门户未能提供可核验日志，Yulara资源字段详情仍未取得，未虚构资料或联系提供方。
+
+[DKASC数据使用条款](https://dkasolarcentre.com.au/download/terms-conditions)要求注明分析日期、单位、安装年份及影响比较因素，并准确引用来源及相关声明。5000单元格门槛明确针对Alice Springs，250000门槛针对NT Solar Resource，不冒充Yulara明确授权范围。未来公开前核对适用再分发条款，本轮不发布原始数据；训练就绪不代表无限制再分发许可。未确认真实下载日期，访问日期不冒充下载日期。
+
+## 本轮执行验证
+
+43 passed，0 failed，0 errors，0 skipped（原27项加16项M1-R测试，含对既有行为的回归复用）。最终完整运行48.953秒。首次完整运行42项通过、1项因Git所有权限制报错；以仅该只读命令的safe.directory修正后完整重跑通过，无全局Git配置改动。更早的重复时间连接慢路径审核运行已中止，未计入通过测试。
+
+逐项对比固定M1 commit中的96条支持记录：origins、valid-target points、输入/标签缺失率、月份与daylight阈值全部相同；NIST first/last origin仅增加显式−05:00。五个缺失分钟及两个离网格记录一致。24-run矩阵、三个seed、主模型、训练预算、模型配置、split和七通道顺序与M1逐项一致。
+
+全部366个原始文件size和mtime_ns前后相同。无checkpoint、预测数组、训练日志或结果缓存生成；摘要仅为小型审核CSV。本轮复用已有Python环境，CPU synthetic forward，无实际预处理拟合。训练runner的端到端实现属于下一轮范围。
+
+复现：`python -B GFNODE_experiments/scheme_A_multisite_extension/test_multisite_protocol.py --paths .local/multisite_paths.json --write-summary`。仅全部测试通过且无skip才更新审核CSV。
+
+原始2017观测描述性数量：
+
+| 场址 | 负功率 | 负GHI | 原生GHI>500且功率≤0 |
+|---|---:|---:|---:|
+
+| NIST_GROUND | 14418 | 271221 | 751 |
+| YULARA_COMBINED | 52807 | 50504 | 0 |
+
+以上为原始观测计数：NIST一分钟、Yulara五分钟并包含两条离网格原记录；正式派生数据仍排除离网格记录，不据此筛选任何有限标签。
+Train能量诊断配对数、中位数及诊断边界计数不变；重新运行的均值/相关系数最大差异约2.22e-16，属于浮点数值末位差异，不改变时间规则或样本定义。
