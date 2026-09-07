@@ -159,7 +159,16 @@ class Artifacts(unittest.TestCase):
     def test_08_independent_metrics(self):
         import independent_verify_multisite as v
         result=v.verify();self.assertEqual(result['failed'],0);self.assertGreater(result['passed'],0)
-    def test_09_raw_unchanged(self):m.assert_unchanged(self.before)
+    def test_09_raw_unchanged(self):
+        m.assert_unchanged(self.before)
+        import csv
+        y,n,files=a.validate_paths(PATHS)
+        with (a.HERE/'DATA_AUDIT_SUMMARY.csv').open(encoding='utf-8') as stream:rows=list(csv.DictReader(stream))
+        for row in rows:
+            if row['category']=='file' and row['site']=='NIST_GROUND':
+                record=json.loads(row['value']);self.assertEqual(a.stats(n/record['file']),{k:record[k] for k in ['size','mtime_ns']})
+        previous={r['key']:json.loads(r['value']) for r in rows if r['site']=='YULARA_COMBINED' and r['category']=='audit'}
+        self.assertEqual(a.stats(y),{k:previous[k] for k in ['size','mtime_ns']})
     def test_10_no_numeric_failures(self):self.assertTrue(all(not r['numeric_failure'] for r in self.infos))
 
 if __name__=='__main__':

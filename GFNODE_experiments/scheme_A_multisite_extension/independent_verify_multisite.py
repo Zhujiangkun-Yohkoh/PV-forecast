@@ -17,7 +17,7 @@ def raw_power(site,cfg,paths):
         folder=Path(paths['NIST_GROUND_2017_DIRECTORY']);pieces=[]
         for day in pd.date_range('2017-01-01','2017-12-31'):
             p=folder/f'{day.month:02d}'/f'onemin-Ground-{day:%Y-%m-%d}.csv'
-            r=pd.read_csv(p,usecols=['TIMESTAMP','PwrMtrP_kW_Avg'])
+            r=pd.read_csv(p,usecols=['TIMESTAMP','PwrMtrP_kW_Avg'],dtype=str,keep_default_na=False)
             if not r.TIMESTAMP.str.endswith('-05:00').all():raise AssertionError('EST offset')
             idx=pd.DatetimeIndex(pd.to_datetime(r.TIMESTAMP,utc=True)).tz_convert(timezone(timedelta(hours=-5)))
             pieces.append(pd.Series(pd.to_numeric(r.PwrMtrP_kW_Avg,errors='coerce').to_numpy(float),index=idx))
@@ -25,7 +25,7 @@ def raw_power(site,cfg,paths):
         key=s.index.floor('5min')+pd.Timedelta(minutes=5)
         grouped=s.groupby(key);power=grouped.mean().where(grouped.count()==5)
         return power.reindex(pd.date_range('2017-01-01','2017-12-31 23:55',freq='5min',tz=timezone(timedelta(hours=-5))))
-    r=pd.read_csv(paths['YULARA_RAW_FILE'],usecols=['timestamp','Active_Power'])
+    r=pd.read_csv(paths['YULARA_RAW_FILE'],usecols=['timestamp','Active_Power'],dtype=str,keep_default_na=False)
     idx=pd.DatetimeIndex(pd.to_datetime(r.timestamp));v=pd.to_numeric(r.Active_Power,errors='coerce').to_numpy(float)
     select=(idx>=pd.Timestamp('2017-01-01'))&(idx<pd.Timestamp('2018-01-01'))&(idx==idx.floor('5min'))
     s=pd.Series(v[select],index=idx[select]+pd.Timedelta(minutes=5));s=s.where(np.isfinite(s))
@@ -48,6 +48,8 @@ def verify(paths_file=None):
     series={site:raw_power(site,cfg,paths) for site in ['YULARA_COMBINED','NIST_GROUND']}
     rows=[];checks=0;max_error=0.
     run_metadata={}
+    with (HERE/'DATA_AUDIT_SUMMARY.csv').open(encoding='utf-8') as stream:
+        support={(r['site'],r['key']):json.loads(r['value']) for r in csv.DictReader(stream) if r['category']=='support'}
     def equal(value,wanted):
         nonlocal checks,max_error
         checks+=1
@@ -106,6 +108,10 @@ def verify(paths_file=None):
     if not independent.index.equals(published.index):raise AssertionError('CSV row identities')
     for key,row in independent.iterrows():
         for metric in METRICS+['forecast_origin_count','valid_target_count']:equal(row[metric],published.loc[key,metric])
+        audit_analysis='primary' if key[5]=='primary' else 'daily_matched'
+        expected_support=support[key[0],f'test|H{key[3]}|{audit_analysis}|{key[4]}']
+        equal(row['forecast_origin_count'],expected_support['forecast_origin_count'])
+        equal(row['valid_target_count'],expected_support['valid_target_point_count'])
         if key[1] in cfg['models']:
             info=run_metadata[key[:3]]
             for metric in ['parameter_count','best_epoch','best_validation_mse','training_seconds']:equal(info[metric],published.loc[key,metric])
