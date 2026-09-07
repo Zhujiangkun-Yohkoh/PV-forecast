@@ -1,0 +1,10 @@
+{
+  "m1_passed": 43,
+  "m2_passed": 17,
+  "failed": 0,
+  "errors": 0,
+  "skipped": 0,
+  "source_commit": "e60f3482248cc657397db2b665ea0f8957dee7c5",
+  "raw_unchanged": true,
+  "support_groups_unchanged": 96
+}
