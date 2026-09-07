@@ -1,10 +1,10 @@
 # Scheme A-M1 frozen external-site protocol
 
-Protocol frozen for review. Training authorization withheld: see REPORT.md. No training runner is supplied in M1.
+M1-R retains the frozen 24-run protocol. READY authorizes the next turn only; no training runner or training execution is supplied in this round.
 
 ## Scope and source
 
-Source: origin/manuscript/clean-pv-benchmark-jrse-final-polish at ede66987e56eb8863287624476f8b8ff3e201897. Branch research/scheme-a-multisite-data-confirmation. This source predates local language/affiliation edits in the submission worktree; those edits are not imported. No PR #14 merge, master access, rebase or force push.
+M1-R sole source: origin/research/scheme-a-multisite-data-confirmation at 626b664b9083df2685e29868cf1409d4b547059e. Branch research/scheme-a-multisite-data-confirmation-r1; PR base research/scheme-a-multisite-data-confirmation. Original implementation provenance remains ede66987e56eb8863287624476f8b8ff3e201897. This source predates local language/affiliation edits in the submission worktree; those edits are not imported. No PR #14 merge, master access, rebase or force push.
 
 Two external facilities: YULARA_COMBINED (Sails in the Desert combined system 3, 106.6 kW) and NIST_GROUND (Gaithersburg). Do not count Yulara constituent arrays as independent sites. This is external replication with separate site-specific fitting, not zero-shot transfer. Do not pool the external 16 site/horizon/scope summaries with the original 24 comparisons.
 
@@ -16,7 +16,7 @@ Only explicit YULARA_RAW_FILE and NIST_GROUND_2017_DIRECTORY in an ignored local
 
 Order: historical_ac_active_power, ambient_temperature, global_horizontal_irradiance, power_missing, temperature_missing, ghi_missing, isolation_forest_flag. Target: future measured AC active power. No time-of-day, year, PR, humidity, NWP or site-specific inputs.
 
-Keep finite negative power/GHI unless the provider defines an invalid code. Non-numeric and infinite values become missing and are counted separately. Candidate -999/-7999 in a common field requires correction, not an invented deletion rule; none is present in the current common fields. InvPAC_kW_Avg is diagnostic only, never a target. No Test-error, shutdown, snow or low-power filtering. Labels are never imputed.
+Keep finite negative power/GHI unless the provider defines an invalid code. Non-numeric and infinite values become missing and are counted separately. Candidate -999/-7999 counts are descriptive; none is present in the current common fields. Without provider invalid-code definitions retain finite values. Large ambiguous invalid-code populations require review, not automatic deletion. InvPAC_kW_Avg is diagnostic only, never a target. No Test-error, shutdown, snow or low-power filtering. Labels are never imputed.
 
 Future preprocessing order: KNNImputer(n_neighbors=5) fit on Train numeric inputs; transform; IsolationForest(n_estimators=100, contamination=0.01, random_state=42) fit on Train imputed numeric inputs; append original missing masks and IF outlier indicator; feature MinMaxScaler fit on all seven Train augmented columns; target MinMaxScaler fit on finite un-imputed Train target. The feature scaler includes indicator columns, following the old augmentation/scaling order. Nothing is fitted in M1; fit-guard tests use recording test doubles.
 
@@ -24,7 +24,7 @@ Explicit changes to original Scheme A: _valid_power and Daily previously exclude
 
 ## Time, aggregation and availability
 
-NIST: TIMESTAMP is LST in Data Dictionary v1.0. Verify every ISO offset is -05:00, then use fixed EST without DST. Never localize to America/New_York. Pyra1 is Ground GHI; directly supplied Pyra1_Wm2_Avg is not converted again. PwrMtrP_kW_Avg is AC meter real power. Pyra1_mV_Avg is absent in this download.
+NIST: time_basis=FIXED_EST_LST; utc_offset=-05:00. Parsing, aggregation, regular grids, explicit split boundaries, window indices and timestamp joins remain tz-aware throughout, including summary timestamps. No naive conversion is used. TIMESTAMP is LST in Data Dictionary v1.0. Verify every ISO offset is -05:00, then use fixed EST without DST. Never localize to America/New_York. Pyra1 is Ground GHI; directly supplied Pyra1_Wm2_Avg is not converted again. PwrMtrP_kW_Avg is AC meter real power. Pyra1_mV_Avg is absent in this download.
 
 NIST five-minute grouping: timezone fixed UTC-05:00; anchor local midnight; origin 2017-01-01 00:00:00-05:00; closed=left; label=right. Bin T uses distinct raw timestamps T-5,T-4,T-3,T-2,T-1 minutes, i.e. [T-5,T). Each variable requires all five distinct observations to be finite; otherwise that variable is missing, even when a partial mean could be computed. No default resample behavior, interpolation or partial-bin averages.
 
@@ -50,7 +50,7 @@ Daylight = true future target > 0.01 * corresponding Train maximum, before scali
 
 Primary model INVERTED_VARIATE_TRAJECTORY is fixed before external Test prediction, based on original 12/24 primary wins and mean rank 1.875. Primary: its three-seed Test means and sample SD, matched RMSE skill vs Last-value and vs Daily, each site/horizon/scope separately. Skill=1-RMSE_model/RMSE_reference on identical support; zero reference error yields undefined skill, not epsilon substitution. SD uses ddof=1; averaging predictions into an ensemble does not replace mean seed metrics.
 
-Secondary: all four models, each seed, ranks, MAE, Train-range nRMSE, bias, R² and full/daylight differences. Retain negative R²; zero target variance yields undefined R². Train range is max-min, not Test range or assumed AC capacity. Descriptive only: post hoc best-of-four model-mean RMSE envelope, never the primary or deployable model. No best-seed reports, Test selection, unplanned win-count p-values or treating 16 dependent summaries as independent tests.
+Secondary: all four models, each seed, ranks, MAE, Train-range nRMSE, bias, R虏 and full/daylight differences. Retain negative R虏; zero target variance yields undefined R虏. Train range is max-min, not Test range or assumed AC capacity. Descriptive only: post hoc best-of-four model-mean RMSE envelope, never the primary or deployable model. No best-seed reports, Test selection, unplanned win-count p-values or treating 16 dependent summaries as independent tests.
 
 Budget copied from original config: batch 256, AdamW, learning rate 0.001, weight decay 1e-5, max 25 epochs, patience 5, min_delta 1e-8, gradient clipping 1.0, seeds 42/43/44. No new architecture or hyperparameter search; model budgets remain equal. These are next-round candidates only; M1 performs none of these operations. Seven-channel parameter changes follow input dimension, not a new model claim.
 
@@ -94,4 +94,14 @@ python GFNODE_experiments/scheme_A_multisite_extension/test_multisite_protocol.p
 
 The local ignored JSON is owner-populated; no data fallback/download. The audit outputs only a small summary CSV. Forward tests use freshly initialized CPU modules at 7 and 17 channels; strict random 17-state rejection is checked in memory, not by opening an old checkpoint. Each parameter tensor is perturbed under inference mode, output dependence checked and values restored. This demonstrates synthetic tensor participation, not gradient trainability. Runtime guards reject actual estimators' fit methods, training helpers, backward, AdamW construction, checkpoint save/load and real-data prediction helpers in the forward path. Existing code is imported inertly for model classes only.
 
-No neural/risk/IF fitting, actual Validation/Test prediction, or manuscript rewrite. Authorization remains false while REPORT.md identifies missing evidence. A correction decision does not authorize these runs; a later READY decision can authorize only this frozen matrix in a subsequent turn.
+No neural/risk/IF fitting, actual Validation/Test prediction, or manuscript rewrite. READY authorizes only the frozen 24 GPU runs in the next turn. training_this_round=false remains independent of authorization_next_round. Documentation limitations below do not block training under the user-approved fallback rules.
+
+## M1-R documentation and operating-state rules (2026-09-07)
+
+NIST_2017_OPERATION_LOG_UNAVAILABLE_NONBLOCKING: no verified 2017 Ground operational log was retrieved. Do not infer an event-free year. Keep finite meter power, temperature and GHI, including negative values, high-GHI/nonpositive-power intervals and unusual finite ranges. Missing values remain missing. No manual or prediction-based state deletion. Report this documentation limitation in future manuscript limitations; M1-R does not edit the manuscript.
+
+YULARA_PROVIDER_METADATA_PARTIAL_NONBLOCKING: the official glossary lists Weather Temperature Celsius and Global Horizontal Radiation under Environment.DG_Weather_Station. Celsius follows that field meaning. Use provider-native GHI values without conversion, with Train-only input scaling. Do not infer cross-site absolute irradiance differences or claim sensor model, uncertainty or complete quality-flag definitions. Sampling/aggregation details and invalid-code definitions for these resource fields remain unconfirmed. The conservative availability +5 minutes is unchanged. Explicit missing/nonfinite/structurally nonnumeric values become missing; finite values are not flagged missing by heuristics. The Train-only IF flag will express unusual inputs without deleting labels.
+
+Only unresolved label meaning/units, nonunique time order, wrong physical fields, substantial ambiguous invalid-code populations, or unsafe aggregation remain blocking. No such condition is identified in the audited files. Native GHI >500 and power <=0 is a descriptive count only, neither a filter nor an absolute cross-site comparison. Nighttime identity is not inferred from a negative value. Snow/maintenance cannot be reliably counted without logs.
+
+Official sources and access dates, including data-use terms, are documented in REPORT.md. Training readiness does not assert unrestricted redistribution permission. No raw data are published by this change.
