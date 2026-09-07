@@ -144,6 +144,7 @@ def verify(paths_file=None):
             'primary_results':primary.to_dict('records'),'neural_ranks':ranks,'envelope':envelopes,
             'per_seed_rows':len(independent),'summary_rows':len(summary)}
     def clean(v):
+        if isinstance(v,np.generic):return clean(v.item())
         if isinstance(v,dict):return {k:clean(x) for k,x in v.items()}
         if isinstance(v,list):return [clean(x) for x in v]
         if isinstance(v,float) and not math.isfinite(v):return None
