@@ -52,3 +52,7 @@ After author approval of the manuscript and release scope, create a separate rep
 5. Verify DKASC redistribution terms and publish download instructions rather than data copies.
 6. Remove submission-only and private author metadata from the release tree.
 7. Run secret/path scans on the new repository before changing its visibility.
+
+## M3 scope update (2026-09-07)
+
+The preceding repository visibility/ref observations are historical, not a new M3 all-ref audit. The proposed curated code scope now also includes the frozen external data protocol, seven-channel benchmark code, ordinary tests, independent external verifier, aggregate per-seed/mean-SD CSVs, and manuscript figure builder. Raw NIST and DKASC observations must be obtained from their official providers under applicable terms. The user will confirm final URL, license and code-release details at submission preparation. M3 creates no release, repository or visibility change.

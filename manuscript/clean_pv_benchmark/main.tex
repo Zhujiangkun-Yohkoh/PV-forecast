@@ -1,18 +1,20 @@
 \documentclass[aip,reprint,floatfix,amsmath,amssymb]{revtex4-2}
 \usepackage{graphicx}
 \usepackage{booktabs}
+\usepackage{array}
 \usepackage{multirow}
 \usepackage{makecell}
 \usepackage{siunitx}
 \usepackage{xcolor}
 \usepackage{hyperref}
 \usepackage{url}
-\hypersetup{colorlinks=true,linkcolor=blue!45!black,citecolor=blue!45!black,urlcolor=blue!45!black,pdftitle={Leakage-Aware Multi-Horizon Benchmarking of Compact Neural PV Forecasts Across Co-Located Technologies},pdfauthor={Jiangkun Zhu et al.}}
+\hypersetup{colorlinks=true,linkcolor=blue!45!black,citecolor=blue!45!black,urlcolor=blue!45!black,pdftitle={Leakage-Aware Multi-Horizon Benchmarking of Compact Neural PV Forecasts Across Technologies and Sites},pdfauthor={Jiangkun Zhu et al.}}
 \sisetup{detect-all,round-mode=places,round-precision=3}
+\setcounter{dbltopnumber}{4}\renewcommand{\dbltopfraction}{0.95}\renewcommand{\textfraction}{0.05}
 
 \begin{document}
 \preprint{WORKING MANUSCRIPT --- AUTHOR DECLARATIONS PENDING CONFIRMATION}
-\title{Leakage-Aware Multi-Horizon Benchmarking of Compact Neural PV Forecasts Across Co-Located Technologies}
+\title{Leakage-Aware Multi-Horizon Benchmarking of Compact Neural PV Forecasts Across Technologies and Sites}
 
 \author{Jiangkun Zhu}
 \thanks{ORCID: \href{https://orcid.org/0009-0009-5335-2345}{0009-0009-5335-2345}}
@@ -27,49 +29,40 @@
 \email{lijun.wu@fzu.edu.cn}
 \affiliation{College of Advanced Manufacturing, Fuzhou University, 1 Shuicheng Road, Quanzhou 362251, China}
 \affiliation{College of Physics and Information Engineering, Fuzhou University, 2 Xueyuan Road, Fuzhou 350116, China}
-\date{August 28, 2026 --- WORKING MANUSCRIPT; AUTHOR DECLARATIONS PENDING CONFIRMATION}
+
+
 
 \begin{abstract}
-Photovoltaic (PV) forecasting benchmarks can favor a model through future-aware preprocessing, unequal eligible samples, or an undemanding reference rather than through forecasting skill. We evaluate four compact neural implementations on three co-located PV technologies at the DKA Solar Centre in Alice Springs. Each forecaster receives the same 17-channel, six-hour history and directly predicts 144 five-minute power values. The 1, 4, 8, and 12 h prefixes are evaluated on full-timeline and daylight scopes. Preprocessing is fitted on Train only, windows remain inside chronological splits, checkpoint selection uses Validation only, and every comparison shares forecast origins, labels, and point masks. For every primary combination, the lowest-RMSE compact neural implementation outperforms Last-value Persistence; the inverted-variate and depthwise implementations rank first in 12 and nine combinations, respectively. This Test-derived, post hoc best-of-four neural envelope is descriptive and is not a prespecified deployable model. Against a separately matched 24 h seasonal reference, Daily Persistence remains better than even this favorable envelope in 22 of 24 comparisons; the two envelope wins are Hanwha at the 1 h horizon under full-timeline and daylight evaluation. Rankings also vary by array, horizon, and scope. The findings show that causal preprocessing, elementwise sample matching, and a strong persistence challenge materially determine benchmark conclusions. The study is limited to co-located, history-only data and compact project implementations rather than full official architecture reproductions.
+Photovoltaic forecasting rankings depend on the information available to a model, the targets being scored, and the reference forecast. We examine these dependencies across three geographic sites using a two-level benchmark: three co-located arrays at Alice Springs with 17 input channels, and independently fitted replications at Yulara and NIST Ground with seven common channels. Four compact neural implementations use six hours of history to predict a twelve-hour trajectory, evaluated at 1, 4, 8, and 12 h on full-timeline and daylight scopes. The study comprises 60 training runs: 36 for Alice Springs in 2018 and 24 for the external sites in 2017. Train-only preprocessing, split-local windows, Validation-only checkpoint selection, and identical target masks define each comparison. At Alice Springs, Daily Persistence has lower error than the post hoc best-of-four neural envelope in 22 of 24 comparisons. At the external sites, the prespecified Inverted-variate model improves on Last-value Persistence in all 16 comparisons and on matched Daily Persistence in 15. Its first-place ranking at Yulara changes at NIST, where recurrent and depthwise implementations lead different evaluation scopes. These results distinguish improvement beyond local continuity from improvement beyond daily recurrence. They support a benchmark interpretation in which site, horizon, scope, and historical information jointly condition the observed advantage.
 \end{abstract}
-\keywords{photovoltaic power forecasting, multi-horizon forecasting, data leakage, persistence benchmark, reproducibility, co-located PV arrays}
+\keywords{photovoltaic forecasting, multi-horizon benchmark, sample matching, persistence, external-site replication}
 \maketitle
 
 \section{Introduction}
+Photovoltaic (PV) forecasts support storage scheduling, distribution operation, and reserve allocation. A useful benchmark should establish what a forecast adds to the observations already available at its issue time. This question depends on horizon, weather information, target definition, and the reference method. Reviews of PV forecasting therefore emphasize the context needed to interpret reported errors.\cite{Antonanzas2016,Mellit2021Review,DiLeo2025Review} Recurrent, convolutional, and attention-based models provide several ways to summarize historical observations, but an architecture name alone does not specify a forecasting experiment.\cite{Hewamalage2021RNN,Benidis2022}
 
-Photovoltaic generation is variable at time scales relevant to distribution operation, storage scheduling, and reserve allocation. Forecast quality depends on the forecast horizon, temporal resolution, available observations, weather regime, and the definition of the target itself. Reviews therefore caution that numerical errors from different PV forecasting studies are rarely interchangeable without their complete data and evaluation context.\cite{Antonanzas2016,Mellit2021Review,DiLeo2025Review} At the same time, rapid progress in recurrent, convolutional, Transformer-based, probabilistic, and weather-assisted forecasting has shifted attention toward increasingly elaborate architectures.\cite{Hewamalage2021RNN,Benidis2022,SolNet2025,CrossUnet2026}
+Three evaluation choices are central. Transformations fitted beyond the training period can expose a model to later distributions. Missing labels and lagged observations can give competing methods different targets. A reference that repeats the present value asks a different question from one that retrieves yesterday's value. Temporal evaluation guidance and leakage studies motivate explicit controls for these choices.\cite{Tashman2000,Bergmeir2012,Hewamalage2023,Kapoor2023} In PV forecasting, their interaction matters because nighttime production, daytime variability, and daily recurrence contribute differently to an aggregate error.
 
-Architecture is only one source of variation in a benchmark. Three evaluation choices can change the apparent conclusion before a model is fitted. First, imputation, anomaly detection, or scaling fitted on the full record transfers information from later periods into the representation of earlier periods. Second, methods may be compared on different eligible samples when missing targets, daylight filters, or lag requirements are handled separately. Third, a weak reference can make a learned model appear useful even when a simple operational alternative is better. These risks are especially consequential for PV data, where nighttime values are easy, missingness is structured, and daily periodicity is strong. General forecasting guidance and leakage audits emphasize temporal separation and explicit baselines, but published PV studies still differ in split definitions, persistence lags, missing-value rules, and eligible targets.\cite{Tashman2000,Bergmeir2012,Hewamalage2023,Kapoor2023}
+Public PV archives also permit two complementary forms of replication. Co-located arrays share much of their weather context while retaining different electrical systems and power targets. Geographically separate facilities test whether an observed pattern appears under another operating distribution. Alice Springs provides the first setting through its documented technology arrays.\cite{DKASC2026,Wang2019DKASC,Mahmud2021} Yulara and NIST Ground provide the second through separate power and meteorological records.\cite{YularaData,Boyd2017NIST} These settings need not have identical sensor inventories: the information available to each experiment can be made explicit instead of treating all inputs as interchangeable.
 
-The persistence question is not binary. Last-value Persistence extrapolates the power observed at the forecast origin and is a natural short-horizon continuity reference. Daily Persistence uses the power observed at the same clock time 24 h earlier and is a stronger seasonal reference when a valid lagged observation exists. The two baselines answer different questions and can use different raw supports. A fair comparison must therefore apply the chosen reference's actual valid point mask to every competing method rather than deleting unavailable points from the baseline alone.
+We combine these two levels in a history-only benchmark. The Alice Springs experiment compares three co-located arrays with 17 channels. The external-site replications use the common seven-channel information set available at Yulara and NIST and fit each model separately at each site. All settings use six-hour histories, direct twelve-hour trajectories, four evaluation horizons, two scopes, and two persistence references. The Inverted-variate implementation was fixed as the external primary model from the frozen Alice results before external Test predictions were generated. The four-model external comparison remains secondary.
 
-Cross-system comparison introduces a second challenge. Different sites combine weather, climate, orientation, technology, capacity, sensor, and data-quality effects. The DKA Solar Centre in Alice Springs provides a useful controlled setting: several PV systems are co-located and share meteorological observations, while their power targets and module technologies differ.\cite{DKASC2026,Wang2019DKASC,Mahmud2021} Co-location does not establish cross-climate generality, but it reduces location-level confounding and permits a focused test of whether model rankings remain stable across targets exposed to broadly common weather.
-
-This study addresses four research questions:
-\begin{enumerate}
-\item Under causal preprocessing and elementwise-matched evaluation, do compact neural implementations outperform Last-value Persistence?
-\item Does that conclusion persist when the reference is changed to matched Daily Persistence?
-\item How do rankings vary across PV arrays, 1--12 h horizons, and full-timeline versus daylight scopes?
-\item Are accuracy differences accompanied by material differences in parameter count and inference cost?
-\end{enumerate}
-
-The contributions are methodological and empirical rather than architectural. We (i) specify a leakage-aware multi-horizon protocol with Train-only preprocessing, split-local windows, Validation-only checkpoint selection, and identical evaluation support; (ii) compare three co-located PV technologies under shared meteorological context; (iii) demonstrate how Last-value and Daily Persistence lead to different but compatible scientific interpretations; and (iv) report seed variability, physical and normalized errors, sample counts, and hardware-specific efficiency for four compact neural implementations. The study does not propose a new neural network, reproduce every component of the architectures that inspired the implementations, or claim state-of-the-art or cross-site performance.
-
+The study asks whether improvement beyond Last-value Persistence recurs at the external sites, whether Daily Persistence changes that conclusion, and whether model rankings remain consistent across arrays, horizons, and scopes. Its contribution is a two-level empirical benchmark with explicit information sets and matched evaluation targets. The strongest contrast is between daily recurrence at Alice Springs and the external primary model's gains over both references. The accompanying ranking changes identify the conditions under which a particular implementation leads, rather than assigning one architecture a universal position.
 \section{Related Work}
 
 \subsection{PV forecasting models and information availability}
 
 PV forecasting spans physical, statistical, machine-learning, and hybrid methods. Historical power and ground meteorology are commonly used for intra-hour and short intraday prediction; future numerical weather prediction (NWP), satellite products, and sky imagery become increasingly important as the horizon grows.\cite{Antonanzas2016,Mellit2021Review} This distinction matters because a history-only model and an NWP-assisted model estimate different conditional quantities. Cross-Unet, for example, explicitly combines historical observations with forward weather fields, demonstrating the value of a richer forecast-time information set rather than providing a directly comparable error for a history-only task.\cite{CrossUnet2026}
 
-Recent work has also broadened the scale and objectives of benchmarking. SolNet supplies open-source models across geographically distributed systems and emphasizes transfer across regions.\cite{SolNet2025} Markovics \textit{et al.} compare classical and deep models using weather forecasts, extensive tuning, and multiple sites.\cite{Markovics2026} Dhingra \textit{et al.} examine neural forecasts under data constraints and include uncertainty quantification, while related work by the same group studies quantile forecasts under data loss.\cite{Dhingra2026,Dhingra2025} A 2025 review identifies standardization, generalization, and uncertainty as recurring open problems.\cite{DiLeo2025Review} These studies are broader than the present work in geography, weather information, tuning, or uncertainty treatment. Our narrower estimand is the effect of evaluation discipline when causal history-only implementations are compared on exactly the same co-located samples.
+Recent work has also broadened the scale and objectives of benchmarking. SolNet supplies open-source models across geographically distributed systems and emphasizes transfer across regions.\cite{SolNet2025} Markovics \textit{et al.} compare classical and deep models using weather forecasts, extensive tuning, and multiple sites.\cite{Markovics2026} Dhingra \textit{et al.} examine neural forecasts under data constraints and include uncertainty quantification, while related work by the same group studies quantile forecasts under data loss.\cite{Dhingra2026,Dhingra2025} A 2025 review identifies standardization, generalization, and uncertainty as recurring open problems.\cite{DiLeo2025Review} These studies address geographic transfer, future weather information, or uncertainty. Here, two input regimes distinguish a co-located technology comparison from independently fitted external-site replications, with target support matched within each setting.
 
-Central Australian PV archives have already supported several forecasting studies. Mahmud \textit{et al.} used machine learning for power forecasting at Alice Springs, Huang \textit{et al.} evaluated a neural-ODE-based architecture on three Alice Springs arrays, and Mansour \textit{et al.} benchmarked six machine-learning models against Persistence on high-resolution Yulara data under seasonal and stress conditions.\cite{Mahmud2021,Huang2024MANODE,Mansour2026} These studies establish the relevance of public desert-PV data but do not make the current evaluation contribution redundant. Data availability, split definitions, persistence lags, model inputs, and eligible samples differ across studies; consequently, reported numerical errors are not directly comparable.
+Central Australian PV archives have already supported several forecasting studies. Mahmud \textit{et al.} used machine learning for power forecasting at Alice Springs, Huang \textit{et al.} evaluated a neural-ODE-based architecture on three Alice Springs arrays, and Mansour \textit{et al.} benchmarked six machine-learning models against Persistence on high-resolution Yulara data under seasonal and stress conditions.\cite{Mahmud2021,Huang2024MANODE,Mansour2026} These studies establish the relevance of public desert-PV data. Data availability, split definitions, persistence lags, model inputs, and eligible samples differ across studies; consequently, reported numerical errors are not directly comparable.
 
 \subsection{Compact time-series mechanisms}
 
 Long short-term memory networks and temporal convolutional networks are established sequence models.\cite{Hochreiter1997,Bai2018TCN} Transformer variants introduced efficient attention, decomposition, frequency-domain structure, patch tokenization, and inverted variate tokens.\cite{Vaswani2017,Zhou2021Informer,Wu2021Autoformer,Zhou2022FEDformer,Nie2023PatchTST,Liu2024iTransformer} ModernTCN revisited convolutional time-series modeling with large kernels and modern block design.\cite{Luo2024ModernTCN} These papers define architecture families, not the exact compact implementations evaluated here.
 
-Our four forecasters retain one recognizable mechanism from those families under a common input-output budget: recurrent trajectory decoding, variate tokenization, joint temporal patching, or depthwise temporal convolution. They intentionally omit or modify substantial components. The comparison therefore concerns implemented mechanisms under one controlled protocol. It must not be interpreted as a leaderboard for official iTransformer, PatchTST, or ModernTCN releases.
+Our four forecasters retain one recognizable mechanism from those families under a common input-output budget: recurrent trajectory decoding, variate tokenization, joint temporal patching, or depthwise temporal convolution. The resulting networks are compact project implementations rather than full official reproductions. Their rankings concern these implementations under the stated information and training budgets.
 
 \subsection{Persistence, leakage, and reproducible evaluation}
 
@@ -77,222 +70,176 @@ Forecasting benchmarks require naive references whose information sets are expli
 
 Temporal leakage can enter through preprocessing, windows, or model selection. Random cross-validation is inappropriate for many dependent series, and globally fitted transformations can make a nominally chronological evaluation transductive.\cite{Bergmeir2012,Hewamalage2023} Reproducibility further requires definitions of split boundaries, target timestamps, inverse scaling, checkpoint selection, and metric aggregation. Three random seeds cannot establish universal statistical superiority, but reporting them prevents a favorable initialization from being silently selected.
 
-Table~\ref{tab:related} positions the present study against recent direct competitors. The distinctive combination is not any single architecture; it is the simultaneous control of causal preprocessing, point-level eligible samples, weak and strong persistence references, multiple horizons, two evaluation scopes, and unified inference timing on co-located technologies.
 
-\begin{table*}[t]
-\caption{Positioning against directly related PV forecasting studies. ``Future information'' refers to exogenous variables available after the forecast origin but issued beforehand.}
-\label{tab:related}\centering\footnotesize
-\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lclllll}
-\toprule Study & Year & Systems & Forecast-time information & Horizons & Scope / reference & Main distinction\\
-\midrule
-SolNet\cite{SolNet2025} & 2025 & \makecell[l]{Global\\sites} & \makecell[l]{History;\\transfer} & Multiple & \makecell[l]{Open deep\\models} & \makecell[l]{Geographic breadth; no\\co-located mask audit}\\
-Di Leo \textit{et al.}\cite{DiLeo2025Review} & 2025 & Review & \makecell[l]{Multiple\\regimes} & Multiple & \makecell[l]{Deterministic /\\probabilistic} & \makecell[l]{Synthesis of standardization\\and uncertainty}\\
-Markovics \textit{et al.}\cite{Markovics2026} & 2026 & \makecell[l]{Multiple\\plants} & \makecell[l]{NWP weather\\forecasts} & Multiple & \makecell[l]{Classical/deep;\\skill} & \makecell[l]{Broader sites, models,\\tuning, and information}\\
-Dhingra \textit{et al.}\cite{Dhingra2026} & 2026 & \makecell[l]{Two PV\\sites} & \makecell[l]{Historical\\irradiance} & Short-term & \makecell[l]{Neural;\\uncertainty} & \makecell[l]{Missing-data stress and\\probabilistic quality}\\
-Cross-Unet\cite{CrossUnet2026} & 2026 & \makecell[l]{Multiple\\PV tasks} & \makecell[l]{History +\\future weather} & Multiple & \makecell[l]{Dual-stream\\neural} & \makecell[l]{Richer future information\\and dedicated fusion}\\
-Mahmud \textit{et al.}\cite{Mahmud2021} & 2021 & \makecell[l]{Alice\\Springs} & \makecell[l]{Historical\\PV/weather} & Short/long & \makecell[l]{ML;\\conventional} & \makecell[l]{Same facility; different\\task and sample rules}\\
-Mansour \textit{et al.}\cite{Mansour2026} & 2026 & \makecell[l]{Yulara\\system} & \makecell[l]{Historical PV, weather,\\engineered lags} & \makecell[l]{5--15 min\\resolution} & \makecell[l]{Six ML models;\\Persistence} & \makecell[l]{Seasonal/stress benchmark;\\different site and estimand}\\
-This study & 2026 & \makecell[l]{Three co-\\located arrays} & \makecell[l]{6 h causal\\history only} & \makecell[l]{1, 4, 8,\\12 h} & \makecell[l]{Compact neural;\\two Persistence lags} & \makecell[l]{Elementwise matching across\\technologies and scopes}\\
-\bottomrule
-\end{tabular*}
-\end{table*}
+\section{Study design and datasets}
+\subsection{Two levels of evidence}
+Figure~\ref{fig:protocol} separates the co-located comparison from the external-site replications. Each array or external facility has its own fitted preprocessing and model weights. No data are pooled across sites. The original 36 runs and the external 24 runs use the same four compact mechanisms and seeds 42, 43, and 44, with different input widths determined by the available fields. Table~\ref{tab:data} records the corresponding dates, capacities, and time coordinates.
 
-\section{Data and Experimental Protocol}
-
-\subsection{Co-located PV systems and temporal splits}
-
-The DKA Solar Centre in Alice Springs, Australia, provides five-minute PV and meteorological measurements through its official data service and system metadata pages (accessed August 28, 2026).\cite{DKASC2026} We use Site 17 Sanyo HIT-210NKHE5 hybrid-silicon modules (6.30 kW rated DC), Site 25 Hanwha HSL 60S polycrystalline-silicon modules (5.83 kW DC), and Site 38 Q CELLS Q.PEAK-G4.1 monocrystalline-silicon modules (5.90 kW DC). The target is Active Power in kW AC. Official AC capacities were unavailable, so DC ratings are reported descriptively and never used to normalize AC prediction error.
-
-The aligned systems share six meteorological fields: ambient temperature, relative humidity, global and diffuse horizontal radiation, and global and diffuse tilted radiation. Each array retains its own Active Power, Performance Ratio, and missingness. Co-location controls much of the weather and site context but does not isolate module technology as a randomized causal treatment. Orientation, balance-of-system behavior, and sensing can also contribute to differences.
-
-Train covers April 1--July 15, 2018; Validation covers July 16--August 7; and Test covers August 8--31, all on Australian Central Standard Time. Table~\ref{tab:data} reports horizon-specific Test origins. Counts decline with horizon because a longer valid prefix is required. Adjacent origins overlap and are therefore repeated operational forecast instances, not independent statistical experiments.
-
-\begin{table*}[t]
-\caption{Dataset and primary Test support. Counts are identical for each neural implementation and Last-value Persistence at a given array and horizon.}
-\label{tab:data}\centering\small
-\begin{tabular}{llllrrrr}
-\toprule Array (site) & Technology & Rated DC & Target & H12 origins & H48 origins & H96 origins & H144 origins\\
-\midrule
-Sanyo (17) & HIT hybrid silicon & 6.30 kW & Active Power (kW AC) & 6,589 & 5,905 & 5,024 & 4,160\\
-Hanwha (25) & Polycrystalline silicon & 5.83 kW & Active Power (kW AC) & 6,625 & 6,049 & 5,281 & 4,521\\
-Qcells (38) & Monocrystalline silicon & 5.90 kW & Active Power (kW AC) & 6,463 & 5,491 & 4,227 & 2,996\\
-\bottomrule
-\end{tabular}
-\end{table*}
-
-\subsection{Causal preprocessing and window construction}
-
-Raw records are reindexed to a regular five-minute coordinate without deleting nighttime rows. A missing timestamp remains explicitly missing rather than becoming adjacent to a distant observation. The eight causal numerical inputs are Performance Ratio, six weather fields, and historical Active Power. Each numerical channel has a missing indicator, and one Isolation Forest indicator is added, giving 17 channels. There are no cyclical time channels. The Isolation Forest, five-neighbor imputer, feature scaler, and target scaler are fitted on Train only and then applied unchanged to Validation and Test.\cite{Troyanskaya2001,Liu2008Isolation}
-
-Each input contains 72 consecutive positions on the regular five-minute coordinate (6 h). The forecast origin is the final input timestamp, and the first target is exactly five minutes later. Future Active Power never enters the input. Windows are constructed independently inside each chronological split and never cross split boundaries. Missing input observations remain on the regular coordinate and are represented by missingness masks plus Train-only imputation; they are not treated as breaks in time. Target eligibility is evaluated independently for each requested horizon. Figure~\ref{fig:protocol} summarizes the design.
-
-\begin{figure*}[t]
+\begin{figure*}[!tp]
 \centering\includegraphics[width=0.98\textwidth]{figures/fig1_leakage_free_protocol.pdf}
-\caption{Three-layer benchmark design. Co-located arrays share meteorological context but retain array-specific power and missingness. Train-only transformations and split-local windows preserve causality. Within each array, neural and persistence forecasts use the same origins, labels, and point masks.}
+\caption{Two-level study design. Alice Springs contributes three co-located technology arrays with 17-channel inputs. Yulara and NIST each contribute one external facility with seven-channel inputs. Every target system is fitted separately; the common element is the window and matched-evaluation protocol, not a pooled model.}
 \label{fig:protocol}
 \end{figure*}
 
-All models are trained to predict the complete H144 trajectory, and checkpoint selection minimizes one global masked Validation MSE computed as total squared error divided by total valid target count. Batch means are not weighted equally. Test is excluded from preprocessing fitting, optimization, early stopping, and checkpoint selection. Primary Test evaluation uses horizon-specific eligibility: H12 requires a valid L72 history and H12 target prefix, whereas H144 requires the complete target. A complete-H144 common-origin analysis is retained as sensitivity analysis in the Supplementary Material.
-
-\subsection{Architecture identity and training configuration}
-
-Table~\ref{tab:identity} states what each implementation does and, equally important, what it does not reproduce. All map an input of shape $72\times17$ to a 144-value trajectory. The Discrete recurrent decoder is project-defined: a multi-dilation convolutional branch and a one-layer Transformer branch are gated, summarized by a bidirectional GRU, and decoded through a GRUCell. The Inverted-variate Transformer treats each of the 17 variables as a token by projecting its 72-point history, but uses one compact encoder and a joint flattened output rather than the full official iTransformer design. The Joint-patch Transformer forms overlapping multivariate patches; unlike PatchTST, it is not channel-independent and does not implement the full official normalization and head design. The Depthwise convolutional TCN stacks kernel-5 depthwise and pointwise convolutions; it omits ModernTCN's full patching, large-kernel, block, and reparameterization design.
-
-\begin{table*}[t]
-\caption{Architecture identity and permitted interpretation. Parameter counts and synchronized batch-one latency are for the 17-channel H144 task.}
-\label{tab:identity}\centering\footnotesize
-\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}llll}
-\toprule Manuscript name & Retained mechanism / omitted components & Parameters / latency & Permitted interpretation\\
-\midrule
-\makecell[l]{Discrete recurrent\\decoder} & \makecell[l]{Multi-dilation convolution, Transformer, gated\\fusion, GRU; project-defined recurrent decoder} & \makecell[r]{99,362\\32.204 ms} & \makecell[l]{Implemented recurrent\\decoding mechanism only}\\
-\makecell[l]{Inverted-variate\\Transformer} & \makecell[l]{Variate tokens inspired by iTransformer\cite{Liu2024iTransformer};\\one encoder and flattened head} & \makecell[r]{194,960\\0.558 ms} & \makecell[l]{Compact variate-token;\\not official iTransformer}\\
-\makecell[l]{Joint-patch\\Transformer} & \makecell[l]{Overlapping joint patches inspired by PatchTST\cite{Nie2023PatchTST};\\no channel independence or full official head} & \makecell[r]{148,112\\0.535 ms} & \makecell[l]{Compact joint-patch;\\not official PatchTST}\\
-\makecell[l]{Depthwise\\convolutional TCN} & \makecell[l]{Kernel-5 depthwise/pointwise convolutions; no full\\ModernTCN patching or large-kernel blocks\cite{Luo2024ModernTCN}} & \makecell[r]{683,024\\0.706 ms} & \makecell[l]{Compact depthwise TCN;\\not official ModernTCN}\\
-\bottomrule
-\end{tabular*}
+\begin{table*}[!tp]
+\caption{Three geographic sites and two input regimes. Capacities are descriptive DC ratings; error normalization uses each target's Train range. All forecast grids are five-minute grids. Dates in the last two rows refer to 2017, and those in the first row to 2018.}
+\label{tab:data}\centering\small\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lllll}
+\toprule Site / systems & \makecell[l]{DC rating /\\channels} & \makecell[l]{Train; Validation;\\Test} & \makecell[l]{Source resolution /\\time basis} & Interpretation limit\\\midrule
+\makecell[l]{Alice Springs /\\three co-located\\arrays} & \makecell[l]{Sanyo 6.30, Hanwha\\5.83, Qcells 5.90 kW\\17 channels} & \makecell[l]{Apr 1--Jul 15;\\Jul 16--Aug 7;\\Aug 8--31} & \makecell[l]{5 min / frozen\\ACST coordinate} & \makecell[l]{Shared weather;\\technology is not\\an isolated treatment}\\
+\makecell[l]{Yulara / one\\combined facility} & 106.6 kW / 7 & \makecell[l]{Jan--Aug; Sep;\\Oct--Dec} & \makecell[l]{5 min / provider local;\\+5 min availability} & \makecell[l]{GHI metadata and UTC\\offset partly\\unconfirmed}\\
+\makecell[l]{NIST Ground /\\one array} & 271 kW / 7 & \makecell[l]{Jan--Aug; Sep;\\Oct--Dec} & \makecell[l]{1 min to 5 min /\\fixed EST, UTC$-05{:}00$,\\no DST} & \makecell[l]{Complete 2017\\operation log\\unavailable}\\
+\bottomrule\end{tabular}
 \end{table*}
 
-Each implementation uses seeds 42, 43, and 44. The shared optimization budget is AdamW with learning rate 0.001, weight decay $10^{-5}$, batch size 256, maximum 25 epochs, gradient clipping at 1.0, and early-stopping patience 5.\cite{Loshchilov2019AdamW} No Test metric selects a seed, architecture, epoch, horizon, or threshold. The comparison holds optimization budget and information set constant while allowing parameter count to vary naturally with the mechanism.
+\subsection{Alice Springs: co-located technology comparison}
+The Alice Springs targets are Site 17 Sanyo HIT-210NKHE5 hybrid-silicon modules, Site 25 Hanwha HSL 60S polycrystalline-silicon modules, and Site 38 Q CELLS Q.PEAK-G4.1 monocrystalline-silicon modules.\cite{DKASC2026} Their historical Active Power and Performance Ratio are array-specific. Ambient temperature, relative humidity, global and diffuse horizontal radiation, and global and diffuse tilted radiation supply six shared weather fields. Together these form eight numerical channels, eight original-missingness masks, and one Isolation Forest flag: 17 channels in total.
 
-\subsection{Persistence references and evaluation scopes}
+The existing April--August 2018 protocol is retained. The target is AC active power in kW. The frozen Alice validity rule excludes negative power labels; the external rule below retains finite negative meter power. This difference is part of the two experimental regimes, alongside the years, sensors, and targets. Co-location provides common weather context but does not identify a causal effect of cell technology: orientation, balance-of-system behavior, and sensing remain relevant differences.
 
-Last-value Persistence repeats the most recent observed power at the forecast origin across H144. It shares every primary origin, label, and point mask with each neural forecast. Daily Persistence retrieves the real power at each target timestamp minus 24 h (288 five-minute steps), without interpolation. Because some lagged points are unavailable, the Daily-valid point mask is intersected with the target mask and then applied identically to Daily Persistence, Last-value Persistence, and every neural prediction. This supplementary comparison has its own matched support and is not mixed into the primary rank table.
+\subsection{Yulara: combined-system replication}
+The Yulara record represents the 106.6 kW Sails in the Desert rooftop combined system, installed in 2016. Its component subarrays are treated as one facility-level target.\cite{YularaData} The downloaded file spans April 2016--February 2026; the experiment uses 2017. The three numerical fields are \texttt{Active\_Power}, \texttt{Weather\_Temperature\_Celsius}, and \texttt{Global\_Horizontal\_Radiation}.
 
-The full-timeline scope includes all valid targets. The daylight scope is defined after prediction as true target power above 1\% of the corresponding array's Train maximum. It is an evaluation mask, not an input or operational daylight detector. At Qcells H12, for example, 6,463 origins yield 77,556 full target points and 36,504 daylight points (47.1\%).
+The 2017 file segment contains all 105,120 regular five-minute timestamps plus two off-grid records. The latter are excluded without rounding or overwriting their neighboring regular records. The provider local coordinate is preserved; an unconfirmed UTC offset is not assigned. Each value becomes available at its raw timestamp plus five minutes. This conservative rule prevents an ambiguous interval label from making a measurement available before its full interval has ended. The local coordinate is fixed and has no introduced DST transition.
 
-\subsection{Metrics and computational measurement}
+Temperature is used as the Celsius variable named by the provider. GHI is used in its provider-native numerical form without additional conversion. Detailed sensor, aggregation, and invalid-code metadata are incomplete; native GHI magnitudes are therefore not used for absolute cross-site irradiance inference. Missing and non-finite entries remain missing, while finite negative observations are retained. The Supplement gives the excluded records, field statistics, and metadata limits.
 
-For valid points $i=1,\ldots,n$, we compute
+\subsection{NIST Ground: fixed-standard-time replication}
+The NIST Ground array in Gaithersburg supplies AC meter power and ground-level meteorological observations. Its documented DC rating is 271 kW.\cite{Boyd2017NIST} The target and historical power are \texttt{PwrMtrP\_kW\_Avg}, the real power measured by the AC meter; temperature is \texttt{AmbTemp\_C\_Avg}; GHI is \texttt{Pyra1\_Wm2\_Avg}. The downloaded CSV already supplies the irradiance in W/m$^2$, so no mV conversion is applied. The inverter-power column, including its $-999$ entries, is outside both the target and the common inputs. The field dictionary and official data catalogue establish the source lineage.\cite{NISTDictionary,NISTData}
+
+The 365 daily files contain 525,595 unique ordered minutes. Five missing minutes straddle October 20--21. Time is retained as a timezone-aware fixed UTC$-05{:}00$ coordinate throughout parsing, aggregation, split assignment, and lag joins, consistent with the provider's local standard time.\cite{Boyd2017NIST} No daylight-saving adjustment is introduced. For each five-minute end time $T$, a variable is averaged over $[T-5\,\mathrm{min},T)$ and made available at $T$. The bin must contain five distinct minutes with finite values for that variable; otherwise its aggregate remains missing. Midnight anchors, left-closed bins, and right-end labels are explicit.
+
+Train-period energy-increment and power--GHI timing diagnostics support the time alignment; they do not select rules from prediction errors. The complete 2017 operation log was not obtained. Accordingly, finite meter power, temperature, and GHI are retained without heuristic removal of possible outages, snow, maintenance, or high-irradiance/low-power periods. Missingness is explicit, and the absence of a log is not interpreted as an absence of events.
+
+\section{Compact models and matched evaluation}
+\subsection{Inputs, preprocessing, and forecast windows}
+The external numerical-channel order is historical AC power, ambient temperature, and GHI. The next three channels are their original missingness masks, followed by the Isolation Forest flag. Missingness is recorded before imputation. A five-neighbor KNN imputer is fitted on Train numerical inputs. Isolation Forest is then fitted on the imputed Train inputs with 100 trees, contamination 0.01, and random state 42.\cite{Troyanskaya2001,Liu2008Isolation} The masks and anomaly flag are appended, and a MinMaxScaler is fitted to the resulting seven Train channels. A separate target scaler is fitted to finite, unimputed Train power. Validation and Test use these fitted transformations unchanged. Labels are never imputed. Alice uses its frozen eight-variable counterpart of this preprocessing sequence.
+
+All regular timeline positions are retained. Missing records do not become adjacent to distant observations by deleting rows. At origin $t$, the input contains 72 five-minute positions ending at $t$; every input value's availability time is at most $t$. Targets start at $t+5$ min and extend to $t+720$ min. Input and target windows remain within one chronological split. No cyclical clock variables, future weather, humidity, or Performance Ratio are added to the external common inputs.
+
+External Train covers January--August 2017, Validation September, and Test October--December. Boundaries use the fixed time coordinate of each source. These three Test months define the external held-out performance split. They were inspected for data-quality auditing, but were excluded from fitting preprocessing, model weights, and checkpoint selection. They are not a full-year seasonal evaluation.
+
+\subsection{Four compact implementations and checkpoint selection}
+The Discrete recurrent implementation combines multi-dilation convolution, a compact Transformer branch, gated fusion, a bidirectional GRU summary, and a recurrent trajectory decoder. The Inverted-variate implementation treats each channel's 72-point history as a token, applies a compact attention encoder, and maps its joint representation to H144. Joint-patch encodes overlapping multivariate temporal patches. Depthwise TCN uses an input projection, four depthwise/pointwise temporal blocks, and a direct trajectory head. These mechanisms draw on recurrent, variate-token, patch, and convolutional forecasting designs.\cite{Hochreiter1997,Liu2024iTransformer,Nie2023PatchTST,Luo2024ModernTCN} The complete layer specifications and parameter counts for both input widths appear in the Supplement.
+
+The 17- and seven-channel networks use the same compact structures with the required input and output projections. Seven-channel weights are fitted separately, not converted from the original checkpoints. The comparison holds the information set and optimization budget constant within each experiment; parameter counts differ with the implemented mechanism. Thus the results describe these project implementations rather than an official architecture leaderboard or a pure architectural causal effect.
+
+Each of the 60 runs uses one of three fixed seeds and AdamW with learning rate 0.001, weight decay $10^{-5}$, batch size 256, gradient clipping 1.0, a maximum of 25 training passes, and early-stopping patience 5.\cite{Loshchilov2019AdamW} Minimum improvement is $10^{-8}$. Training and checkpoint selection use complete-H144 target windows. External windows additionally require a finite true origin power. Validation loss is total squared error divided by total valid target count, rather than an unweighted mean of batch losses. The best Validation checkpoint is fixed before Test prediction; no Test score selects a seed, model, or budget.
+
+Test evaluation uses horizon-specific eligibility at H12, H48, H96, and H144. A valid H12 origin remains eligible even if a later target in steps 13--144 is missing. All models output H144, and evaluation reads the requested prefix. The Alice complete-H144-origin sensitivity is retained in the Supplement. This separates the common training objective from each requested forecast horizon's evaluation support.
+
+\subsection{Persistence references and scopes}
+Last-value Persistence repeats the true valid power at the forecast origin; it never uses an imputed origin value. Daily Persistence retrieves the true power at each target's exact timestamp minus 24 h. This is a timestamp join in the frozen coordinate, not a row-number shift. Daily's finite-lag mask is intersected with the target mask and applied elementwise to Daily, Last-value, and every neural seed. Primary neural/Last-value comparisons and supplementary Daily-matched comparisons therefore each have their own explicitly shared support.
+
+The full-timeline scope includes every valid target. Daylight is defined by true future power exceeding 1\% of the corresponding Train maximum. The threshold is fitted on Train, but scope membership uses labels after prediction; it is a descriptive evaluation scope rather than a deployable daylight detector. Both masks and thresholds are model-independent.
+
+Equal target masks answer whether methods were scored on the same forecasting events. They do not equalize historical information. Daily can consult yesterday's value for every target, whereas the neural models receive six hours of recent history. The comparison concerns these two information strategies, as well as the implementation used to map recent history to a forecast.
+
+\subsection{Metrics and analysis hierarchy}
+For a matched target set $\mathcal I$ of size $n$, we calculate
 \begin{align}
-\mathrm{RMSE}&=\sqrt{n^{-1}\sum_i(\hat y_i-y_i)^2},\\
-\mathrm{MAE}&=n^{-1}\sum_i|\hat y_i-y_i|,\\
-\mathrm{Bias}&=n^{-1}\sum_i(\hat y_i-y_i),\\
-R^2&=1-\frac{\sum_i(\hat y_i-y_i)^2}{\sum_i(y_i-\bar y)^2}.
+\mathrm{RMSE}&=\sqrt{n^{-1}\sum_{i\in\mathcal I}(\hat y_i-y_i)^2},\\
+\mathrm{MAE}&=n^{-1}\sum_{i\in\mathcal I}|\hat y_i-y_i|,\\
+\mathrm{nRMSE}&=\mathrm{RMSE}/(y_{\max,\mathrm{Train}}-y_{\min,\mathrm{Train}}),\\
+\mathrm{Skill}_b&=1-\mathrm{RMSE}_{\mathrm{model}}/\mathrm{RMSE}_b.
 \end{align}
-Negative $R^2$ is retained. Because AC nameplate capacity is unknown, normalized RMSE uses the Train target range,
-\begin{equation}
-\mathrm{range\mbox{-}nRMSE}=\frac{\mathrm{RMSE}}{y_{\max,\mathrm{Train}}-y_{\min,\mathrm{Train}}}.
-\end{equation}
-The denominator is never fitted on Test. RMSE skill relative to reference $b$ is $1-\mathrm{RMSE}_{model}/\mathrm{RMSE}_{b}$; positive values favor the model. Neural values are means with sample standard deviations over three seeds. The 24 array--horizon--scope combinations are dependent summaries, not 24 independent trials, so we do not attach naive $p$-values. We also compute a post hoc best-of-four neural envelope by taking, within each Test combination, the smallest three-seed mean RMSE among the four implementations. This descriptive upper bound favors the neural group and is neither a prespecified model choice nor a deployable forecaster.
+Positive skill favors the neural model. The Train range, not DC capacity or Test range, normalizes AC errors. Bias and $R^2$ are also reported. Negative $R^2$ is retained; zero target variance makes $R^2$ undefined, and zero reference RMSE makes skill undefined without an epsilon adjustment.
 
-Inference is measured in float32 on one NVIDIA GeForce RTX 3060 Laptop GPU under Windows and PyTorch. Batch-one latency uses evaluation mode, warm-up, synchronized repetitions, and input shape $[1,72,17]$. Throughput uses batch 256. Timing excludes model loading, disk I/O, data loading, and host-to-device transfer. The recorded field is Peak GPU memory (MiB). These values describe the stated hardware rather than general deployment speed.
+The external primary analysis reports the Inverted-variate model's three-seed mean and sample SD for each site, horizon, and scope against both references. It was selected from Alice's frozen 12/24 primary wins and best mean rank before external Test prediction. Its Alice results are descriptive focal results, not a retrospective prespecification. Secondary analyses report all four models, individual seeds, within-setting ranks, and full/daylight differences. Deterministic baselines do not have three independent seed replicates.
 
-\subsection{AI-assisted workflow disclosure draft}
+The post hoc descriptive envelope takes the lowest three-seed mean neural RMSE separately for each matched comparison. It is a favorable upper bound for the evaluated neural group, not a prespecified or deployable model. SD uses $\mathrm{ddof}=1$ and describes training randomness. Overlapping origins, shared targets, horizons, and scopes produce dependent summaries; win counts are not independent tests, and no unplanned significance test is attached. Cross-setting tables keep the original 24 and external site-specific eight-comparison groups distinct.
 
-% FINAL_AUTHOR_CONFIRMATION_REQUIRED: confirm exact product/version/model,
-% tasks, and verification wording against the AIP policy before submission.
-\textbf{Author confirmation required.} OpenAI Codex (provider: OpenAI; exact application version and model designation to be confirmed by the authors) assisted with code review, organization of evidence-recalculation checks, extraction of bibliographic metadata, and language editing. It was used to improve consistency and traceability, not to create or alter source observations, trained weights, or frozen numerical results. The authors executed the analysis and verification scripts, checked quantitative outputs against saved artifacts, checked bibliographic claims against source publications, and retain responsibility for the study. AI tools are not authors. This draft must be confirmed or revised by all authors before submission.
-
-\section{Results}
-
-\subsection{Sample support and evaluation integrity}
-
-The evidence contains 36 completed neural runs (four implementations, three arrays, and three seeds). Within an array, labels, target-valid masks, forecast origins, and target starts are elementwise identical across all runs. Every saved prediction has shape $N\times144$ and finite values. An independent NumPy/Pandas implementation re-derived the principal masks, metrics, ranks, persistence comparisons, and Qcells counts from saved arrays without importing the production metric functions. All 4,414 numerical comparisons agreed within floating-point tolerance.
-
-Horizon-specific eligibility materially preserves short-horizon evidence. For Qcells, H12 uses 6,463 origins whereas H144 uses 2,996. This is not an advantage granted to one method: every H12 forecaster and Last-value Persistence uses the same 6,463 origins and 77,556 targets. Full counts for all horizons and scopes appear in the Supplementary Material.
-
-\subsection{Neural implementations versus Last-value Persistence}
-
-Across the 24 primary combinations, the Inverted-variate Transformer records 12 lowest-RMSE outcomes, the Depthwise TCN nine, the Joint-patch Transformer two, and the Discrete recurrent decoder one; Last-value Persistence records none. The average ranks are 1.875, 2.167, 2.458, 3.667, and 4.833, respectively. The arithmetic mean RMSE skills relative to Last-value Persistence are 0.549, 0.515, 0.493, and 0.399 for the four neural implementations in the same order. These ratio means are not an arithmetic mean of absolute errors.
+\section{Alice Springs results}
+\subsection{Primary accuracy and preserved support}
+Across the 24 array--horizon--scope combinations, primary RMSE wins are 12 for Inverted-variate, nine for Depthwise TCN, two for Joint-patch, one for Discrete recurrent, and zero for Last-value Persistence. The original five-method average ranks are 1.875, 2.167, 2.458, 3.667, and 4.833 in that order. Table~\ref{tab:primarysummary} gives the H12 and H144 endpoints; the Supplement retains all horizons and seeds.
 
 \input{main_result_tables.tex}
 
-Table~\ref{tab:primarysummary} shows H12 and H144 endpoints; complete H12/H48/H96/H144 results are given in the supplement. At full H144, the post hoc neural-envelope RMSE is 0.776 kW for Sanyo, 0.743 kW for Hanwha, and 0.789 kW for Qcells, compared with Last-value values of 2.729, 2.561, and 2.418 kW. At Qcells H12, Last-value RMSE is 0.471 kW; the Inverted-variate implementation reaches 0.327 kW, whereas two compact implementations remain worse than Last-value. Thus, ``all neural models beat Last-value'' is not a valid per-combination statement even though the post hoc best-of-four neural envelope is lower in each primary comparison.
+At full-timeline H144, the envelope RMSE is 0.776 kW for Sanyo, 0.743 kW for Hanwha, and 0.789 kW for Qcells, against Last-value errors of 2.729, 2.561, and 2.418 kW. The focal Inverted-variate model improves on Last-value in all 24 comparisons. Individual secondary implementations need not do so: at Qcells H12, Last-value RMSE is 0.471 kW and Inverted-variate reaches 0.327 kW, while two other implementations have larger errors than Last-value.
 
-\subsection{Strong-baseline reversal under Daily Persistence}
+Horizon-specific support preserves 6,463 Qcells H12 origins, 77,556 full-timeline points, and 36,504 daylight points. H144 has 2,996 origins. These counts are identical across competing methods at the corresponding horizon; short-horizon eligibility does not require an uninterrupted twelve-hour target trajectory.
 
-Figure~\ref{fig:reversal} contrasts the post hoc best-of-four neural envelope against two causal references. Its RMSE ratio to Last-value Persistence is below one in all 24 primary comparisons. On the elementwise Daily-matched mask, the ratio to Daily Persistence exceeds one in 22 comparisons. The two exceptions are Hanwha H12: full-timeline RMSE is 0.176 kW for the Depthwise TCN versus 0.185 kW for Daily Persistence, and daylight RMSE is 0.231 versus 0.273 kW. Because the envelope selects its member after Test results are available, it is a favorable descriptive bound rather than a deployable model.
+\subsection{Daily recurrence and the neural envelope}
+Figure~\ref{fig:reversal} displays the complete 24-comparison envelope evidence. Daily Persistence has lower matched RMSE in 22 comparisons. The two neural-envelope wins are Hanwha H12: Depthwise TCN reaches 0.176 kW against Daily's 0.185 kW on the full timeline and 0.231 against 0.273 kW in daylight. The focal Inverted-variate model has no Daily wins in this Alice comparison. This distinction between a named model and a Test-selected envelope is retained throughout the cross-setting analysis.
 
-\begin{figure*}[t]
+\begin{figure*}[!tp]
 \centering\includegraphics[width=0.98\textwidth]{figures/fig2_persistence_reversal.pdf}
-\caption{Baseline reversal across the same 24 array--horizon--scope orderings. Each point is the RMSE of the post hoc best-of-four neural envelope divided by the reference RMSE. Panel A uses Last-value Persistence on primary support; panel B uses Daily Persistence on its elementwise-matched support. Ratios below one favor the envelope, one is a tie, and ratios above one favor Persistence.}
+\caption{Complete Alice Springs envelope-to-reference RMSE ratios. The post hoc best-of-four neural envelope is compared with Last-value on primary support and Daily on its separately matched support. Ratios below one favor the envelope; those above one favor the reference. The two Daily exceptions are Hanwha H12 full and daylight.}
 \label{fig:reversal}
 \end{figure*}
 
-The findings are compatible rather than contradictory. Last-value Persistence measures improvement beyond local continuity at the forecast origin. Daily Persistence measures improvement beyond a strong 24 h seasonal pattern. Neural training is effective relative to the first reference, while its additional value relative to the second is limited to short-horizon Hanwha forecasts in the present evaluation. The result restricts claims of practical advantage without implying that optimization failed.
+Rankings also vary among the co-located arrays. Joint-patch leads both Sanyo H48 scopes; Discrete recurrent leads Sanyo H12 full; Depthwise TCN leads most Hanwha conditions; and Inverted-variate leads most Qcells conditions and Sanyo H96/H144. Full/daylight differences matter even with the same history and weights. The original accuracy--efficiency comparison is retained in the Supplement: Joint-patch has the lowest measured batch-one latency on the documented laptop GPU, while Inverted-variate has the best average accuracy rank. These timings describe the 17-channel implementations in that environment.
 
-\subsection{Dependence on technology, horizon, and daylight scope}
+\section{External-site replication results}
+\subsection{Prespecified model against both references}
+Table~\ref{tab:external} reports all sixteen external primary combinations. Figures~\ref{fig:last} and \ref{fig:daily} place the focal model's Alice results beside its prespecified external results, with the input-regime boundary visible. Inverted-variate improves on Last-value in all eight Yulara and all eight NIST comparisons. At Yulara, Last-value skill increases from 17.34\% at H12/full to 67.10\% at H144/full; the corresponding NIST values are 17.93\% and 43.24\%. The positive signs recur across both scopes and all horizons.
 
-Figure~\ref{fig:horizons} shows that errors grow with horizon and rise when near-zero targets are excluded. At H144, the lowest neural Train-range nRMSE changes from 0.128 to 0.175 for Sanyo, 0.128 to 0.178 for Hanwha, and 0.131 to 0.191 for Qcells when moving from full timeline to daylight. Scope also changes model identity: Sanyo H12 favors the Discrete recurrent decoder on the full timeline but the Depthwise TCN in daylight.
+\input{multisite_main_tables.tex}
 
-\begin{figure*}[t]
-\centering\includegraphics[width=0.98\textwidth]{figures/fig3_horizon_technology.pdf}
-\caption{Primary Train-range nRMSE across horizons, arrays, and evaluation scopes. Rows separate full-timeline and daylight results, and columns separate the three co-located arrays. Every point uses horizon-specific origins and masks shared by all methods in its panel.}
-\label{fig:horizons}
+\begin{figure*}[!tp]
+\centering\includegraphics[width=0.98\textwidth]{figures/fig3_multisite_last.pdf}
+\caption{Inverted-variate RMSE skill (\%) against Last-value Persistence on primary matched targets. Alice rows are descriptive focal-model comparisons; external rows are the prespecified primary analysis. Signed cell values retain readability in grayscale. The dashed boundary separates the 17-channel co-located comparison from seven-channel external replications.}
+\label{fig:last}
 \end{figure*}
 
-Array-specific ranking should not be reduced to module technology alone. The Inverted-variate implementation leads most Qcells prefixes and Sanyo H96/H144, whereas the Depthwise TCN leads most Hanwha settings. Joint-patch leads both Sanyo H48 scopes, and Discrete recurrent leads Sanyo H12 full timeline. Co-location makes these differences observable under common weather, but electrical design, orientation, sensors, missingness, and target distribution remain potential explanations alongside module technology.
-
-\subsection{Accuracy-efficiency trade-offs}
-
-Table~\ref{tab:identity} and Fig.~\ref{fig:efficiency} show that accuracy, size, and runtime do not have one ordering. The Inverted-variate implementation has the lowest macro Train-range nRMSE. Joint-patch has the lowest batch-one latency and highest throughput. Discrete recurrent has the fewest parameters but is much slower because 144 recurrent decoding steps serialize work. Depthwise TCN is largest and does not dominate the accuracy frontier.
-
-\begin{figure*}[t]
-\centering\includegraphics[width=0.82\textwidth]{figures/fig4_accuracy_efficiency.pdf}
-\caption{Accuracy-efficiency trade-off on one RTX 3060 Laptop GPU. The vertical coordinate is the unweighted mean primary Train-range nRMSE over 24 combinations; the horizontal coordinate is synchronized batch-one latency. Marker area is proportional to parameter count, and bold outlines indicate Pareto-efficient implementations. Hardware-specific latency is not a deployment guarantee.}
-\label{fig:efficiency}
+\begin{figure*}[!tp]
+\centering\includegraphics[width=0.98\textwidth]{figures/fig4_multisite_daily.pdf}
+\caption{Inverted-variate RMSE skill (\%) against Daily Persistence on the common Daily-valid point intersection. Selection status and input-regime grouping match Fig.~\ref{fig:last}. Positive values favor Inverted-variate; negative values favor Daily. All Alice cells and NIST H144/full favor Daily, while the other external cells favor the prespecified model.}
+\label{fig:daily}
 \end{figure*}
 
-The measured forward pass omits preprocessing, transfer, and data ingestion. An operational assessment would also consider batching policy, power consumption, reliability, and the target device. The present measurement isolates implementation overhead under one reproducible environment.
+The external Daily comparison differs from Alice. Yulara has eight positive primary skills, and NIST has seven. At Yulara H12, Daily skill is 36.28\% full and 37.28\% daylight. At H96 it is 2.71\% and 6.10\%, and at H144 it is 1.62\% and 4.50\%. Thus a positive sign at the longer horizons corresponds to a smaller error reduction than at H12. At NIST H144/full, skill is $-6.47\%\pm1.65\%$: the primary model's mean RMSE is 6.47\% higher than Daily's on their matched targets. H144/daylight instead gives $13.20\%\pm1.49\%$ skill. The scope changes the comparison even at the same site and horizon.
 
-\subsection{Sensitivity analyses}
+The Supplement provides absolute RMSE and MAE, all seeds, bias, $R^2$, and sample counts. Train-range nRMSE in Table~\ref{tab:external} makes the within-site error scale explicit without treating different facilities' kW errors as interchangeable. Seed SDs quantify the observed training variability around each result rather than confidence intervals over future seasons.
 
-Restricting every prefix to complete-H144 origins lowers some errors because it selects longer uninterrupted target periods. That analysis is reported in the supplement but is not the primary result: a valid one-hour forecast should not be discarded because hours 2--12 contain missing targets. The complete-H144 sensitivity preserves a common origin set across horizons, while the horizon-specific primary analysis preserves the estimand at each requested horizon. Neither design is hidden.
+\subsection{Architecture rankings and descriptive envelope}
+Yulara retains Inverted-variate as the lowest-RMSE neural implementation in all eight primary combinations. At NIST, Discrete recurrent leads all four full-timeline comparisons, Inverted-variate leads H12/daylight, and Depthwise TCN leads H48, H96, and H144/daylight. NIST mean neural ranks are 1.75 for recurrent, 2.00 for TCN, 2.25 for Inverted-variate, and 4.00 for Joint-patch (Table~\ref{tab:ranks}). Figure~\ref{fig:ranks} preserves the three separate Alice array rows and each external facility.
 
-The rank heat map in the supplement shows the full 24-combination pattern. It confirms that no compact neural implementation has a constant rank across arrays, horizons, and scopes. Per-seed tables similarly show optimization variability; three seeds are sufficient to prevent best-seed reporting but not to justify strong inferential claims.
+\begin{figure*}[!tp]
+\centering\includegraphics[width=0.98\textwidth]{figures/fig5_multisite_ranks.pdf}
+\caption{Mean neural-only primary RMSE ranks across four horizons and two scopes within each target system. Rank one is best among four implementations. The three Alice rows are co-located arrays, not independent geographic replications. Gray shading and printed values encode the same ranks. No absolute kW errors are averaged across sites.}
+\label{fig:ranks}
+\end{figure*}
 
-\section{Discussion}
+Programmatic envelope comparisons give eight Yulara wins and seven NIST wins against Daily (Table~\ref{tab:cross}); NIST H144/full remains the Daily win after favorable neural-member selection. The envelope and primary model therefore have the same external win counts, although the envelope can use different implementations and errors. These counts do not make the two analyses equivalent. The prespecified model provides the primary replication result, while the envelope describes the best observed mean within the evaluated neural group.
 
-\subsection{Why the persistence references lead to different conclusions}
+\section{Cross-setting interpretation}
+\subsection{Improvement beyond continuity and daily recurrence}
+The repeated Last-value advantage supports a specific conclusion: multivariate recent history improves on holding origin power constant in these settings. Last-value has no mechanism for adapting its trajectory through a day--night transition. A learned trajectory can summarize recent power and irradiance behavior and represent changing production levels. This explains why the reference is informative at short horizons yet increasingly demanding to interpret as an operational alternative over twelve hours. It does not identify which input or network component produces the improvement; that would require a separately designed ablation.
 
-Last-value Persistence exploits continuity. At one hour, a model can improve by learning recent gradients, irradiance response, and mean reversion; at 12 h, holding the origin value is physically implausible across day-night transitions. Daily Persistence instead places the forecast near the expected diurnal level for each future timestamp. During a short, seasonally narrow Test period, that pattern is difficult for a history-only neural model to beat even when the latter predicts a coherent H144 trajectory.
+Daily uses a different information strategy. Yesterday's power supplies a timestamp-specific diurnal trajectory across the entire horizon. Its broad Alice advantage shows the usefulness of daily recurrence during that August Test period. The external results show that the same pattern does not hold uniformly for Yulara and NIST in October--December. Differences in day-to-day weather, operational state, seasonal timing, and the match between yesterday's and today's production are plausible explanations. They are hypotheses consistent with the observations, not demonstrated mechanisms: the benchmark does not isolate their contributions.
 
-The strong Daily result is not caused by allowing it an easier sample. Its finite-lag mask is imposed on every method in the supplementary analysis. Conversely, Daily Persistence is not included in the primary ranks because its raw support differs before matching. Reporting both comparisons preserves two estimands: skill beyond immediate continuity and skill beyond 24 h recurrence.
+The two external sites also differ from each other. Yulara's primary Daily skill approaches zero at longer horizons while retaining a positive mean. NIST's H144 result changes sign between full and daylight. Comparing both scopes makes this distinction visible instead of allowing the many low-production targets to define the complete narrative. Because each comparison uses shared points, the sign change describes errors on a different evaluation scope rather than a method-specific deletion rule.
 
-The two Hanwha H12 exceptions are informative but narrow. They indicate that recent multivariate history can add short-horizon information beyond yesterday's value for this array. They do not establish a universal technology effect, and 24 combinations are not independent replications. A future study would need a predeclared external time block and more sites before using these exceptions to motivate deployment decisions.
+\subsection{Rank changes and information regimes}
+At NIST, full-timeline and longer daylight targets favor different compact implementations. Full-timeline loss includes low and negative meter values as well as daytime production; daylight concentrates on targets above the Train-derived threshold. Different error distributions across these regions can yield different aggregate ranks. Recurrent and depthwise structures may represent these trajectories differently, but the observed ranking is not evidence that one structural property caused the outcome. Parameter count, optimization dynamics, and the sampled operating distribution also differ in their effects.
 
-\subsection{Information limits of history-only deterministic forecasts}
+The seven-channel protocol enables a common-input external comparison by using fields available at both facilities. It does not reproduce Alice's richer sensor set or transfer its fitted weights. Years, capacities, local coordinates, target-validity rules, and evaluation months also differ. Consequently, Table~\ref{tab:ranks} averages ranks within each setting, and Table~\ref{tab:cross} keeps the settings separate. A pooled kW ranking or an undifferentiated forty-comparison win total would conceal these distinctions.
 
-Historical power and irradiance identify the present state and recent variability, but they do not uniquely determine future cloud motion. With squared-error training, unresolved futures are averaged, favoring smoother trajectories. This mechanism is consistent with the increasing error at long horizons and with the advantage of a daily seasonal baseline. It does not prove that future weather would solve every error, but it defines the information boundary of the current task.
+\subsection{What matched support establishes}
+Exact target matching removes one important ambiguity: a baseline cannot gain or lose apparent accuracy simply because unavailable lag points were removed from its own score alone. Neural, Last-value, and Daily errors on the Daily intersection describe the same target events. Horizon-specific eligibility likewise keeps short-horizon forecasts whose later targets are missing without granting any method additional scored points.
 
-Recent literature illustrates complementary routes beyond that boundary. Cross-Unet uses forward weather in a dedicated historical/future fusion architecture, and Markovics \textit{et al.} benchmark weather-based models at broader scale.\cite{CrossUnet2026,Markovics2026} Dhingra \textit{et al.} address uncertainty and missing-data stress rather than only point accuracy.\cite{Dhingra2026} SolNet emphasizes geographic transfer.\cite{SolNet2025} The present benchmark does not compete with those objectives. Its contribution is to show that, even before new architecture or information is considered, the evaluation support and reference forecast can reverse the practical conclusion.
+Matching does not equalize the age or amount of historical information. A six-hour learned history and a target-aligned 24-hour lag are distinct strategies, and their relative value depends on the setting. Nor does matching turn overlapping forecast origins into independent observations. The practical evidence is a collection of well-defined conditional comparisons, with complete support counts and seed results available for inspection.
 
-\subsection{Implications for benchmark design}
-
-Five practices follow from the evidence. Preprocessing fit boundaries should be stated alongside date splits. Windows should be audited at the timestamp level, not inferred from row order. A causal target history available to persistence should also be available to a learned history model. Each horizon should report forecast-origin and valid-target counts. Finally, baseline-specific missingness should be handled through an intersection mask shared by every method.
-
-Full-timeline and daylight metrics answer different questions. Full-timeline evaluation reflects all scheduled predictions, including correctly near-zero production. Daylight evaluation isolates production-period difficulty but uses true future power and is therefore descriptive. Defining daylight from each prediction would make support model-dependent; our target-based mask is fixed after prediction and shared.
-
-Normalization requires similar care. Dividing AC error by a DC module rating mixes quantities affected by inverter capacity and losses. We use a Train-only target range because official AC capacities are unknown. This denominator is leakage-safe but dataset-dependent and must not be treated as a universal capacity-normalized metric.
-
-\subsection{Scope of the cross-technology evidence}
-
-The three arrays experience broadly common weather, which reduces one source of confounding compared with geographically separated systems. Their rankings nevertheless differ. This is evidence that conclusions from one target do not automatically transfer to another co-located target. It is not evidence that cell technology alone causes the difference. The study estimates forecasting behavior for three documented systems, not an average treatment effect for hybrid, polycrystalline, and monocrystalline technologies.
-
-This scope distinguishes the work from global and multi-site benchmarks. SolNet and the Markovics benchmark are stronger for geographic breadth and transfer or NWP-based comparisons.\cite{SolNet2025,Markovics2026} The current design is stronger only for its tightly matched within-site evaluation question. Numerical scores should not be compared across these papers because information availability, sampling, and splits differ.
+The three geographic sites broaden the evidence beyond a single co-located facility. They reproduce the focal model's improvement over Last-value, show a different Daily pattern outside Alice, and reveal an external ranking change. This supports reporting site, horizon, scope, and input regime alongside every headline result. Studies using future weather, probabilistic forecasts, or geographic transfer address complementary questions.\cite{CrossUnet2026,Markovics2026,Dhingra2026,SolNet2025} Their reported errors should be interpreted under their own information sets and sample definitions.
 
 \section{Limitations}
+The evidence comprises three geographic sites. Alice's three arrays share a facility and weather context, and the external held-out performance splits cover October--December rather than all seasons. Alice uses 2018 data and 17 channels; the external experiments use 2017 and seven channels. These differences and the separately fitted weights define external-site replication, not zero-shot transfer, a uniform-input cross-climate experiment, or an isolated technology effect.
 
-The experiment covers one Alice Springs facility and April--August 2018. Three arrays do not represent all products within their module categories, and shared weather does not imply shared electrical behavior. No future NWP, satellite imagery, sky imagery, or probabilistic output is used. The estimand is therefore deterministic history-only forecasting, not the best achievable operational forecast.
+The complete NIST 2017 operation log is unavailable, and detailed Yulara field metadata remain partial. Finite external negative values and possible unusual operating states are retained under the frozen rules. Native Yulara GHI is scaled using Train data without cross-site absolute irradiance interpretation. Conservative availability rules address timestamp-interval ambiguity but do not supply missing sensor metadata. Test records were inspected for data quality during development and are described as held-out performance splits.
 
-The four networks are compact project implementations. They isolate broad mechanisms under a common budget but are not official full iTransformer, PatchTST, or ModernTCN reproductions. Results cannot be used to rank those published architectures. Only three random seeds are available, and overlapping forecast origins are dependent. Means and sample standard deviations describe initialization variability; no claim of statistical significance is made.
-
-Official AC capacities are unavailable, so Train-range normalization is used. The daylight mask depends on true target power and is not deployable. Daily Persistence has a smaller raw lag-valid set than the primary comparison, although all methods are exactly matched within its supplementary analysis. Test was excluded from preprocessing fitting, training, and checkpoint selection, but it was inspected repeatedly during project development and is not an untouched external confirmation set. Replication should reserve a new time period before any additional model decisions.
-
-Computational results come from one laptop GPU and omit the surrounding pipeline. They describe relative forward-pass behavior in this environment, not embedded-device suitability. Public reproduction also depends on users obtaining the source DKASC data under provider terms; large checkpoints and prediction arrays are not part of the planned public release.
+The four networks are compact project implementations; their rankings do not establish the ordering of full official architectures. Three-seed SD measures training randomness, not temporal sampling uncertainty. Correlated windows and comparison counts do not support unplanned significance claims. Daylight is a true-target descriptive scope, and Daily's 24-hour information differs from the neural six-hour history. The study evaluates deterministic history-only forecasts; future weather and probabilistic decision value are separate objectives.
 
 \section{Conclusion}
+The two-level benchmark distinguishes improvement beyond local continuity from improvement beyond daily recurrence. At Alice Springs, the focal Inverted-variate model improves on Last-value across all 24 comparisons, while Daily has lower error than the favorable post hoc neural envelope in 22. In the independently fitted external experiments, the prespecified model improves on Last-value in all sixteen comparisons and on matched Daily in fifteen. Yulara preserves its leading neural rank, whereas NIST favors recurrent or depthwise implementations in several scopes.
 
-Under Train-only preprocessing, causal split-local windows, and elementwise-matched evaluation, every primary comparison contains at least one compact neural implementation with lower RMSE than Last-value Persistence. The Inverted-variate implementation records 12 of 24 primary RMSE wins, the Depthwise TCN nine, and rankings change with array, horizon, and daylight scope. The stronger matched Daily Persistence reference is lower than the favorable post hoc neural envelope in 22 of 24 comparisons; envelope wins are limited to Hanwha H12 full-timeline and daylight evaluation.
-
-Accordingly, the main result is not a universal architecture advantage. It is that credible PV benchmarks require causal preprocessing, common evaluation support, explicit horizon and scope definitions, and persistence references that reflect both local continuity and daily seasonality. These controls reveal where compact neural forecasts add value and where a simple reference remains stronger. The evidence supports more disciplined evaluation practice for co-located history-only PV forecasting, while broader operational claims require future exogenous information, additional sites, and an independent temporal confirmation set.
+These findings make the conditioning variables part of the result: site, horizon, scope, and historical information determine how a model's advantage should be interpreted. Train-only transformations, explicit availability times, split-local windows, and elementwise target matching provide a common basis for that interpretation across both input regimes.
 
 \section*{Supplementary Material}
-See the Supplementary Material for full model configurations, architecture-identity details, complete per-seed metrics, all evaluation counts, Daily-matched results, complete-H144 sensitivity, the rank heat map, independent verification summary, efficiency protocol, and metric definitions.
+The Supplement contains complete Alice evidence, external field and time audits, all 96 support groups, the 24-run matrix and checkpoint records, per-seed RMSE, complete mean/sample-SD errors, metadata limits, model configurations, and the descriptive envelope. Full per-seed metric CSVs accompany the code rather than being expanded into thousands of PDF rows.
 
 \section*{Acknowledgments}
-The authors acknowledge the DKA Solar Centre for making the Alice Springs PV and meteorological observations available.
-
+The authors acknowledge the DKA Solar Centre and NIST for providing the source photovoltaic and meteorological data.
 % FINAL_AUTHOR_CONFIRMATION_REQUIRED: declaration drafts are retained from the
 % authors' prior materials and must be approved for this manuscript before upload.
 \section*{Funding}
@@ -310,10 +257,10 @@ The authors acknowledge the DKA Solar Centre for making the Alice Springs PV and
 % FINAL_AUTHOR_CONFIRMATION_REQUIRED: exact AI tool name, version, provider,
 % purpose, and wording must be confirmed against AIP policy before upload.
 \section*{Declaration of AI-Assisted Tools}
-\textbf{Author confirmation required.} The draft disclosure and verification responsibilities are stated in Methods. All authors must confirm the exact tool/version record and final wording before submission.
+\textbf{Author confirmation required.} The exact tool/version record and any journal-required disclosure wording remain pending author confirmation; no model designation is inferred.
 
 \section*{Data Availability}
-\textbf{Author confirmation required.} Draft: The source PV and meteorological observations are available from the DKA Solar Centre data service and official metadata pages.\cite{DKASC2026} The original data remain subject to provider terms. Aggregate evidence, split definitions, and reproduction instructions are planned for a dedicated code release.
+\textbf{Author confirmation required.} Draft: Source observations are available from the official DKA Solar Centre services for Alice Springs and Yulara and from the NIST PV data service.\cite{DKASC2026,YularaData,NISTData} Reproduction requires downloading data from those providers and complying with their terms. The code repository does not redistribute these raw observations. The final public code location and release details remain subject to author confirmation.
 
 \section*{Code Availability}
 % FINAL_AUTHOR_CONFIRMATION_REQUIRED: replace with the released repository URL.

@@ -1,56 +1,53 @@
-# Independent reviewer-style final-polish review
+# Scheme A Multisite M3 manuscript review
 
-## Recommendation
+Date: 2026-09-07. Decision: **SCHEME_A_MULTISITE_MANUSCRIPT_READY_FOR_AUTHOR_REVIEW**.
 
-**Ready for four-author signoff, but not for upload until the declarations are confirmed.** The article now presents an independent benchmark/application study rather than an algorithm paper or an internal correction narrative. Its contribution is the controlled estimand: causal Train-only preprocessing, regular-grid history with explicit missingness, split-local windows, elementwise-matched evaluation, two persistence lags, four horizons, two scopes, and unified efficiency measurement across three co-located PV technologies.
+This is a manuscript-review decision, not final author signoff or submission authorization. The existing branch and Draft PR #19 are retained, based on the frozen M2 branch. The corrected author-provided Alice artifact location resolved the earlier path blocker without changing any experiment rule or result.
 
-No neural-network training was executed during this polish. Frozen evidence is unchanged: the independent verifier passes 4,414/4,414 comparisons (maximum absolute difference 8.51e-12; maximum relative difference 3.23e-11); primary lowest-RMSE wins remain 12/9/2/1/0 for the inverted-variate, depthwise TCN, joint-patch, discrete recurrent, and Last-value implementations; matched Daily Persistence remains lower than the post hoc best-of-four neural envelope in 22/24 comparisons, with the two envelope wins limited to Hanwha H12 full/daylight; Qcells H12 remains 6,463 origins, 77,556 full points, and 36,504 daylight points (47.1%).
+## Evidence and preservation
+
+- Original Alice: exactly 36 complete groups, each with `best_validation.pt`, `completed.json`, and `test_H144.npz`; identity, shapes, and strict 17-channel checkpoint loading verified. All 108 files have unchanged size and mtime_ns.
+- M1-R tests: 43 passed; M2 ordinary tests: 17 passed; M2 artifact tests: 10 passed. Failed, errors, and skipped are zero.
+- Independent external artifact comparisons: 10,432/10,432; maximum absolute discrepancy 4.547473508864641e-13. All 24 external checkpoints reproduce saved predictions within the frozen numerical tolerance.
+- The 96 support groups and 24-run matrix are unchanged. An additional 1,360 paper-comparison checks pass, with zero failures or skips, covering the generated 400-row comparison CSV, envelopes, matched counts, and external seed means/sample SDs.
+- A total of 605 protected files retain their size and mtime_ns: 497 external raw/result/frozen-evidence files plus the 108 original Alice artifacts. Full before/after inventories and absolute paths remain in ignored local configuration. Original Alice raw files were not accessed; no master worktree was entered.
+- No training, checkpoint update, raw-data edit, prediction-array edit, or frozen metric CSV change occurred. The original Alice independent audit of 4,414 comparisons is retained as historical frozen evidence, not misrepresented as a newly executed M3 test.
 
 ## Scientific assessment
 
-### Strengths
+The manuscript now separates two evidence levels: the 2018 Alice co-located technology comparison with 17 inputs, and independently fitted 2017 external replications with seven common inputs at Yulara and NIST Ground. It describes 36 plus 24 historical training runs without performing any additional training.
 
-1. The manuscript distinguishes individual model rankings from a **post hoc best-of-four neural envelope**. It explicitly states that the envelope is calculated after Test results and is neither a prespecified choice nor a deployable model.
-2. The Last-value and Daily Persistence questions are separated. Their supports are matched elementwise within each comparison, so the 22/24 reversal is not a missing-lag selection artifact.
-3. The missing-data description now matches the implementation: inputs remain on a regular five-minute coordinate, missing observations are retained through masks and Train-only imputation, and target eligibility is horizon-specific.
-4. The co-located design controls much of the weather/site context while avoiding causal attribution of target differences to module technology alone.
-5. The four forecasters are described as compact project implementations inspired by, but not equivalent to, official iTransformer, PatchTST, or ModernTCN releases.
-6. Figure 2 now shows all 24 ratios on a shared logarithmic scale without truncation; Figures 1, 3, and 4 clarify causal support, scope dependence, and the neural-only efficiency frontier.
+Alice's original primary wins remain 12/9/2/1/0. Daily Persistence remains better than the favorable post hoc neural envelope in 22/24 comparisons; the two exceptions remain Hanwha H12 full/daylight. Qcells H12 retains 6,463 origins, 77,556 full points, and 36,504 daylight points. The descriptive focal Inverted-variate model has 24/24 Last-value wins and 0/24 Daily wins at Alice; it is not retroactively called prespecified there.
 
-### Literature and data provenance
+The external prespecified Inverted-variate model has 16/16 Last-value wins and 15/16 Daily wins. The programmatically recomputed post hoc envelope has 8/8 Daily wins at Yulara and 7/8 at NIST. NIST H144/full remains the Daily win even after favorable neural-member selection. The primary model's Daily skill there is -6.47% with sample SD 1.65 percentage points.
 
-The comparison includes the 2025 review and SolNet, plus 2026 work by Markovics et al., Dhingra et al., Cross-Unet, and Mansour et al. It does not allege evaluation errors in those studies; it states that information sets, splits, lags, and eligible samples differ. The DKASC citation now points to the official Alice Springs download service and records the access date. The bibliography contains only entries cited in the main text.
+Yulara retains Inverted-variate at neural rank one. NIST mean ranks are 1.75 recurrent, 2.00 TCN, 2.25 Inverted-variate, and 4.00 joint-patch; recurrent leads full scope and TCN leads the longer daylight horizons. The narrative retains these outcomes and Yulara's smaller long-horizon Daily skills. Site, horizon, scope, and historical information condition the interpretation. No pooled cross-site kW ranking or undifferentiated forty-comparison win total is reported.
 
-### Interpretation and limitations
+Matched target points resolve sample-support differences, not historical-information differences. Daily's 24-hour lag and the neural six-hour history remain different information strategies. Three-seed SD measures training randomness, not temporal sampling uncertainty. Counts of dependent comparisons are descriptive, not significance tests. The neural envelope is consistently a post hoc descriptive upper bound, not a deployable or prespecified model.
 
-The strongest defensible conclusion is about evaluation practice, not a universal architecture advantage. At least one compact neural implementation is lower than Last-value Persistence in every primary comparison, but Daily Persistence is lower than the favorable post hoc envelope in 22/24 matched comparisons. The two Hanwha H12 exceptions are narrow observations, and the 24 combinations are dependent summaries rather than independent trials.
+## Methods and limitations
 
-The estimand remains limited to one co-located facility, April--August 2018, history-only inputs, four compact implementations, and three seeds. No future NWP, probability intervals, cross-climate validation, or official full architecture reproduction is evaluated. Test did not affect preprocessing, training, or checkpoint selection, but it was repeatedly inspected during development and is not an untouched external confirmation set.
+The fixed NIST EST/LST coordinate, complete five-minute bins, meter power target, direct Wm2 field, Yulara provider-local coordinate and conservative five-minute availability, off-grid exclusions, Train-only preprocessing, split-local windows, and horizon-specific Test eligibility are documented. Alice's nonnegative target-validity rule and the external retention of finite negative targets are distinguished.
 
-## Production and accessibility audit
+Missing NIST 2017 operation logs and partial Yulara metadata remain nonblocking documentation limitations. They are not interpreted as absence of anomalies. The limitations also state three geographic sites, co-located Alice arrays, October-December external evaluation, different years and input regimes, separate fitting rather than zero-shot transfer, compact project implementations, prior Test data-quality inspection, and the scope of seed SD. Possible explanations for ranking differences are identified as hypotheses, not proven mechanisms.
 
-- Main and Supplementary PDFs compile independently; all fonts are embedded.
-- The main article is 12 pages with four main figures and four main tables; the supplement is 18 pages with S-numbered tables and figure.
-- Figure 2 covers the complete observed ratio range; the previous lower-axis truncation is removed.
-- Table I is set in `footnotesize` and is readable at 100% PDF scale.
-- Main and supplement display the same four authors, order, affiliations, corresponding authors, emails, and confirmed Jiangkun Zhu ORCID.
-- No missing citations, undefined references, duplicate labels, or visible content overflow remains. Ordinary underfull warnings do not impair the rendered pages.
-- Both PDFs were rendered page by page and inspected for boundaries, labels, legends, whitespace, and table readability.
+## Production and language audit
 
-## Author-owned confirmations
+Title: **Leakage-Aware Multi-Horizon Benchmarking of Compact Neural PV Forecasts Across Technologies and Sites**.
 
-The visible working-manuscript marker is intentional. Funding, CRediT, conflict of interest, ethics applicability, AI-use wording and exact tool/version, Data Availability, Code Availability, exclusive-submission status at upload, OA route, and final all-author approval remain pending. `submission_package/AUTHOR_SIGNOFF_CHECKLIST.md` identifies the responsible confirmer and date field for each item.
+- Abstract: 205 whitespace-delimited words. TeXcount main text: 4,735 words including frontmatter and declarations; bibliography/captions are outside this text count.
+- Main: 13 pages, five figures, five tables. Supplement: 29 pages, three figures, eighteen tables. Full metric CSVs remain repository material rather than thousands of PDF rows.
+- Both PDFs compile. All 37 bibliography entries are cited. Missing citations, undefined references, duplicate labels, and overfull boxes: zero.
+- All fonts are embedded (31 main and 20 Supplement font resources); recursive PDF resource inspection finds zero raster images. Figures remain vector PDFs.
+- All 42 pages were rendered and visually inspected; final changed pages were rechecked. Tables, legends, signs, and captions are readable without overlap or clipping. Three nonfatal REVTeX main float-placement fallback warnings remain; all corresponding floats are present and correctly placed in the inspected output.
+- Signed heatmap values and a neutral zero support grayscale reading. The accuracy/latency figure uses zero-origin axes and a Last-value reference; complete ratio ranges remain visible in the logarithmic Alice evidence figure.
+- Alt text accompanies all eight figures and 23 tables in `FIGURE_ALT_TEXT.txt`; the package copy matches. Manuscript/package PDF copies are byte-identical.
+- Scientific English was revised around the evidence rather than the work history. Unsupported novelty, universal superiority, pure architectural causality, and significance claims are absent. Replication, transfer, validation, site, facility, array, horizon, and scope are distinguished.
 
-## Public release readiness
+## Author review and delivery boundary
 
-**PUBLIC_RELEASE_REQUIRES_ACTION.** The existing multi-branch repository is not a curated Scheme A reproducibility release. A dedicated release still needs an author-selected license, reviewed dependency specification, path-independent configuration, DKASC provider-compliant download instructions, exclusion of submission-only metadata, and a final secret/path scan. No release or visibility change was made.
+The author block is unchanged from the frozen base, including order, affiliations, corresponding emails, and the supplied Zhu ORCID, and is consistent across both PDFs. No other ORCID was inferred. Earlier user confirmations of funding, contributions, conflict, ethics, and submission intent are preserved in the Chinese signoff checklist; final M3 wording and the complete revised documents still require author review.
 
-## Final decision
+Authors must confirm the final main/Supplement, declaration wording and any required AI disclosure, public code URL and license/release details, cover letter, metadata, related-work disclosure, and submission authorization. No final signoff, OA selection, license choice, release, visibility change, or submission has been made. Source data availability points to the providers and does not claim redistribution.
 
-Subject to the explicit author-owned confirmations, the polished scientific and production files support **SCHEME_A_JRSE_FINAL_POLISH_READY_FOR_AUTHOR_SIGNOFF**. This decision does not authorize journal submission, a GitHub release, or completion of any unconfirmed declaration.
-
-## Visual-accessibility correction before signoff
-
-The signoff files were rechecked after a limited accessibility correction. Figure 1 now states matching only within each array and no longer implies a three-array origin intersection. Figure 2 places its 24/24 and 22/24 annotations inside the corresponding panels and retains the complete observed ratio range. Figure 4 has four labeled vertical ticks. Supplementary Figure S1 shows all five complete model names without clipping. Main-text alt descriptions now map correctly to Tables I--IV, and the generated Supplementary Material places concise alt text below Tables S1--S10 and Figure S1.
-
-Both PDFs were rebuilt and every page was rendered for inspection. The main article remains 12 pages; the inline supplementary alt text increases the Supplementary Material to 19 pages. All fonts are embedded. Ordinary tests passed 16/16, artifact tests passed 9/9, and independent evidence tests passed 15/15, including 4,414/4,414 numerical comparisons. No model training or protected-artifact modification occurred. The updated files support **SCHEME_A_JRSE_AUTHOR_SIGNOFF_FILES_READY**, subject to the unchanged author-confirmation requirements above.
+`M3_EVIDENCE_AUDIT.json` records the final evidence and PDF checks. `M3_COMPARISON_AUDIT.json` and `multisite_manuscript_comparison.csv` record programmatic cross-setting comparisons. The existing Draft PR #19 is the delivery vehicle; commit and tree identifiers are reported in the PR and final delivery message.

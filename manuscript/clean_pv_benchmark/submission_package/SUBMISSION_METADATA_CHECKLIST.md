@@ -5,7 +5,7 @@ Official requirements checked on **2026-08-28** against the JRSE scope and charg
 ## Confirmed manuscript metadata
 
 - Target: *Journal of Renewable and Sustainable Energy*; Research Article.
-- Title: *Leakage-Aware Multi-Horizon Benchmarking of Compact Neural PV Forecasts Across Co-Located Technologies*.
+- Title: *Leakage-Aware Multi-Horizon Benchmarking of Compact Neural PV Forecasts Across Technologies and Sites*.
 - Status: `WORKING_MANUSCRIPT_FOR_AUTHOR_SIGNOFF`; declarations are not final.
 - Author order: Jiangkun Zhu; Mengling Yang; Zhicong Chen; Lijun Wu.
 - Affiliation 1: College of Advanced Manufacturing, Fuzhou University, 1 Shuicheng Road, Quanzhou 362251, China.
@@ -17,10 +17,12 @@ Official requirements checked on **2026-08-28** against the JRSE scope and charg
 - Exclusive submission: **confirmed by user (YES)**.
 - Suggested reviewers: **None provided**.
 - Opposed reviewers: **None**.
-- Publishing route: `TRADITIONAL_ROUTE_PLANNED`; do not select optional Author Select OA or authorize the USD 3,800 fee without a new author decision.
+- Publishing route: `TRADITIONAL_ROUTE_PLANNED`; optional OA and fees are not authorized by this M3 task.
 - Indexing: `INDEXING_STATUS_REQUIRES_AUTHOR_OR_LIBRARY_CONFIRMATION`.
 
-## Final author confirmation required
+## Final M3 author confirmation required
+
+Earlier user confirmations of funding, contributions, no conflict, ethics applicability, exclusive submission and intended code publication remain recorded in the Chinese signoff checklist. The boxes below concern the exact revised wording and final upload, not a request to repeat those factual confirmations.
 
 - [ ] Final title and complete revised manuscript approved by all four authors.
 - [ ] Both corresponding-author designations and emails confirmed.
@@ -42,7 +44,7 @@ Official requirements checked on **2026-08-28** against the JRSE scope and charg
 - [ ] Obtain all-author approval for the scientifically revised main and supplementary PDFs before upload.
 - [ ] Confirm every figure and table is cited, numbered, captioned, and legible.
 - [x] Prepare English alt text for all main and supplementary figures and principal tables.
-- [ ] At source-file request, upload `main.tex`, `supplementary.tex`, `references.bib`, generated table sources, and five vector figure PDFs.
+- [ ] At source-file request, upload `main.tex`, `supplementary.tex`, `references.bib`, generated table sources, and eight vector figure PDFs (five main, three supplementary).
 - [ ] Confirm PDF fonts are embedded and declarations contain no draft marker.
 
 ## Official-information boundary
@@ -51,3 +53,12 @@ Official requirements checked on **2026-08-28** against the JRSE scope and charg
 - AIP permits AI-assisted manuscript preparation, but use that may affect findings, analysis, or information synthesis must be disclosed with exact tool details; AI cannot be an author.
 - Current SCIE/JCR status remains for author or institutional-library confirmation; it is not guessed here.
 
+
+## M3 evidence and files
+
+- Three geographic sites; Alice has three co-located arrays, not three independent climates.
+- 36 original 17-channel runs plus 24 independently fitted seven-channel external runs.
+- Main: 205-word abstract, 13 pages, five figures and five tables.
+- Supplement: 29 pages, three figures and eighteen tables; full metric CSVs are repository materials.
+- Current review: Draft PR #19; all-author M3 approval remains pending.
+- Exact counts and QA are in `M3_EVIDENCE_AUDIT.json`; no training occurred during M3.

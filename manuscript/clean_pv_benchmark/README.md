@@ -1,51 +1,33 @@
-# Leakage-aware PV benchmark manuscript
+# Scheme A multisite manuscript
 
-This directory contains the JRSE-oriented Research Article **“Leakage-Aware Multi-Horizon Benchmarking of Compact Neural PV Forecasts Across Co-Located Technologies”** and its Supplementary Material. The work is a benchmark/application study, not a new-model paper. It evaluates four compact project implementations under a common causal protocol and does not claim full reproduction of iTransformer, PatchTST, or ModernTCN.
+**Leakage-Aware Multi-Horizon Benchmarking of Compact Neural PV Forecasts Across Technologies and Sites** is a JRSE-oriented benchmark article for author review. It contains two evidence levels: three co-located Alice Springs arrays (2018, 17 channels, 36 runs), and separately fitted Yulara/NIST replications (2017, seven channels, 24 runs). These are compact project implementations, not official full architecture reproductions or zero-shot transfer.
 
-## Evidence and reproducibility boundary
+## Rebuild without training
 
-The quantitative source of truth is:
-
-`GFNODE_experiments/scheme_A_submission_correction/corrected_metrics.csv`
-
-`build_figures.py` reads that long-format file directly and generates all five vector figures plus the main and supplementary quantitative tables. It does not read former GFNODE results. The independent verifier in the experiment directory reproduced 4,414/4,414 comparisons from saved artifacts without importing the production metric functions. The manuscript preserves the verified primary wins (12/9/2/1/0), the matched Daily-Persistence result (22/24), and the Qcells H12 support (6,463 origins; 77,556 full and 36,504 daylight target points).
-
-No neural-network training is part of the manuscript build. Checkpoints, predictions, raw data, and local `results/` are deliberately excluded.
-
-## Build
-
-Requirements are TeX Live 2025 (or equivalent), `latexmk`, REVTeX 4.2, and Python with pandas, NumPy, and ReportLab.
+From this directory, use Python with NumPy, pandas and ReportLab, the Arial fonts used by the existing figure pipeline, and TeX Live 2025 / REVTeX 4.2:
 
 ```powershell
-python build_figures.py
+python -B build_figures.py
 latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
 latexmk -pdf -interaction=nonstopmode -halt-on-error supplementary.tex
 ```
 
-The checked build produces `main.pdf` and `supplementary.pdf`; all fonts are embedded. `FIGURE_ALT_TEXT.txt` provides 25–50-word descriptions for every figure and principal table. Both PDFs remain working documents until the authors confirm declarations and approve submission.
+The figure builder reads frozen CSVs, never checkpoints or raw data, and performs no training. The main source has five figures and five tables; the Supplement has three figures and eighteen tables. Accessibility descriptions cover all 31 figures/tables in `FIGURE_ALT_TEXT.txt`.
 
-## JRSE format basis
+## Evidence sources
 
-Official requirements were checked on 2026-08-28 using the [AIP author instructions](https://publishing.aip.org/resources/researchers/author-instructions/), [JRSE scope](https://pubs.aip.org/aip/jrse/pages/about), [AIP ethics policies](https://publishing.aip.org/resources/researchers/policies-and-ethics/), and [JRSE charges](https://pubs.aip.org/aip/jrse/pages/charges). The manuscript uses the installed AIP REVTeX style, a single-paragraph abstract below 250 words, the required declarations/order, a separate Supplementary Material PDF, and alt text. The planned route is subscription/non-OA; optional Author Select is not authorized.
+- Alice: `GFNODE_experiments/scheme_A_submission_correction/corrected_metrics.csv`, `REPORT.md`, and `INDEPENDENT_EVIDENCE_AUDIT.json`.
+- External: `GFNODE_experiments/scheme_A_multisite_extension/metrics_per_seed.csv`, `metrics_summary_mean_sd.csv`, `DATA_AUDIT_SUMMARY.csv`, and the M1-R/M2 protocol and audits.
+- Paper comparison: `multisite_manuscript_comparison.csv` (400 program-generated rows) and `M3_COMPARISON_AUDIT.json`.
+- Verification and production review: `M3_EVIDENCE_AUDIT.json` and `REVIEW.md`.
 
-`INDEXING_STATUS_REQUIRES_AUTHOR_OR_LIBRARY_CONFIRMATION`: current SCIE/JCR status was not independently established from an accessible Clarivate institutional record.
+Alice's 12/9/2/1/0 primary wins, Daily's 22/24 wins against the post hoc envelope, Hanwha H12 exceptions, and Qcells H12 support are unchanged. The external prespecified Inverted-variate model wins against Last-value in 8/8 at each site and against Daily in Yulara 8/8 and NIST 7/8. The external post hoc envelope also has 8/8 and 7/8 Daily wins, with distinct selection status. The original and external groups are not pooled into a forty-comparison headline.
 
-## Files
+## Author and release boundary
 
-- `main.tex`, `main.pdf`: main article source and compiled working PDF.
-- `supplementary.tex`, `supplementary.pdf`: separate supplementary source and PDF.
-- `references.bib`: cited literature, including the 2025–2026 direct competitors.
-- `build_figures.py`, `figures/`: evidence-driven vector outputs.
-- `main_result_tables.tex`, `supplementary_tables.tex`: generated LaTeX tables.
-- `FIGURE_ALT_TEXT.txt`: figure/table accessibility descriptions.
-- `REVIEW.md`: reviewer-style scientific and production audit.
-- `submission_package/`: working cover letter and upload/metadata checklists.
-- `PUBLIC_RELEASE_MANIFEST.md`: proposed scope for a future dedicated public repository.
+This M3 revision is for author review, not submission. The four-author metadata block is preserved from the designated base; no optional ORCID is inferred. Final M3 wording, PDFs, cover letter and submission authorization remain author-owned. The Chinese `submission_package/AUTHOR_SIGNOFF_CHECKLIST.md` separates earlier user confirmations from approval of these revised files.
 
-## Author action still required
+The data statements direct readers to official DKASC and NIST downloads under provider terms. A curated code release still needs an author-selected license and confirmed URL/scope. No raw observations, checkpoints, NPZ arrays, preprocessors, local path configurations or results are included in this manuscript change. No GitHub Release, visibility change, journal upload, OA selection, rebase, force push or merge is performed.
 
-Before upload, all authors must confirm the author list, CRediT roles, Funding Grant Nos. 62271151 and W2421092, conflict-of-interest and AI-use wording, ethics applicability, code/data release wording, and final manuscript. Three optional ORCIDs remain unconfirmed. The corresponding authors must also reconfirm the subscription route, current indexing, and any conditional production charges.
-
-## Public release status
-
-`PUBLIC_RELEASE_REQUIRES_ACTION`. GitHub reported the existing multi-branch repository as publicly visible on 2026-08-28; this task did not change that setting. It must not be represented as a curated Scheme A reproducibility release because it also exposes unrelated branches and Draft PRs. A dedicated release still requires license selection, a reviewed dependency specification, path-independent public configuration, provider-compliant data download instructions, and an author-approved release scope.
+Draft PR: https://github.com/Zhujiangkun-Yohkoh/PV-forecast/pull/19
+Base: `research/scheme-a-multisite-frozen-training`.

@@ -1,30 +1,32 @@
-# Scheme A author signoff checklist
+# 作者签核表（Scheme A Multisite M3）
 
-This is an internal confirmation record for the working JRSE manuscript. Check **Confirm** only after the named author(s) have reviewed the current manuscript-specific wording. Record revisions in the adjacent field; do not infer approval from an earlier paper.
+本表用于审核新的多场址稿件。此前用户确认的基础信息继续有效；它们不等同于四位作者已批准本轮新增科学内容或最终投稿文件。本轮不代签、不提交，也不选择许可证或开放获取服务。
 
-## Version to be signed
+## 本轮文件
 
-- Draft PR: `https://github.com/Zhujiangkun-Yohkoh/PV-forecast/pull/14`
-- Branch: `manuscript/clean-pv-benchmark-jrse-final-polish`
-- Exact PR head commit and tree: verify against PR #14 immediately before circulation and record here: Commit __________; Tree __________.
-- Files covered: `main.pdf` (SHA-256 `17E9066D352C3CB8622362BE76D1735639BA1249E29E3B6FD1C55BD47965E34D`) and `supplementary.pdf` (SHA-256 `518F6AB9C375B57A6694CBB272F86AA9553C214B52FD682E7F9BD2A83FB05687`) in `manuscript/clean_pv_benchmark/`.
-- Any later scientific-content change invalidates this signoff and requires circulation of newly identified PDFs.
+- 标题：Leakage-Aware Multi-Horizon Benchmarking of Compact Neural PV Forecasts Across Technologies and Sites
+- Draft PR：https://github.com/Zhujiangkun-Yohkoh/PV-forecast/pull/19
+- 分支：`manuscript/clean-pv-benchmark-multisite-revision`
+- 审核对象：本 PR 最新提交中的 `main.pdf`、`supplementary.pdf` 和投稿包。最终提交与 Tree SHA 见交付记录；签字时填写：Commit ______；Tree ______。
+- 本轮加入多场址科学内容，旧版 PDF 的签核标识不适用于新版；不沿用旧 PDF 校验值。
 
-| Item | Current draft / source | Required confirmation | Signoff |
-|---|---|---|---|
-| Author order | Jiangkun Zhu; Mengling Yang; Zhicong Chen; Lijun Wu. Source: user-authorized metadata and prior title page. | All authors | [ ] Confirm [ ] Revise — Date: ____ |
-| Affiliations and correspondence | Affiliation 1 for Zhu/Yang; affiliations 1 and 2 for Chen/Wu; Chen and Wu corresponding; emails shown in manuscript. | Zhicong Chen; Lijun Wu | [ ] Confirm [ ] Revise — Date: ____ |
-| ORCID | Jiangkun Zhu: 0009-0009-5335-2345. Other ORCIDs intentionally blank. | Jiangkun Zhu; optional input from others | [ ] Confirm [ ] Revise — Date: ____ |
-| Funding | NSFC Grant Nos. 62271151 and W2421092. Source: prior-paper draft only. | Funding recipients and corresponding authors | [ ] Confirm [ ] Revise — Date: ____ |
-| CRediT | Roles listed in the manuscript and declaration draft. Source: prior-paper draft only. | Each author confirms their own roles; all approve the allocation | [ ] Confirm [ ] Revise — Date: ____ |
-| Conflict of Interest | No known competing financial interests or personal relationships. Source: prior-paper draft only. | All authors | [ ] Confirm [ ] Revise — Date: ____ |
-| Ethics applicability | Public PV/meteorological records; no human participants or animals; ethics approval described as not applicable. | Corresponding authors | [ ] Confirm [ ] Revise — Date: ____ |
-| AI-assisted workflow | OpenAI Codex; exact app version/model pending. Draft covers code review, evidence-check organization, bibliographic metadata extraction, and language editing; authors verified frozen outputs and remain responsible. Source: task record and AIP AI policy. | All authors; Jiangkun Zhu supplies exact tool/version record | [ ] Confirm [ ] Revise — Date: ____ |
-| Data Availability | DKASC source data under provider terms; no redistribution of raw data. | Corresponding authors | [ ] Confirm [ ] Revise — Date: ____ |
-| Code Availability | Dedicated release planned after license and release-scope approval; no checkpoints/NPZ/raw data. | Corresponding authors and code owner | [ ] Confirm [ ] Revise — Date: ____ |
-| Exclusive submission | User previously stated YES; reconfirm for the upload date. | All authors / corresponding authors | [ ] Confirm [ ] Revise — Date: ____ |
-| Publishing route | Traditional/subscription route planned; optional OA not authorized. | Corresponding authors | [ ] Confirm [ ] Revise — Date: ____ |
-| Final manuscript and supplement | Working PDFs, figures, tables, numerical claims, and limitations approved. | All authors | [ ] Confirm [ ] Revise — Date: ____ |
-| Cover letter and submission metadata | Final letter, related-work disclosure, reviewers (none provided), and live-system answers approved. | Corresponding authors | [ ] Confirm [ ] Revise — Date: ____ |
+## 已有确认与本轮待审核事项
 
-**Final authorization:** [ ] All four authors approve submission of the exact files listed in `FILE_UPLOAD_MANIFEST.md`. Date: ____
+| 项目 | 已有确认 / 本轮处理 | 本轮最终审核 |
+|---|---|---|
+| 作者顺序 | Jiangkun Zhu；Mengling Yang；Zhicong Chen；Lijun Wu。用户此前已确认顺序。 | [ ] 四位作者批准 M3 新稿 |
+| 单位、通讯作者和邮箱 | 按 M3 指令保留指定基线的作者信息，不在本轮另作推测性更改；陈志聪和吴丽君为通讯作者，邮箱见正文。 | [ ] 通讯作者核对新版首页 |
+| ORCID | Jiangkun Zhu：0009-0009-5335-2345；用户此前确认无误；其余未提供，不补造。 | [ ] 新版显示无误 |
+| Funding | 用户已确认；当前稿为 NSFC 62271151、W2421092。 | [ ] 最终声明文字随 M3 一并批准 |
+| 作者贡献 | 用户此前确认无异议；本轮保留既有角色分配。 | [ ] 各作者批准最终贡献文字 |
+| 利益冲突 | 用户已确认没有利益冲突。 | [ ] 最终声明文字批准 |
+| 伦理审批 | 用户已确认无需伦理审批。 | [ ] 最终声明和投稿系统回答批准 |
+| AI 内容 | 已删除正文独立的 AI 工作流程小节；不猜测模型或版本。本轮 M3 要求未确认的声明继续标记，因此仅保留最终披露待确认项。 | [ ] 作者决定适用披露和最终文字 |
+| 数据可用性 | 用户确认数据来自官方服务；新版同时指向 DKASC 和 NIST，须遵守提供方条款，不重新分发原始数据。 | [ ] 新版数据声明批准 |
+| 代码公开 | 用户确认代码将公开；公开 URL、许可证和具体范围留待最终投稿准备时确认。 | [ ] URL / 范围 / 许可证最终确认 |
+| 独家投稿 | 用户此前已确认；上传日期仍由通讯作者核实。 | [ ] 上传时状态无变化 |
+| 出版方式 | 传统/订阅路线；本轮不选择可选 OA，不授权任何费用。 | [ ] 最终投稿系统选择由作者决定 |
+| M3 正文和补充材料 | 新增两个场址、预注册主模型分析、条件性排名、全部必要不利结果及限制。 | [ ] 四位作者完成全文审核 |
+| Cover Letter 与投稿元数据 | 已更新为共址比较加两场址重复实验；未实际投稿。 | [ ] 通讯作者批准并签署 |
+
+最终投稿授权：[ ] 四位作者批准上传文件清单中的准确版本。日期：______。

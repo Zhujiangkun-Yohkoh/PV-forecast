@@ -1,32 +1,22 @@
-# Cover letter draft - final author confirmation required
+# Cover letter draft — final author approval and signature required
 
-**Target:** Journal of Renewable and Sustainable Energy (JRSE), Research Article  
-**Manuscript:** “Leakage-Aware Multi-Horizon Benchmarking of Compact Neural PV Forecasts Across Co-Located Technologies”
-**Corresponding authors:** Zhicong Chen (`zhicong.chen@fzu.edu.cn`) and Lijun Wu (`lijun.wu@fzu.edu.cn`)
+**Target:** Journal of Renewable and Sustainable Energy; Research Article
+**Manuscript:** Leakage-Aware Multi-Horizon Benchmarking of Compact Neural PV Forecasts Across Technologies and Sites
+**Corresponding authors:** Zhicong Chen (zhicong.chen@fzu.edu.cn) and Lijun Wu (lijun.wu@fzu.edu.cn)
 
 Dear Editor,
 
-Please consider the enclosed manuscript for publication as a Research Article in the *Journal of Renewable and Sustainable Energy*. The study presents a leakage-aware, sample-matched application benchmark of deterministic photovoltaic power forecasts across three co-located arrays at the DKA Solar Centre in Alice Springs.
+Please consider our manuscript for publication as a Research Article in the *Journal of Renewable and Sustainable Energy*. It presents a two-level photovoltaic forecasting benchmark: a comparison of three co-located technology arrays at Alice Springs and independently fitted common-input replications at Yulara and NIST Ground.
 
-The manuscript does not propose a new neural architecture. Its contribution is a controlled and auditable evaluation: all preprocessing is fitted on Train only, windows are confined to temporal splits, checkpoints are selected on Validation, and neural forecasts are compared with causal persistence references on identical target masks. Four compact project implementations produce a common 12-hour trajectory whose 1-, 4-, 8-, and 12-hour prefixes are evaluated under full-timeline and daylight scopes. A separate Supplementary Material file reports complete per-seed results, support counts, model configurations, and sensitivity analyses.
+The study evaluates four compact neural implementations across four forecast horizons and full-timeline/daylight scopes, using 60 completed runs. Train-only preprocessing, explicit measurement availability, split-local windows and elementwise target matching define the comparisons. The original 17-channel experiment and the seven-channel external replications remain separate evidence groups.
 
-The results are deliberately reported without selective favorable framing. In every primary matched comparison, at least one compact neural implementation has lower RMSE than Last-value Persistence. However, exact-lag Daily Persistence outperforms the post hoc best-of-four neural envelope in 22 of 24 separately matched comparisons. This envelope is a Test-derived descriptive upper bound, not a prespecified deployable model. The negative but operationally useful finding defines where model complexity does and does not add value under a strict protocol. The paper therefore fits JRSE's scope in solar photovoltaics, energy meteorology, and renewable-energy engineering through its evidence on reliable forecast evaluation and technology-conditioned performance.
+The results distinguish improvement beyond present-value continuity from improvement beyond daily recurrence. Daily Persistence has lower error than the post hoc neural envelope in 22 of 24 Alice comparisons. At the external sites, the prespecified Inverted-variate model improves on Last-value in all sixteen comparisons and on matched Daily in fifteen. Its leading rank at Yulara changes at NIST, where recurrent and depthwise implementations lead different scopes. This combination provides evidence on site-, horizon- and scope-dependent forecasting performance relevant to solar-energy operation and evaluation.
 
-The authors confirm that this manuscript is not simultaneously submitted to, and is not currently under consideration by, another journal. Source data remain available from the DKA Solar Centre under the provider's terms; the evaluation code and aggregate evidence provenance are described in the manuscript and repository.
+The Supplement reports the complete model comparisons, individual seeds, support counts, data-quality inventory and historical training records. Source observations are obtained from official DKASC and NIST services under provider terms; the repository does not redistribute raw data. The manuscript describes the current code-availability boundary pending final author confirmation.
 
-Authors, in order: Jiangkun Zhu, Mengling Yang, Zhicong Chen, and Lijun Wu.
-
-Before upload, the corresponding authors must personally confirm:
-
-- `FINAL_AUTHOR_CONFIRMATION_REQUIRED`: all four authors approve the revised manuscript and submission;
-- `FINAL_AUTHOR_CONFIRMATION_REQUIRED`: the Funding, Conflict of Interest, CRediT, AI-use, Data Availability, and Code Availability wording is accurate for this manuscript;
-- `FINAL_AUTHOR_CONFIRMATION_REQUIRED`: related manuscripts or preprints are fully disclosed;
-- `FINAL_AUTHOR_CONFIRMATION_REQUIRED`: one or both corresponding authors sign the final letter.
-
-No editor name, suggested reviewer, or opposed reviewer has been invented.
+Authors, in order: Jiangkun Zhu, Mengling Yang, Zhicong Chen, and Lijun Wu. Exclusive submission has been confirmed by the user; the corresponding authors will reconfirm its applicability on the upload date. All authors' approval of this M3 revision, final declarations, related-manuscript/preprint disclosure and the signed letter remain pending. No reviewer or editor name has been inferred.
 
 Sincerely,
 
-Zhicong Chen and Lijun Wu  
+Zhicong Chen and Lijun Wu
 `FINAL_CORRESPONDING_AUTHOR_SIGNATURE_REQUIRED`
-

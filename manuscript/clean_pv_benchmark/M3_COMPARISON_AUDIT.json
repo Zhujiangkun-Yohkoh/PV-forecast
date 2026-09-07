@@ -1,0 +1,107 @@
+{
+  "source_rows": {
+    "alice": 11328,
+    "external_per_seed": 528,
+    "external_summary": 176
+  },
+  "comparison_rows": 400,
+  "wins": [
+    {
+      "site": "Alice Springs",
+      "subject": "Inverted-variate Transformer",
+      "Last-value Persistence": {
+        "wins": 24,
+        "losses": 0,
+        "ties": 0,
+        "total": 24
+      },
+      "Daily Persistence": {
+        "wins": 0,
+        "losses": 24,
+        "ties": 0,
+        "total": 24
+      }
+    },
+    {
+      "site": "Alice Springs",
+      "subject": "post hoc descriptive envelope",
+      "Last-value Persistence": {
+        "wins": 24,
+        "losses": 0,
+        "ties": 0,
+        "total": 24
+      },
+      "Daily Persistence": {
+        "wins": 2,
+        "losses": 22,
+        "ties": 0,
+        "total": 24
+      }
+    },
+    {
+      "site": "Yulara",
+      "subject": "Inverted-variate Transformer",
+      "Last-value Persistence": {
+        "wins": 8,
+        "losses": 0,
+        "ties": 0,
+        "total": 8
+      },
+      "Daily Persistence": {
+        "wins": 8,
+        "losses": 0,
+        "ties": 0,
+        "total": 8
+      }
+    },
+    {
+      "site": "Yulara",
+      "subject": "post hoc descriptive envelope",
+      "Last-value Persistence": {
+        "wins": 8,
+        "losses": 0,
+        "ties": 0,
+        "total": 8
+      },
+      "Daily Persistence": {
+        "wins": 8,
+        "losses": 0,
+        "ties": 0,
+        "total": 8
+      }
+    },
+    {
+      "site": "NIST Ground",
+      "subject": "Inverted-variate Transformer",
+      "Last-value Persistence": {
+        "wins": 8,
+        "losses": 0,
+        "ties": 0,
+        "total": 8
+      },
+      "Daily Persistence": {
+        "wins": 7,
+        "losses": 1,
+        "ties": 0,
+        "total": 8
+      }
+    },
+    {
+      "site": "NIST Ground",
+      "subject": "post hoc descriptive envelope",
+      "Last-value Persistence": {
+        "wins": 8,
+        "losses": 0,
+        "ties": 0,
+        "total": 8
+      },
+      "Daily Persistence": {
+        "wins": 7,
+        "losses": 1,
+        "ties": 0,
+        "total": 8
+      }
+    }
+  ],
+  "training_executed": false
+}

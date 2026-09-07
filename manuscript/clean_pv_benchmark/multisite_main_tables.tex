@@ -1,0 +1,49 @@
+\begin{table*}[!tp]
+\centering\small
+\caption{External prespecified Inverted-variate results: three-seed mean $\pm$ sample SD. nRMSE and skill are percentages; Daily skill uses its own common target intersection.}
+\label{tab:external}
+\begin{tabular}{lllrrr}
+\toprule Site & Horizon & Scope & Train-range nRMSE & Last-value skill & Daily-matched skill\\\midrule
+Yulara & H12 & full & $9.36\pm0.03$ & $17.34\pm0.26$ & $36.28\pm0.20$\\
+Yulara & H12 & daylight & $12.72\pm0.06$ & $18.73\pm0.36$ & $37.28\pm0.28$\\
+Yulara & H48 & full & $12.16\pm0.13$ & $49.24\pm0.53$ & $17.25\pm0.86$\\
+Yulara & H48 & daylight & $16.06\pm0.22$ & $48.58\pm0.70$ & $20.83\pm1.08$\\
+Yulara & H96 & full & $14.28\pm0.05$ & $61.32\pm0.14$ & $2.71\pm0.34$\\
+Yulara & H96 & daylight & $19.03\pm0.14$ & $56.10\pm0.31$ & $6.10\pm0.67$\\
+Yulara & H144 & full & $14.37\pm0.14$ & $67.10\pm0.32$ & $1.62\pm0.97$\\
+Yulara & H144 & daylight & $19.28\pm0.20$ & $59.46\pm0.42$ & $4.50\pm0.99$\\
+NIST Ground & H12 & full & $6.91\pm0.04$ & $17.93\pm0.52$ & $57.73\pm0.28$\\
+NIST Ground & H12 & daylight & $11.01\pm0.04$ & $20.24\pm0.26$ & $59.01\pm0.13$\\
+NIST Ground & H48 & full & $11.05\pm0.10$ & $41.16\pm0.51$ & $32.09\pm0.58$\\
+NIST Ground & H48 & daylight & $17.22\pm0.39$ & $37.98\pm1.39$ & $36.07\pm1.41$\\
+NIST Ground & H96 & full & $15.59\pm0.29$ & $42.18\pm1.06$ & $3.88\pm1.80$\\
+NIST Ground & H96 & daylight & $21.58\pm0.30$ & $39.25\pm0.85$ & $20.22\pm1.12$\\
+NIST Ground & H144 & full & $17.29\pm0.27$ & $43.24\pm0.87$ & $-6.47\pm1.65$\\
+NIST Ground & H144 & daylight & $23.49\pm0.40$ & $37.80\pm1.06$ & $13.20\pm1.49$\\
+\bottomrule\end{tabular}
+\end{table*}
+\begin{table*}[!tp]
+\centering\small
+\caption{Mean neural-only primary RMSE ranks. Alice pools ranks across three co-located arrays, not independent sites; external sites remain separate.}
+\label{tab:ranks}
+\begin{tabular}{llrrrr}
+\toprule Setting & Combinations & Recurrent & Inverted & Joint-patch & TCN\\\midrule
+Alice Springs & 24 (3 arrays) & 3.583 & 1.875 & 2.375 & 2.167\\
+Yulara & 8 & 3.500 & 1.000 & 2.500 & 3.000\\
+NIST Ground & 8 & 1.750 & 2.250 & 4.000 & 2.000\\
+\bottomrule\end{tabular}
+\end{table*}
+\begin{table*}[!tp]
+\centering\small
+\caption{Model/envelope comparisons won on matched targets. Wins are dependent descriptive summaries, not independent significance tests. The envelope is a favorable upper bound for the neural group.}
+\label{tab:cross}
+\begin{tabular}{llll}
+\toprule Setting & Selection status & Versus Last-value & Versus Daily\\\midrule
+Alice Springs & Descriptive focal & 24/24 & 0/24\\
+Alice Springs & Post hoc envelope & 24/24 & 2/24\\
+Yulara & Prespecified primary & 8/8 & 8/8\\
+Yulara & Post hoc envelope & 8/8 & 8/8\\
+NIST Ground & Prespecified primary & 8/8 & 7/8\\
+NIST Ground & Post hoc envelope & 8/8 & 7/8\\
+\bottomrule\end{tabular}
+\end{table*}
