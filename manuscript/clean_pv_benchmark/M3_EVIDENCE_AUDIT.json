@@ -1,0 +1,36 @@
+{
+  "stage": "Scheme A Multisite M3 preflight",
+  "verdict": "SCHEME_A_MULTISITE_MANUSCRIPT_BLOCKED_BY_EVIDENCE_MISMATCH",
+  "blocking_status": "ALICE_36_ARTIFACT_PATH_REQUIRES_AUTHOR_CONFIRMATION",
+  "source_commit": "ba52e87129bb8f71f78d9e91043eff89b51b0363",
+  "source_branch": "research/scheme-a-multisite-frozen-training",
+  "branch": "manuscript/clean-pv-benchmark-multisite-revision",
+  "alice_author_specified_results": {
+    "worktree_name": "PVforecast16_scheme_A_final_evidence",
+    "relative_results_directory": "GFNODE_experiments/scheme_A_submission_correction/results",
+    "directory_exists": false,
+    "checkpoint_count_at_author_specified_path": 0,
+    "required_checkpoint_count": 36,
+    "original_checkpoint_immutability_verified_at_author_specified_path": false,
+    "alternate_directory_accepted": false,
+    "note": "The latest user instruction requires this exact directory and prohibits guessing a replacement. A different directory named in the earlier handoff was inspected before that clarification; its count does not satisfy the latest path confirmation requirement. No artifact was modified."
+  },
+  "reexecuted_tests": {
+    "M1_R": {"passed": 43, "failed": 0, "errors": 0, "skipped": 0},
+    "M2_ordinary": {"passed": 17, "failed": 0, "errors": 0, "skipped": 0},
+    "M2_artifact": {"passed": 10, "failed": 0, "errors": 0, "skipped": 0},
+    "independent_comparisons": {"passed": 10432, "failed": 0, "skipped": 0}
+  },
+  "external_runs": 24,
+  "external_checkpoints_reforward_verified": 24,
+  "prediction_tolerance": {"rtol": 0.00002, "atol": 0.00002},
+  "protected_files_size_mtime_ns_unchanged": 497,
+  "protected_scope": "External raw files, all existing M2 result files, and frozen evidence CSV/JSON files read by this preflight. The missing author-specified Alice checkpoint directory is not counted as verified.",
+  "test_execution": "Original unittest classes imported without their output-writing CLI entry points. M2 RESULTS and independent ROOT refer to the existing ignored M2 results. Independent audit output is redirected to the M3 ignored local directory. Runtime guards prohibit training helpers, backward, AdamW construction and checkpoint save. Ordinary preprocessing fit tests use synthetic arrays only.",
+  "training_executed": false,
+  "raw_data_or_artifact_modified": false,
+  "frozen_metric_csv_modified": false,
+  "manuscript_modified": false,
+  "pdf_or_figure_modified": false,
+  "next_required_action": "Author confirms an existing exact directory containing the original 36 checkpoint/completed/prediction groups. Recheck that directory before any manuscript editing."
+}
