@@ -1,0 +1,1 @@
+Fixed calendar and explicitly post hoc best/worst seed42 H144 Daily-improvement cases. Each curve is one forecast origin; extremes are diagnostic, not representative frequencies. No weather or outage labels are inferred.

@@ -1,0 +1,19 @@
+{
+  "main": {
+    "pages": 10,
+    "fonts_embedded": true,
+    "overfull": 0,
+    "undefined_citations_or_references": 0,
+    "duplicate_labels": 0
+  },
+  "supplementary": {
+    "pages": 36,
+    "fonts_embedded": true,
+    "overfull": 0,
+    "undefined_citations_or_references": 0,
+    "duplicate_labels": 0
+  },
+  "vector_figure_count": 14,
+  "historical_protected_snapshot_files": 605,
+  "historical_snapshot_differences": []
+}

@@ -1,0 +1,1 @@
+Prespecified external Inverted-variate skill. Dots are individual seeds; bars show sample SD of three seed metrics, not temporal confidence intervals. Each reference uses its own matched support.

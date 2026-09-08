@@ -1,0 +1,10 @@
+{
+  "abstract_texcount": 196,
+  "body_prose_texcount": 2895,
+  "previous_body_prose_texcount": 4245,
+  "prose_reduction_percent": 31.802120141342762,
+  "captions_texcount": "287: File: .local/wordcounts/captions.tex",
+  "table_cell_source_lexical_tokens": 428,
+  "bibliography_source_lexical_tokens": 853,
+  "method": "Body excludes abstract, captions, floats, table inputs, declarations and bibliography; TeXcount includes section headings/equation weights. Caption arguments parsed with balanced braces. Tables/bibliography use separate source lexical word/number token counts (not directly comparable to prose TeXcount). No PDF full-text word count used."
+}

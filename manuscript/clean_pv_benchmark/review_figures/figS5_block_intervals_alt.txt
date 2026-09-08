@@ -1,0 +1,1 @@
+Temporal intervals expose uncertainty around small long-window Daily improvements. All three prechosen block sizes are shown, including intervals crossing zero.

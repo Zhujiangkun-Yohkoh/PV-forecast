@@ -1,238 +1,238 @@
 \begin{longtable}{lllrrrr}
-\caption{All 96 external support groups, compressed to 24 rows. Each cell gives origins / valid target points. P: primary; D: Daily-matched. Train/Validation prefix counts are descriptive eligibility inventories; fitting uses H144 only.}\label{tabs:externalcounts}\\
-\toprule Site & Split & H & P full & P daylight & D full & D daylight\\\midrule
-\endfirsthead\toprule Site & Split & H & P full & P daylight & D full & D daylight\\\midrule\endhead
-Yulara & train & H12 & 69,861 / 838,332 & 35,109 / 388,983 & 69,656 / 835,770 & 34,948 / 387,108\\
-Yulara & train & H48 & 69,717 / 3,346,416 & 43,727 / 1,551,419 & 69,548 / 3,337,032 & 43,566 / 1,544,738\\
-Yulara & train & H96 & 69,525 / 6,674,400 & 55,170 / 3,091,616 & 69,404 / 6,657,936 & 55,009 / 3,080,543\\
-Yulara & train & H144 & 69,333 / 9,983,952 & 66,248 / 4,623,382 & 69,260 / 9,962,712 & 66,098 / 4,610,221\\
-Yulara & validation & H12 & 8,459 / 101,508 & 4,329 / 47,952 & 8,411 / 100,776 & 4,281 / 47,232\\
-Yulara & validation & H48 & 8,315 / 399,120 & 5,305 / 189,051 & 8,303 / 396,198 & 5,293 / 186,177\\
-Yulara & validation & H96 & 8,135 / 780,960 & 6,556 / 371,232 & 8,135 / 776,430 & 6,556 / 366,798\\
-Yulara & validation & H144 & 8,037 / 1,157,328 & 7,802 / 547,225 & 8,037 / 1,152,674 & 7,802 / 542,715\\
-Yulara & test & H12 & 26,412 / 316,944 & 14,784 / 164,664 & 26,412 / 316,944 & 14,784 / 164,664\\
-Yulara & test & H48 & 26,376 / 1,266,048 & 18,063 / 658,095 & 26,376 / 1,266,048 & 18,063 / 658,095\\
-Yulara & test & H96 & 26,328 / 2,527,488 & 22,393 / 1,313,250 & 26,328 / 2,527,488 & 22,393 / 1,313,250\\
-Yulara & test & H144 & 26,280 / 3,784,320 & 26,192 / 1,963,842 & 26,280 / 3,784,320 & 26,192 / 1,963,842\\
-NIST & train & H12 & 68,837 / 826,044 & 34,613 / 380,214 & 68,615 / 821,094 & 34,479 / 376,830\\
-NIST & train & H48 & 66,958 / 3,213,984 & 41,646 / 1,457,504 & 66,789 / 3,196,711 & 41,510 / 1,445,846\\
-NIST & train & H96 & 64,717 / 6,212,832 & 50,964 / 2,790,328 & 64,596 / 6,183,604 & 50,828 / 2,771,505\\
-NIST & train & H144 & 62,643 / 9,020,592 & 59,066 / 4,062,345 & 62,570 / 8,982,982 & 58,940 / 4,039,615\\
-NIST & validation & H12 & 8,290 / 99,480 & 4,132 / 45,799 & 8,290 / 99,240 & 4,132 / 45,655\\
-NIST & validation & H48 & 7,543 / 362,064 & 4,548 / 159,943 & 7,543 / 361,151 & 4,548 / 159,368\\
-NIST & validation & H96 & 6,690 / 642,240 & 5,099 / 274,705 & 6,690 / 640,575 & 5,099 / 273,662\\
-NIST & validation & H144 & 5,915 / 851,760 & 5,625 / 364,699 & 5,915 / 849,433 & 5,625 / 363,282\\
-NIST & test & H12 & 25,219 / 302,628 & 10,161 / 109,258 & 25,219 / 300,173 & 10,158 / 108,291\\
-NIST & test & H48 & 24,240 / 1,163,520 & 12,577 / 413,664 & 24,240 / 1,154,170 & 12,574 / 410,266\\
-NIST & test & H96 & 23,037 / 2,211,552 & 15,700 / 775,182 & 23,037 / 2,194,678 & 15,697 / 769,372\\
-NIST & test & H144 & 21,885 / 3,151,440 & 18,602 / 1,106,213 & 21,885 / 3,128,676 & 18,599 / 1,098,178\\
+\caption{All 96 external support groups, compressed to 24 rows. Each cell gives origins / valid target points. P: primary; D: Daily-matched. Train/Validation prefix counts are descriptive eligibility inventories; fitting uses 12 h only.}\label{tabs:externalcounts}\\
+\toprule Site & Split & H & P full & P power-active & D full & D power-active\\\midrule
+\endfirsthead\toprule Site & Split & H & P full & P power-active & D full & D power-active\\\midrule\endhead
+Yulara & train & 1 h & 69,861 / 838,332 & 35,109 / 388,983 & 69,656 / 835,770 & 34,948 / 387,108\\
+Yulara & train & 4 h & 69,717 / 3,346,416 & 43,727 / 1,551,419 & 69,548 / 3,337,032 & 43,566 / 1,544,738\\
+Yulara & train & 8 h & 69,525 / 6,674,400 & 55,170 / 3,091,616 & 69,404 / 6,657,936 & 55,009 / 3,080,543\\
+Yulara & train & 12 h & 69,333 / 9,983,952 & 66,248 / 4,623,382 & 69,260 / 9,962,712 & 66,098 / 4,610,221\\
+Yulara & validation & 1 h & 8,459 / 101,508 & 4,329 / 47,952 & 8,411 / 100,776 & 4,281 / 47,232\\
+Yulara & validation & 4 h & 8,315 / 399,120 & 5,305 / 189,051 & 8,303 / 396,198 & 5,293 / 186,177\\
+Yulara & validation & 8 h & 8,135 / 780,960 & 6,556 / 371,232 & 8,135 / 776,430 & 6,556 / 366,798\\
+Yulara & validation & 12 h & 8,037 / 1,157,328 & 7,802 / 547,225 & 8,037 / 1,152,674 & 7,802 / 542,715\\
+Yulara & test & 1 h & 26,412 / 316,944 & 14,784 / 164,664 & 26,412 / 316,944 & 14,784 / 164,664\\
+Yulara & test & 4 h & 26,376 / 1,266,048 & 18,063 / 658,095 & 26,376 / 1,266,048 & 18,063 / 658,095\\
+Yulara & test & 8 h & 26,328 / 2,527,488 & 22,393 / 1,313,250 & 26,328 / 2,527,488 & 22,393 / 1,313,250\\
+Yulara & test & 12 h & 26,280 / 3,784,320 & 26,192 / 1,963,842 & 26,280 / 3,784,320 & 26,192 / 1,963,842\\
+NIST & train & 1 h & 68,837 / 826,044 & 34,613 / 380,214 & 68,615 / 821,094 & 34,479 / 376,830\\
+NIST & train & 4 h & 66,958 / 3,213,984 & 41,646 / 1,457,504 & 66,789 / 3,196,711 & 41,510 / 1,445,846\\
+NIST & train & 8 h & 64,717 / 6,212,832 & 50,964 / 2,790,328 & 64,596 / 6,183,604 & 50,828 / 2,771,505\\
+NIST & train & 12 h & 62,643 / 9,020,592 & 59,066 / 4,062,345 & 62,570 / 8,982,982 & 58,940 / 4,039,615\\
+NIST & validation & 1 h & 8,290 / 99,480 & 4,132 / 45,799 & 8,290 / 99,240 & 4,132 / 45,655\\
+NIST & validation & 4 h & 7,543 / 362,064 & 4,548 / 159,943 & 7,543 / 361,151 & 4,548 / 159,368\\
+NIST & validation & 8 h & 6,690 / 642,240 & 5,099 / 274,705 & 6,690 / 640,575 & 5,099 / 273,662\\
+NIST & validation & 12 h & 5,915 / 851,760 & 5,625 / 364,699 & 5,915 / 849,433 & 5,625 / 363,282\\
+NIST & test & 1 h & 25,219 / 302,628 & 10,161 / 109,258 & 25,219 / 300,173 & 10,158 / 108,291\\
+NIST & test & 4 h & 24,240 / 1,163,520 & 12,577 / 413,664 & 24,240 / 1,154,170 & 12,574 / 410,266\\
+NIST & test & 8 h & 23,037 / 2,211,552 & 15,700 / 775,182 & 23,037 / 2,194,678 & 15,697 / 769,372\\
+NIST & test & 12 h & 21,885 / 3,151,440 & 18,602 / 1,106,213 & 21,885 / 3,128,676 & 18,599 / 1,098,178\\
 \bottomrule\end{longtable}
 \begin{longtable}{lll l rrrr}
 \caption{Primary external mean/sample-SD errors (kW), mean bias (kW), and mean $R^2$. Complete per-seed values and all metric SDs are in the accompanying CSV.}\label{tabs:externalPrimary}\\
 \toprule Site & H & Scope & Model & RMSE & MAE & Bias & $R^2$\\\midrule
 \endfirsthead\toprule Site & H & Scope & Model & RMSE & MAE & Bias & $R^2$\\\midrule\endhead
-Yulara & H12 & full & Discrete recurrent & $12.320\pm0.369$ & $5.896\pm0.254$ & -0.718 & 0.871\\
-Yulara & H12 & daylight & Discrete recurrent & $16.672\pm1.060$ & $10.086\pm0.699$ & -1.920 & 0.729\\
-Yulara & H48 & full & Discrete recurrent & $15.816\pm0.201$ & $8.184\pm0.184$ & -1.600 & 0.788\\
-Yulara & H48 & daylight & Discrete recurrent & $21.271\pm0.759$ & $13.773\pm0.686$ & -4.459 & 0.560\\
-Yulara & H96 & full & Discrete recurrent & $17.866\pm0.456$ & $9.606\pm0.284$ & -2.948 & 0.729\\
-Yulara & H96 & daylight & Discrete recurrent & $24.289\pm0.859$ & $16.994\pm0.694$ & -6.652 & 0.427\\
-Yulara & H144 & full & Discrete recurrent & $17.883\pm0.759$ & $9.740\pm0.381$ & -3.381 & 0.728\\
-Yulara & H144 & daylight & Discrete recurrent & $24.460\pm1.206$ & $17.601\pm0.812$ & -7.243 & 0.419\\
-Yulara & H12 & full & Inverted-variate & $10.289\pm0.032$ & $5.888\pm0.282$ & -0.290 & 0.910\\
-Yulara & H12 & daylight & Inverted-variate & $13.988\pm0.063$ & $9.455\pm0.326$ & -0.920 & 0.810\\
-Yulara & H48 & full & Inverted-variate & $13.368\pm0.140$ & $8.360\pm0.147$ & -0.668 & 0.848\\
-Yulara & H48 & daylight & Inverted-variate & $17.659\pm0.242$ & $12.870\pm0.031$ & -3.286 & 0.697\\
-Yulara & H96 & full & Inverted-variate & $15.699\pm0.056$ & $10.028\pm0.067$ & -1.585 & 0.791\\
-Yulara & H96 & daylight & Inverted-variate & $20.927\pm0.150$ & $16.078\pm0.033$ & -4.723 & 0.575\\
-Yulara & H144 & full & Inverted-variate & $15.805\pm0.155$ & $10.226\pm0.084$ & -2.132 & 0.788\\
-Yulara & H144 & daylight & Inverted-variate & $21.203\pm0.221$ & $16.519\pm0.312$ & -5.435 & 0.564\\
-Yulara & H12 & full & Joint-patch & $12.598\pm0.259$ & $7.221\pm0.656$ & 0.574 & 0.865\\
-Yulara & H12 & daylight & Joint-patch & $16.760\pm0.667$ & $10.831\pm0.416$ & -0.461 & 0.727\\
-Yulara & H48 & full & Joint-patch & $14.633\pm0.085$ & $9.118\pm0.064$ & 0.129 & 0.818\\
-Yulara & H48 & daylight & Joint-patch & $18.733\pm0.338$ & $13.176\pm0.194$ & -2.683 & 0.659\\
-Yulara & H96 & full & Joint-patch & $16.795\pm0.338$ & $10.695\pm0.299$ & -0.501 & 0.761\\
-Yulara & H96 & daylight & Joint-patch & $21.426\pm0.282$ & $16.043\pm0.313$ & -4.156 & 0.554\\
-Yulara & H144 & full & Joint-patch & $17.012\pm0.389$ & $10.728\pm0.381$ & -1.423 & 0.754\\
-Yulara & H144 & daylight & Joint-patch & $22.151\pm0.361$ & $16.695\pm0.477$ & -5.308 & 0.524\\
-Yulara & H12 & full & Depthwise TCN & $10.562\pm0.929$ & $5.916\pm0.902$ & 1.151 & 0.905\\
-Yulara & H12 & daylight & Depthwise TCN & $14.035\pm0.912$ & $8.941\pm0.968$ & 1.103 & 0.808\\
-Yulara & H48 & full & Depthwise TCN & $15.383\pm1.228$ & $10.516\pm1.150$ & -0.608 & 0.798\\
-Yulara & H48 & daylight & Depthwise TCN & $19.096\pm1.564$ & $14.277\pm1.444$ & -3.816 & 0.644\\
-Yulara & H96 & full & Depthwise TCN & $18.435\pm1.422$ & $12.851\pm1.196$ & -2.877 & 0.710\\
-Yulara & H96 & daylight & Depthwise TCN & $23.493\pm1.947$ & $18.484\pm1.664$ & -7.385 & 0.462\\
-Yulara & H144 & full & Depthwise TCN & $18.875\pm1.798$ & $13.265\pm1.285$ & -4.054 & 0.696\\
-Yulara & H144 & daylight & Depthwise TCN & $24.227\pm2.457$ & $19.261\pm1.895$ & -8.424 & 0.427\\
-NIST & H12 & full & Discrete recurrent & $17.303\pm0.462$ & $8.521\pm0.437$ & -0.530 & 0.914\\
-NIST & H12 & daylight & Discrete recurrent & $28.431\pm0.837$ & $19.949\pm1.509$ & -0.886 & 0.815\\
-NIST & H48 & full & Discrete recurrent & $27.667\pm0.249$ & $15.150\pm0.439$ & 1.025 & 0.776\\
-NIST & H48 & daylight & Discrete recurrent & $43.523\pm0.487$ & $31.982\pm0.658$ & -5.539 & 0.566\\
-NIST & H96 & full & Discrete recurrent & $39.847\pm1.254$ & $22.530\pm0.713$ & 7.092 & 0.522\\
-NIST & H96 & daylight & Discrete recurrent & $55.504\pm0.447$ & $42.326\pm0.203$ & -0.255 & 0.286\\
-NIST & H144 & full & Discrete recurrent & $44.383\pm1.235$ & $25.486\pm0.555$ & 12.007 & 0.402\\
-NIST & H144 & daylight & Discrete recurrent & $61.477\pm0.774$ & $48.059\pm0.379$ & 10.867 & 0.116\\
-NIST & H12 & full & Inverted-variate & $17.822\pm0.113$ & $10.260\pm0.350$ & -2.118 & 0.908\\
-NIST & H12 & daylight & Inverted-variate & $28.404\pm0.093$ & $20.126\pm0.295$ & -1.457 & 0.816\\
-NIST & H48 & full & Inverted-variate & $28.504\pm0.247$ & $17.015\pm0.635$ & -0.128 & 0.762\\
-NIST & H48 & daylight & Inverted-variate & $44.434\pm0.994$ & $32.967\pm0.723$ & -5.270 & 0.548\\
-NIST & H96 & full & Inverted-variate & $40.216\pm0.741$ & $25.093\pm0.771$ & 7.299 & 0.513\\
-NIST & H96 & daylight & Inverted-variate & $55.675\pm0.781$ & $43.249\pm0.454$ & 1.708 & 0.281\\
-NIST & H144 & full & Inverted-variate & $44.617\pm0.684$ & $28.558\pm0.456$ & 12.668 & 0.396\\
-NIST & H144 & daylight & Inverted-variate & $60.610\pm1.033$ & $48.410\pm0.699$ & 12.595 & 0.141\\
-NIST & H12 & full & Joint-patch & $19.415\pm0.415$ & $11.401\pm0.656$ & -2.959 & 0.891\\
-NIST & H12 & daylight & Joint-patch & $31.167\pm0.581$ & $23.467\pm0.262$ & -6.610 & 0.778\\
-NIST & H48 & full & Joint-patch & $29.529\pm0.419$ & $18.444\pm0.354$ & 0.592 & 0.745\\
-NIST & H48 & daylight & Joint-patch & $45.040\pm1.037$ & $34.363\pm0.724$ & -7.829 & 0.535\\
-NIST & H96 & full & Joint-patch & $41.754\pm0.718$ & $26.312\pm0.840$ & 9.517 & 0.475\\
-NIST & H96 & daylight & Joint-patch & $55.823\pm0.518$ & $43.843\pm0.020$ & 3.042 & 0.277\\
-NIST & H144 & full & Joint-patch & $46.485\pm0.921$ & $29.300\pm0.777$ & 14.868 & 0.344\\
-NIST & H144 & daylight & Joint-patch & $62.685\pm0.781$ & $49.975\pm0.634$ & 15.056 & 0.081\\
-NIST & H12 & full & Depthwise TCN & $17.736\pm0.079$ & $9.944\pm0.311$ & -0.194 & 0.909\\
-NIST & H12 & daylight & Depthwise TCN & $28.426\pm0.152$ & $20.542\pm0.362$ & -3.481 & 0.815\\
-NIST & H48 & full & Depthwise TCN & $29.116\pm0.778$ & $19.250\pm0.882$ & 3.483 & 0.752\\
-NIST & H48 & daylight & Depthwise TCN & $42.774\pm0.129$ & $32.408\pm0.163$ & -4.493 & 0.581\\
-NIST & H96 & full & Depthwise TCN & $41.159\pm1.806$ & $27.886\pm1.548$ & 10.772 & 0.490\\
-NIST & H96 & daylight & Depthwise TCN & $54.655\pm0.514$ & $43.028\pm0.536$ & 3.178 & 0.307\\
-NIST & H144 & full & Depthwise TCN & $45.286\pm2.493$ & $30.952\pm1.858$ & 15.401 & 0.376\\
-NIST & H144 & daylight & Depthwise TCN & $60.163\pm1.805$ & $48.525\pm1.404$ & 12.876 & 0.153\\
+Yulara & 1 h & full & Discrete recurrent & $12.320\pm0.369$ & $5.896\pm0.254$ & -0.718 & 0.871\\
+Yulara & 1 h & power-active & Discrete recurrent & $16.672\pm1.060$ & $10.086\pm0.699$ & -1.920 & 0.729\\
+Yulara & 4 h & full & Discrete recurrent & $15.816\pm0.201$ & $8.184\pm0.184$ & -1.600 & 0.788\\
+Yulara & 4 h & power-active & Discrete recurrent & $21.271\pm0.759$ & $13.773\pm0.686$ & -4.459 & 0.560\\
+Yulara & 8 h & full & Discrete recurrent & $17.866\pm0.456$ & $9.606\pm0.284$ & -2.948 & 0.729\\
+Yulara & 8 h & power-active & Discrete recurrent & $24.289\pm0.859$ & $16.994\pm0.694$ & -6.652 & 0.427\\
+Yulara & 12 h & full & Discrete recurrent & $17.883\pm0.759$ & $9.740\pm0.381$ & -3.381 & 0.728\\
+Yulara & 12 h & power-active & Discrete recurrent & $24.460\pm1.206$ & $17.601\pm0.812$ & -7.243 & 0.419\\
+Yulara & 1 h & full & Inverted-variate & $10.289\pm0.032$ & $5.888\pm0.282$ & -0.290 & 0.910\\
+Yulara & 1 h & power-active & Inverted-variate & $13.988\pm0.063$ & $9.455\pm0.326$ & -0.920 & 0.810\\
+Yulara & 4 h & full & Inverted-variate & $13.368\pm0.140$ & $8.360\pm0.147$ & -0.668 & 0.848\\
+Yulara & 4 h & power-active & Inverted-variate & $17.659\pm0.242$ & $12.870\pm0.031$ & -3.286 & 0.697\\
+Yulara & 8 h & full & Inverted-variate & $15.699\pm0.056$ & $10.028\pm0.067$ & -1.585 & 0.791\\
+Yulara & 8 h & power-active & Inverted-variate & $20.927\pm0.150$ & $16.078\pm0.033$ & -4.723 & 0.575\\
+Yulara & 12 h & full & Inverted-variate & $15.805\pm0.155$ & $10.226\pm0.084$ & -2.132 & 0.788\\
+Yulara & 12 h & power-active & Inverted-variate & $21.203\pm0.221$ & $16.519\pm0.312$ & -5.435 & 0.564\\
+Yulara & 1 h & full & Joint-patch & $12.598\pm0.259$ & $7.221\pm0.656$ & 0.574 & 0.865\\
+Yulara & 1 h & power-active & Joint-patch & $16.760\pm0.667$ & $10.831\pm0.416$ & -0.461 & 0.727\\
+Yulara & 4 h & full & Joint-patch & $14.633\pm0.085$ & $9.118\pm0.064$ & 0.129 & 0.818\\
+Yulara & 4 h & power-active & Joint-patch & $18.733\pm0.338$ & $13.176\pm0.194$ & -2.683 & 0.659\\
+Yulara & 8 h & full & Joint-patch & $16.795\pm0.338$ & $10.695\pm0.299$ & -0.501 & 0.761\\
+Yulara & 8 h & power-active & Joint-patch & $21.426\pm0.282$ & $16.043\pm0.313$ & -4.156 & 0.554\\
+Yulara & 12 h & full & Joint-patch & $17.012\pm0.389$ & $10.728\pm0.381$ & -1.423 & 0.754\\
+Yulara & 12 h & power-active & Joint-patch & $22.151\pm0.361$ & $16.695\pm0.477$ & -5.308 & 0.524\\
+Yulara & 1 h & full & Depthwise TCN & $10.562\pm0.929$ & $5.916\pm0.902$ & 1.151 & 0.905\\
+Yulara & 1 h & power-active & Depthwise TCN & $14.035\pm0.912$ & $8.941\pm0.968$ & 1.103 & 0.808\\
+Yulara & 4 h & full & Depthwise TCN & $15.383\pm1.228$ & $10.516\pm1.150$ & -0.608 & 0.798\\
+Yulara & 4 h & power-active & Depthwise TCN & $19.096\pm1.564$ & $14.277\pm1.444$ & -3.816 & 0.644\\
+Yulara & 8 h & full & Depthwise TCN & $18.435\pm1.422$ & $12.851\pm1.196$ & -2.877 & 0.710\\
+Yulara & 8 h & power-active & Depthwise TCN & $23.493\pm1.947$ & $18.484\pm1.664$ & -7.385 & 0.462\\
+Yulara & 12 h & full & Depthwise TCN & $18.875\pm1.798$ & $13.265\pm1.285$ & -4.054 & 0.696\\
+Yulara & 12 h & power-active & Depthwise TCN & $24.227\pm2.457$ & $19.261\pm1.895$ & -8.424 & 0.427\\
+NIST & 1 h & full & Discrete recurrent & $17.303\pm0.462$ & $8.521\pm0.437$ & -0.530 & 0.914\\
+NIST & 1 h & power-active & Discrete recurrent & $28.431\pm0.837$ & $19.949\pm1.509$ & -0.886 & 0.815\\
+NIST & 4 h & full & Discrete recurrent & $27.667\pm0.249$ & $15.150\pm0.439$ & 1.025 & 0.776\\
+NIST & 4 h & power-active & Discrete recurrent & $43.523\pm0.487$ & $31.982\pm0.658$ & -5.539 & 0.566\\
+NIST & 8 h & full & Discrete recurrent & $39.847\pm1.254$ & $22.530\pm0.713$ & 7.092 & 0.522\\
+NIST & 8 h & power-active & Discrete recurrent & $55.504\pm0.447$ & $42.326\pm0.203$ & -0.255 & 0.286\\
+NIST & 12 h & full & Discrete recurrent & $44.383\pm1.235$ & $25.486\pm0.555$ & 12.007 & 0.402\\
+NIST & 12 h & power-active & Discrete recurrent & $61.477\pm0.774$ & $48.059\pm0.379$ & 10.867 & 0.116\\
+NIST & 1 h & full & Inverted-variate & $17.822\pm0.113$ & $10.260\pm0.350$ & -2.118 & 0.908\\
+NIST & 1 h & power-active & Inverted-variate & $28.404\pm0.093$ & $20.126\pm0.295$ & -1.457 & 0.816\\
+NIST & 4 h & full & Inverted-variate & $28.504\pm0.247$ & $17.015\pm0.635$ & -0.128 & 0.762\\
+NIST & 4 h & power-active & Inverted-variate & $44.434\pm0.994$ & $32.967\pm0.723$ & -5.270 & 0.548\\
+NIST & 8 h & full & Inverted-variate & $40.216\pm0.741$ & $25.093\pm0.771$ & 7.299 & 0.513\\
+NIST & 8 h & power-active & Inverted-variate & $55.675\pm0.781$ & $43.249\pm0.454$ & 1.708 & 0.281\\
+NIST & 12 h & full & Inverted-variate & $44.617\pm0.684$ & $28.558\pm0.456$ & 12.668 & 0.396\\
+NIST & 12 h & power-active & Inverted-variate & $60.610\pm1.033$ & $48.410\pm0.699$ & 12.595 & 0.141\\
+NIST & 1 h & full & Joint-patch & $19.415\pm0.415$ & $11.401\pm0.656$ & -2.959 & 0.891\\
+NIST & 1 h & power-active & Joint-patch & $31.167\pm0.581$ & $23.467\pm0.262$ & -6.610 & 0.778\\
+NIST & 4 h & full & Joint-patch & $29.529\pm0.419$ & $18.444\pm0.354$ & 0.592 & 0.745\\
+NIST & 4 h & power-active & Joint-patch & $45.040\pm1.037$ & $34.363\pm0.724$ & -7.829 & 0.535\\
+NIST & 8 h & full & Joint-patch & $41.754\pm0.718$ & $26.312\pm0.840$ & 9.517 & 0.475\\
+NIST & 8 h & power-active & Joint-patch & $55.823\pm0.518$ & $43.843\pm0.020$ & 3.042 & 0.277\\
+NIST & 12 h & full & Joint-patch & $46.485\pm0.921$ & $29.300\pm0.777$ & 14.868 & 0.344\\
+NIST & 12 h & power-active & Joint-patch & $62.685\pm0.781$ & $49.975\pm0.634$ & 15.056 & 0.081\\
+NIST & 1 h & full & Depthwise TCN & $17.736\pm0.079$ & $9.944\pm0.311$ & -0.194 & 0.909\\
+NIST & 1 h & power-active & Depthwise TCN & $28.426\pm0.152$ & $20.542\pm0.362$ & -3.481 & 0.815\\
+NIST & 4 h & full & Depthwise TCN & $29.116\pm0.778$ & $19.250\pm0.882$ & 3.483 & 0.752\\
+NIST & 4 h & power-active & Depthwise TCN & $42.774\pm0.129$ & $32.408\pm0.163$ & -4.493 & 0.581\\
+NIST & 8 h & full & Depthwise TCN & $41.159\pm1.806$ & $27.886\pm1.548$ & 10.772 & 0.490\\
+NIST & 8 h & power-active & Depthwise TCN & $54.655\pm0.514$ & $43.028\pm0.536$ & 3.178 & 0.307\\
+NIST & 12 h & full & Depthwise TCN & $45.286\pm2.493$ & $30.952\pm1.858$ & 15.401 & 0.376\\
+NIST & 12 h & power-active & Depthwise TCN & $60.163\pm1.805$ & $48.525\pm1.404$ & 12.876 & 0.153\\
 \bottomrule\end{longtable}
 \begin{longtable}{lll l rrrr}
 \caption{Daily-matched external mean/sample-SD errors (kW), mean bias (kW), and mean $R^2$. Complete per-seed values and all metric SDs are in the accompanying CSV.}\label{tabs:externalDailymatched}\\
 \toprule Site & H & Scope & Model & RMSE & MAE & Bias & $R^2$\\\midrule
 \endfirsthead\toprule Site & H & Scope & Model & RMSE & MAE & Bias & $R^2$\\\midrule\endhead
-Yulara & H12 & full & Discrete recurrent & $12.320\pm0.369$ & $5.896\pm0.254$ & -0.718 & 0.871\\
-Yulara & H12 & daylight & Discrete recurrent & $16.672\pm1.060$ & $10.086\pm0.699$ & -1.920 & 0.729\\
-Yulara & H48 & full & Discrete recurrent & $15.816\pm0.201$ & $8.184\pm0.184$ & -1.600 & 0.788\\
-Yulara & H48 & daylight & Discrete recurrent & $21.271\pm0.759$ & $13.773\pm0.686$ & -4.459 & 0.560\\
-Yulara & H96 & full & Discrete recurrent & $17.866\pm0.456$ & $9.606\pm0.284$ & -2.948 & 0.729\\
-Yulara & H96 & daylight & Discrete recurrent & $24.289\pm0.859$ & $16.994\pm0.694$ & -6.652 & 0.427\\
-Yulara & H144 & full & Discrete recurrent & $17.883\pm0.759$ & $9.740\pm0.381$ & -3.381 & 0.728\\
-Yulara & H144 & daylight & Discrete recurrent & $24.460\pm1.206$ & $17.601\pm0.812$ & -7.243 & 0.419\\
-Yulara & H12 & full & Inverted-variate & $10.289\pm0.032$ & $5.888\pm0.282$ & -0.290 & 0.910\\
-Yulara & H12 & daylight & Inverted-variate & $13.988\pm0.063$ & $9.455\pm0.326$ & -0.920 & 0.810\\
-Yulara & H48 & full & Inverted-variate & $13.368\pm0.140$ & $8.360\pm0.147$ & -0.668 & 0.848\\
-Yulara & H48 & daylight & Inverted-variate & $17.659\pm0.242$ & $12.870\pm0.031$ & -3.286 & 0.697\\
-Yulara & H96 & full & Inverted-variate & $15.699\pm0.056$ & $10.028\pm0.067$ & -1.585 & 0.791\\
-Yulara & H96 & daylight & Inverted-variate & $20.927\pm0.150$ & $16.078\pm0.033$ & -4.723 & 0.575\\
-Yulara & H144 & full & Inverted-variate & $15.805\pm0.155$ & $10.226\pm0.084$ & -2.132 & 0.788\\
-Yulara & H144 & daylight & Inverted-variate & $21.203\pm0.221$ & $16.519\pm0.312$ & -5.435 & 0.564\\
-Yulara & H12 & full & Joint-patch & $12.598\pm0.259$ & $7.221\pm0.656$ & 0.574 & 0.865\\
-Yulara & H12 & daylight & Joint-patch & $16.760\pm0.667$ & $10.831\pm0.416$ & -0.461 & 0.727\\
-Yulara & H48 & full & Joint-patch & $14.633\pm0.085$ & $9.118\pm0.064$ & 0.129 & 0.818\\
-Yulara & H48 & daylight & Joint-patch & $18.733\pm0.338$ & $13.176\pm0.194$ & -2.683 & 0.659\\
-Yulara & H96 & full & Joint-patch & $16.795\pm0.338$ & $10.695\pm0.299$ & -0.501 & 0.761\\
-Yulara & H96 & daylight & Joint-patch & $21.426\pm0.282$ & $16.043\pm0.313$ & -4.156 & 0.554\\
-Yulara & H144 & full & Joint-patch & $17.012\pm0.389$ & $10.728\pm0.381$ & -1.423 & 0.754\\
-Yulara & H144 & daylight & Joint-patch & $22.151\pm0.361$ & $16.695\pm0.477$ & -5.308 & 0.524\\
-Yulara & H12 & full & Depthwise TCN & $10.562\pm0.929$ & $5.916\pm0.902$ & 1.151 & 0.905\\
-Yulara & H12 & daylight & Depthwise TCN & $14.035\pm0.912$ & $8.941\pm0.968$ & 1.103 & 0.808\\
-Yulara & H48 & full & Depthwise TCN & $15.383\pm1.228$ & $10.516\pm1.150$ & -0.608 & 0.798\\
-Yulara & H48 & daylight & Depthwise TCN & $19.096\pm1.564$ & $14.277\pm1.444$ & -3.816 & 0.644\\
-Yulara & H96 & full & Depthwise TCN & $18.435\pm1.422$ & $12.851\pm1.196$ & -2.877 & 0.710\\
-Yulara & H96 & daylight & Depthwise TCN & $23.493\pm1.947$ & $18.484\pm1.664$ & -7.385 & 0.462\\
-Yulara & H144 & full & Depthwise TCN & $18.875\pm1.798$ & $13.265\pm1.285$ & -4.054 & 0.696\\
-Yulara & H144 & daylight & Depthwise TCN & $24.227\pm2.457$ & $19.261\pm1.895$ & -8.424 & 0.427\\
-NIST & H12 & full & Discrete recurrent & $17.285\pm0.460$ & $8.518\pm0.436$ & -0.506 & 0.914\\
-NIST & H12 & daylight & Discrete recurrent & $28.412\pm0.831$ & $19.953\pm1.511$ & -0.814 & 0.815\\
-NIST & H48 & full & Discrete recurrent & $27.662\pm0.242$ & $15.155\pm0.439$ & 1.079 & 0.776\\
-NIST & H48 & daylight & Discrete recurrent & $43.507\pm0.504$ & $31.985\pm0.666$ & -5.402 & 0.566\\
-NIST & H96 & full & Discrete recurrent & $39.850\pm1.259$ & $22.536\pm0.715$ & 7.153 & 0.522\\
-NIST & H96 & daylight & Discrete recurrent & $55.469\pm0.448$ & $42.304\pm0.208$ & -0.115 & 0.285\\
-NIST & H144 & full & Discrete recurrent & $44.388\pm1.245$ & $25.484\pm0.560$ & 12.068 & 0.401\\
-NIST & H144 & daylight & Discrete recurrent & $61.445\pm0.780$ & $48.019\pm0.384$ & 11.001 & 0.115\\
-NIST & H12 & full & Inverted-variate & $17.785\pm0.116$ & $10.243\pm0.354$ & -2.114 & 0.909\\
-NIST & H12 & daylight & Inverted-variate & $28.364\pm0.090$ & $20.106\pm0.289$ & -1.412 & 0.816\\
-NIST & H48 & full & Inverted-variate & $28.493\pm0.242$ & $17.008\pm0.640$ & -0.092 & 0.762\\
-NIST & H48 & daylight & Inverted-variate & $44.420\pm0.982$ & $32.960\pm0.707$ & -5.152 & 0.547\\
-NIST & H96 & full & Inverted-variate & $40.207\pm0.751$ & $25.096\pm0.779$ & 7.373 & 0.513\\
-NIST & H96 & daylight & Inverted-variate & $55.612\pm0.784$ & $43.213\pm0.458$ & 1.883 & 0.281\\
-NIST & H144 & full & Inverted-variate & $44.609\pm0.690$ & $28.550\pm0.462$ & 12.745 & 0.395\\
-NIST & H144 & daylight & Inverted-variate & $60.544\pm1.041$ & $48.352\pm0.704$ & 12.775 & 0.141\\
-NIST & H12 & full & Joint-patch & $19.393\pm0.415$ & $11.397\pm0.660$ & -2.942 & 0.891\\
-NIST & H12 & daylight & Joint-patch & $31.142\pm0.583$ & $23.461\pm0.262$ & -6.554 & 0.778\\
-NIST & H48 & full & Joint-patch & $29.536\pm0.426$ & $18.453\pm0.362$ & 0.628 & 0.745\\
-NIST & H48 & daylight & Joint-patch & $45.048\pm1.027$ & $34.383\pm0.719$ & -7.722 & 0.534\\
-NIST & H96 & full & Joint-patch & $41.763\pm0.726$ & $26.320\pm0.848$ & 9.578 & 0.475\\
-NIST & H96 & daylight & Joint-patch & $55.792\pm0.508$ & $43.822\pm0.018$ & 3.186 & 0.277\\
-NIST & H144 & full & Joint-patch & $46.495\pm0.924$ & $29.300\pm0.780$ & 14.934 & 0.343\\
-NIST & H144 & daylight & Joint-patch & $62.653\pm0.785$ & $49.933\pm0.638$ & 15.204 & 0.080\\
-NIST & H12 & full & Depthwise TCN & $17.715\pm0.080$ & $9.941\pm0.315$ & -0.189 & 0.909\\
-NIST & H12 & daylight & Depthwise TCN & $28.396\pm0.153$ & $20.534\pm0.369$ & -3.465 & 0.816\\
-NIST & H48 & full & Depthwise TCN & $29.110\pm0.785$ & $19.262\pm0.891$ & 3.525 & 0.752\\
-NIST & H48 & daylight & Depthwise TCN & $42.745\pm0.139$ & $32.398\pm0.174$ & -4.396 & 0.581\\
-NIST & H96 & full & Depthwise TCN & $41.155\pm1.819$ & $27.899\pm1.559$ & 10.841 & 0.489\\
-NIST & H96 & daylight & Depthwise TCN & $54.599\pm0.526$ & $42.991\pm0.543$ & 3.309 & 0.307\\
-NIST & H144 & full & Depthwise TCN & $45.279\pm2.509$ & $30.953\pm1.869$ & 15.466 & 0.375\\
-NIST & H144 & daylight & Depthwise TCN & $60.100\pm1.824$ & $48.465\pm1.414$ & 13.007 & 0.153\\
+Yulara & 1 h & full & Discrete recurrent & $12.320\pm0.369$ & $5.896\pm0.254$ & -0.718 & 0.871\\
+Yulara & 1 h & power-active & Discrete recurrent & $16.672\pm1.060$ & $10.086\pm0.699$ & -1.920 & 0.729\\
+Yulara & 4 h & full & Discrete recurrent & $15.816\pm0.201$ & $8.184\pm0.184$ & -1.600 & 0.788\\
+Yulara & 4 h & power-active & Discrete recurrent & $21.271\pm0.759$ & $13.773\pm0.686$ & -4.459 & 0.560\\
+Yulara & 8 h & full & Discrete recurrent & $17.866\pm0.456$ & $9.606\pm0.284$ & -2.948 & 0.729\\
+Yulara & 8 h & power-active & Discrete recurrent & $24.289\pm0.859$ & $16.994\pm0.694$ & -6.652 & 0.427\\
+Yulara & 12 h & full & Discrete recurrent & $17.883\pm0.759$ & $9.740\pm0.381$ & -3.381 & 0.728\\
+Yulara & 12 h & power-active & Discrete recurrent & $24.460\pm1.206$ & $17.601\pm0.812$ & -7.243 & 0.419\\
+Yulara & 1 h & full & Inverted-variate & $10.289\pm0.032$ & $5.888\pm0.282$ & -0.290 & 0.910\\
+Yulara & 1 h & power-active & Inverted-variate & $13.988\pm0.063$ & $9.455\pm0.326$ & -0.920 & 0.810\\
+Yulara & 4 h & full & Inverted-variate & $13.368\pm0.140$ & $8.360\pm0.147$ & -0.668 & 0.848\\
+Yulara & 4 h & power-active & Inverted-variate & $17.659\pm0.242$ & $12.870\pm0.031$ & -3.286 & 0.697\\
+Yulara & 8 h & full & Inverted-variate & $15.699\pm0.056$ & $10.028\pm0.067$ & -1.585 & 0.791\\
+Yulara & 8 h & power-active & Inverted-variate & $20.927\pm0.150$ & $16.078\pm0.033$ & -4.723 & 0.575\\
+Yulara & 12 h & full & Inverted-variate & $15.805\pm0.155$ & $10.226\pm0.084$ & -2.132 & 0.788\\
+Yulara & 12 h & power-active & Inverted-variate & $21.203\pm0.221$ & $16.519\pm0.312$ & -5.435 & 0.564\\
+Yulara & 1 h & full & Joint-patch & $12.598\pm0.259$ & $7.221\pm0.656$ & 0.574 & 0.865\\
+Yulara & 1 h & power-active & Joint-patch & $16.760\pm0.667$ & $10.831\pm0.416$ & -0.461 & 0.727\\
+Yulara & 4 h & full & Joint-patch & $14.633\pm0.085$ & $9.118\pm0.064$ & 0.129 & 0.818\\
+Yulara & 4 h & power-active & Joint-patch & $18.733\pm0.338$ & $13.176\pm0.194$ & -2.683 & 0.659\\
+Yulara & 8 h & full & Joint-patch & $16.795\pm0.338$ & $10.695\pm0.299$ & -0.501 & 0.761\\
+Yulara & 8 h & power-active & Joint-patch & $21.426\pm0.282$ & $16.043\pm0.313$ & -4.156 & 0.554\\
+Yulara & 12 h & full & Joint-patch & $17.012\pm0.389$ & $10.728\pm0.381$ & -1.423 & 0.754\\
+Yulara & 12 h & power-active & Joint-patch & $22.151\pm0.361$ & $16.695\pm0.477$ & -5.308 & 0.524\\
+Yulara & 1 h & full & Depthwise TCN & $10.562\pm0.929$ & $5.916\pm0.902$ & 1.151 & 0.905\\
+Yulara & 1 h & power-active & Depthwise TCN & $14.035\pm0.912$ & $8.941\pm0.968$ & 1.103 & 0.808\\
+Yulara & 4 h & full & Depthwise TCN & $15.383\pm1.228$ & $10.516\pm1.150$ & -0.608 & 0.798\\
+Yulara & 4 h & power-active & Depthwise TCN & $19.096\pm1.564$ & $14.277\pm1.444$ & -3.816 & 0.644\\
+Yulara & 8 h & full & Depthwise TCN & $18.435\pm1.422$ & $12.851\pm1.196$ & -2.877 & 0.710\\
+Yulara & 8 h & power-active & Depthwise TCN & $23.493\pm1.947$ & $18.484\pm1.664$ & -7.385 & 0.462\\
+Yulara & 12 h & full & Depthwise TCN & $18.875\pm1.798$ & $13.265\pm1.285$ & -4.054 & 0.696\\
+Yulara & 12 h & power-active & Depthwise TCN & $24.227\pm2.457$ & $19.261\pm1.895$ & -8.424 & 0.427\\
+NIST & 1 h & full & Discrete recurrent & $17.285\pm0.460$ & $8.518\pm0.436$ & -0.506 & 0.914\\
+NIST & 1 h & power-active & Discrete recurrent & $28.412\pm0.831$ & $19.953\pm1.511$ & -0.814 & 0.815\\
+NIST & 4 h & full & Discrete recurrent & $27.662\pm0.242$ & $15.155\pm0.439$ & 1.079 & 0.776\\
+NIST & 4 h & power-active & Discrete recurrent & $43.507\pm0.504$ & $31.985\pm0.666$ & -5.402 & 0.566\\
+NIST & 8 h & full & Discrete recurrent & $39.850\pm1.259$ & $22.536\pm0.715$ & 7.153 & 0.522\\
+NIST & 8 h & power-active & Discrete recurrent & $55.469\pm0.448$ & $42.304\pm0.208$ & -0.115 & 0.285\\
+NIST & 12 h & full & Discrete recurrent & $44.388\pm1.245$ & $25.484\pm0.560$ & 12.068 & 0.401\\
+NIST & 12 h & power-active & Discrete recurrent & $61.445\pm0.780$ & $48.019\pm0.384$ & 11.001 & 0.115\\
+NIST & 1 h & full & Inverted-variate & $17.785\pm0.116$ & $10.243\pm0.354$ & -2.114 & 0.909\\
+NIST & 1 h & power-active & Inverted-variate & $28.364\pm0.090$ & $20.106\pm0.289$ & -1.412 & 0.816\\
+NIST & 4 h & full & Inverted-variate & $28.493\pm0.242$ & $17.008\pm0.640$ & -0.092 & 0.762\\
+NIST & 4 h & power-active & Inverted-variate & $44.420\pm0.982$ & $32.960\pm0.707$ & -5.152 & 0.547\\
+NIST & 8 h & full & Inverted-variate & $40.207\pm0.751$ & $25.096\pm0.779$ & 7.373 & 0.513\\
+NIST & 8 h & power-active & Inverted-variate & $55.612\pm0.784$ & $43.213\pm0.458$ & 1.883 & 0.281\\
+NIST & 12 h & full & Inverted-variate & $44.609\pm0.690$ & $28.550\pm0.462$ & 12.745 & 0.395\\
+NIST & 12 h & power-active & Inverted-variate & $60.544\pm1.041$ & $48.352\pm0.704$ & 12.775 & 0.141\\
+NIST & 1 h & full & Joint-patch & $19.393\pm0.415$ & $11.397\pm0.660$ & -2.942 & 0.891\\
+NIST & 1 h & power-active & Joint-patch & $31.142\pm0.583$ & $23.461\pm0.262$ & -6.554 & 0.778\\
+NIST & 4 h & full & Joint-patch & $29.536\pm0.426$ & $18.453\pm0.362$ & 0.628 & 0.745\\
+NIST & 4 h & power-active & Joint-patch & $45.048\pm1.027$ & $34.383\pm0.719$ & -7.722 & 0.534\\
+NIST & 8 h & full & Joint-patch & $41.763\pm0.726$ & $26.320\pm0.848$ & 9.578 & 0.475\\
+NIST & 8 h & power-active & Joint-patch & $55.792\pm0.508$ & $43.822\pm0.018$ & 3.186 & 0.277\\
+NIST & 12 h & full & Joint-patch & $46.495\pm0.924$ & $29.300\pm0.780$ & 14.934 & 0.343\\
+NIST & 12 h & power-active & Joint-patch & $62.653\pm0.785$ & $49.933\pm0.638$ & 15.204 & 0.080\\
+NIST & 1 h & full & Depthwise TCN & $17.715\pm0.080$ & $9.941\pm0.315$ & -0.189 & 0.909\\
+NIST & 1 h & power-active & Depthwise TCN & $28.396\pm0.153$ & $20.534\pm0.369$ & -3.465 & 0.816\\
+NIST & 4 h & full & Depthwise TCN & $29.110\pm0.785$ & $19.262\pm0.891$ & 3.525 & 0.752\\
+NIST & 4 h & power-active & Depthwise TCN & $42.745\pm0.139$ & $32.398\pm0.174$ & -4.396 & 0.581\\
+NIST & 8 h & full & Depthwise TCN & $41.155\pm1.819$ & $27.899\pm1.559$ & 10.841 & 0.489\\
+NIST & 8 h & power-active & Depthwise TCN & $54.599\pm0.526$ & $42.991\pm0.543$ & 3.309 & 0.307\\
+NIST & 12 h & full & Depthwise TCN & $45.279\pm2.509$ & $30.953\pm1.869$ & 15.466 & 0.375\\
+NIST & 12 h & power-active & Depthwise TCN & $60.100\pm1.824$ & $48.465\pm1.414$ & 13.007 & 0.153\\
 \bottomrule\end{longtable}
 \begin{longtable}{llllrrr}
 \caption{External primary RMSE (kW) for every seed. The repository metric tables additionally provide every per-seed MAE, bias, $R^2$, nRMSE and matched skill.}\label{tabs:externalseeds}\\
 \toprule Site & Model & H & Scope & Seed 42 & Seed 43 & Seed 44\\\midrule
 \endfirsthead\toprule Site & Model & H & Scope & Seed 42 & Seed 43 & Seed 44\\\midrule\endhead
-Yulara & Discrete recurrent & H12 & full & 12.484 & 11.898 & 12.579\\
-Yulara & Discrete recurrent & H12 & daylight & 17.212 & 15.450 & 17.353\\
-Yulara & Discrete recurrent & H48 & full & 15.932 & 15.583 & 15.932\\
-Yulara & Discrete recurrent & H48 & daylight & 21.662 & 20.396 & 21.755\\
-Yulara & Discrete recurrent & H96 & full & 18.205 & 17.348 & 18.044\\
-Yulara & Discrete recurrent & H96 & daylight & 24.878 & 23.304 & 24.686\\
-Yulara & Discrete recurrent & H144 & full & 18.479 & 17.028 & 18.140\\
-Yulara & Discrete recurrent & H144 & daylight & 25.369 & 23.092 & 24.920\\
-Yulara & Inverted-variate & H12 & full & 10.321 & 10.257 & 10.290\\
-Yulara & Inverted-variate & H12 & daylight & 13.998 & 13.921 & 14.045\\
-Yulara & Inverted-variate & H48 & full & 13.295 & 13.279 & 13.529\\
-Yulara & Inverted-variate & H48 & daylight & 17.386 & 17.745 & 17.846\\
-Yulara & Inverted-variate & H96 & full & 15.666 & 15.668 & 15.763\\
-Yulara & Inverted-variate & H96 & daylight & 20.753 & 21.018 & 21.008\\
-Yulara & Inverted-variate & H144 & full & 15.983 & 15.735 & 15.697\\
-Yulara & Inverted-variate & H144 & daylight & 21.429 & 21.190 & 20.988\\
-Yulara & Joint-patch & H12 & full & 12.868 & 12.575 & 12.352\\
-Yulara & Joint-patch & H12 & daylight & 17.427 & 16.759 & 16.093\\
-Yulara & Joint-patch & H48 & full & 14.707 & 14.540 & 14.653\\
-Yulara & Joint-patch & H48 & daylight & 18.964 & 18.890 & 18.345\\
-Yulara & Joint-patch & H96 & full & 17.143 & 16.469 & 16.774\\
-Yulara & Joint-patch & H96 & daylight & 21.752 & 21.263 & 21.263\\
-Yulara & Joint-patch & H144 & full & 17.356 & 16.590 & 17.089\\
-Yulara & Joint-patch & H144 & daylight & 22.454 & 21.752 & 22.248\\
-Yulara & Depthwise TCN & H12 & full & 11.632 & 10.090 & 9.963\\
-Yulara & Depthwise TCN & H12 & daylight & 15.088 & 13.474 & 13.543\\
-Yulara & Depthwise TCN & H48 & full & 16.794 & 14.797 & 14.557\\
-Yulara & Depthwise TCN & H48 & daylight & 20.876 & 17.941 & 18.471\\
-Yulara & Depthwise TCN & H96 & full & 20.075 & 17.672 & 17.558\\
-Yulara & Depthwise TCN & H96 & daylight & 25.697 & 22.002 & 22.781\\
-Yulara & Depthwise TCN & H144 & full & 20.950 & 17.914 & 17.761\\
-Yulara & Depthwise TCN & H144 & daylight & 27.037 & 22.480 & 23.164\\
-NIST & Discrete recurrent & H12 & full & 17.828 & 16.957 & 17.124\\
-NIST & Discrete recurrent & H12 & daylight & 29.355 & 27.725 & 28.213\\
-NIST & Discrete recurrent & H48 & full & 27.767 & 27.383 & 27.851\\
-NIST & Discrete recurrent & H48 & daylight & 43.298 & 44.081 & 43.189\\
-NIST & Discrete recurrent & H96 & full & 40.001 & 38.524 & 41.017\\
-NIST & Discrete recurrent & H96 & daylight & 55.020 & 55.899 & 55.592\\
-NIST & Discrete recurrent & H144 & full & 44.185 & 43.258 & 45.705\\
-NIST & Discrete recurrent & H144 & daylight & 61.184 & 60.893 & 62.355\\
-NIST & Inverted-variate & H12 & full & 17.910 & 17.862 & 17.695\\
-NIST & Inverted-variate & H12 & daylight & 28.415 & 28.492 & 28.306\\
-NIST & Inverted-variate & H48 & full & 28.594 & 28.695 & 28.225\\
-NIST & Inverted-variate & H48 & daylight & 43.395 & 45.375 & 44.534\\
-NIST & Inverted-variate & H96 & full & 40.813 & 39.387 & 40.447\\
-NIST & Inverted-variate & H96 & daylight & 54.949 & 55.576 & 56.501\\
-NIST & Inverted-variate & H144 & full & 44.558 & 43.965 & 45.329\\
-NIST & Inverted-variate & H144 & daylight & 59.779 & 60.284 & 61.767\\
-NIST & Joint-patch & H12 & full & 19.421 & 19.827 & 18.997\\
-NIST & Joint-patch & H12 & daylight & 30.787 & 31.836 & 30.879\\
-NIST & Joint-patch & H48 & full & 29.045 & 29.762 & 29.780\\
-NIST & Joint-patch & H48 & daylight & 44.920 & 46.132 & 44.067\\
-NIST & Joint-patch & H96 & full & 41.149 & 41.565 & 42.548\\
-NIST & Joint-patch & H96 & daylight & 56.207 & 56.028 & 55.233\\
-NIST & Joint-patch & H144 & full & 46.730 & 45.467 & 47.259\\
-NIST & Joint-patch & H144 & daylight & 63.489 & 61.930 & 62.635\\
-NIST & Depthwise TCN & H12 & full & 17.765 & 17.797 & 17.646\\
-NIST & Depthwise TCN & H12 & daylight & 28.343 & 28.333 & 28.601\\
-NIST & Depthwise TCN & H48 & full & 28.778 & 30.005 & 28.563\\
-NIST & Depthwise TCN & H48 & daylight & 42.795 & 42.891 & 42.637\\
-NIST & Depthwise TCN & H96 & full & 41.116 & 42.985 & 39.375\\
-NIST & Depthwise TCN & H96 & daylight & 54.724 & 55.132 & 54.110\\
-NIST & Depthwise TCN & H144 & full & 45.901 & 47.414 & 42.542\\
-NIST & Depthwise TCN & H144 & daylight & 60.960 & 61.433 & 58.096\\
+Yulara & Discrete recurrent & 1 h & full & 12.484 & 11.898 & 12.579\\
+Yulara & Discrete recurrent & 1 h & power-active & 17.212 & 15.450 & 17.353\\
+Yulara & Discrete recurrent & 4 h & full & 15.932 & 15.583 & 15.932\\
+Yulara & Discrete recurrent & 4 h & power-active & 21.662 & 20.396 & 21.755\\
+Yulara & Discrete recurrent & 8 h & full & 18.205 & 17.348 & 18.044\\
+Yulara & Discrete recurrent & 8 h & power-active & 24.878 & 23.304 & 24.686\\
+Yulara & Discrete recurrent & 12 h & full & 18.479 & 17.028 & 18.140\\
+Yulara & Discrete recurrent & 12 h & power-active & 25.369 & 23.092 & 24.920\\
+Yulara & Inverted-variate & 1 h & full & 10.321 & 10.257 & 10.290\\
+Yulara & Inverted-variate & 1 h & power-active & 13.998 & 13.921 & 14.045\\
+Yulara & Inverted-variate & 4 h & full & 13.295 & 13.279 & 13.529\\
+Yulara & Inverted-variate & 4 h & power-active & 17.386 & 17.745 & 17.846\\
+Yulara & Inverted-variate & 8 h & full & 15.666 & 15.668 & 15.763\\
+Yulara & Inverted-variate & 8 h & power-active & 20.753 & 21.018 & 21.008\\
+Yulara & Inverted-variate & 12 h & full & 15.983 & 15.735 & 15.697\\
+Yulara & Inverted-variate & 12 h & power-active & 21.429 & 21.190 & 20.988\\
+Yulara & Joint-patch & 1 h & full & 12.868 & 12.575 & 12.352\\
+Yulara & Joint-patch & 1 h & power-active & 17.427 & 16.759 & 16.093\\
+Yulara & Joint-patch & 4 h & full & 14.707 & 14.540 & 14.653\\
+Yulara & Joint-patch & 4 h & power-active & 18.964 & 18.890 & 18.345\\
+Yulara & Joint-patch & 8 h & full & 17.143 & 16.469 & 16.774\\
+Yulara & Joint-patch & 8 h & power-active & 21.752 & 21.263 & 21.263\\
+Yulara & Joint-patch & 12 h & full & 17.356 & 16.590 & 17.089\\
+Yulara & Joint-patch & 12 h & power-active & 22.454 & 21.752 & 22.248\\
+Yulara & Depthwise TCN & 1 h & full & 11.632 & 10.090 & 9.963\\
+Yulara & Depthwise TCN & 1 h & power-active & 15.088 & 13.474 & 13.543\\
+Yulara & Depthwise TCN & 4 h & full & 16.794 & 14.797 & 14.557\\
+Yulara & Depthwise TCN & 4 h & power-active & 20.876 & 17.941 & 18.471\\
+Yulara & Depthwise TCN & 8 h & full & 20.075 & 17.672 & 17.558\\
+Yulara & Depthwise TCN & 8 h & power-active & 25.697 & 22.002 & 22.781\\
+Yulara & Depthwise TCN & 12 h & full & 20.950 & 17.914 & 17.761\\
+Yulara & Depthwise TCN & 12 h & power-active & 27.037 & 22.480 & 23.164\\
+NIST & Discrete recurrent & 1 h & full & 17.828 & 16.957 & 17.124\\
+NIST & Discrete recurrent & 1 h & power-active & 29.355 & 27.725 & 28.213\\
+NIST & Discrete recurrent & 4 h & full & 27.767 & 27.383 & 27.851\\
+NIST & Discrete recurrent & 4 h & power-active & 43.298 & 44.081 & 43.189\\
+NIST & Discrete recurrent & 8 h & full & 40.001 & 38.524 & 41.017\\
+NIST & Discrete recurrent & 8 h & power-active & 55.020 & 55.899 & 55.592\\
+NIST & Discrete recurrent & 12 h & full & 44.185 & 43.258 & 45.705\\
+NIST & Discrete recurrent & 12 h & power-active & 61.184 & 60.893 & 62.355\\
+NIST & Inverted-variate & 1 h & full & 17.910 & 17.862 & 17.695\\
+NIST & Inverted-variate & 1 h & power-active & 28.415 & 28.492 & 28.306\\
+NIST & Inverted-variate & 4 h & full & 28.594 & 28.695 & 28.225\\
+NIST & Inverted-variate & 4 h & power-active & 43.395 & 45.375 & 44.534\\
+NIST & Inverted-variate & 8 h & full & 40.813 & 39.387 & 40.447\\
+NIST & Inverted-variate & 8 h & power-active & 54.949 & 55.576 & 56.501\\
+NIST & Inverted-variate & 12 h & full & 44.558 & 43.965 & 45.329\\
+NIST & Inverted-variate & 12 h & power-active & 59.779 & 60.284 & 61.767\\
+NIST & Joint-patch & 1 h & full & 19.421 & 19.827 & 18.997\\
+NIST & Joint-patch & 1 h & power-active & 30.787 & 31.836 & 30.879\\
+NIST & Joint-patch & 4 h & full & 29.045 & 29.762 & 29.780\\
+NIST & Joint-patch & 4 h & power-active & 44.920 & 46.132 & 44.067\\
+NIST & Joint-patch & 8 h & full & 41.149 & 41.565 & 42.548\\
+NIST & Joint-patch & 8 h & power-active & 56.207 & 56.028 & 55.233\\
+NIST & Joint-patch & 12 h & full & 46.730 & 45.467 & 47.259\\
+NIST & Joint-patch & 12 h & power-active & 63.489 & 61.930 & 62.635\\
+NIST & Depthwise TCN & 1 h & full & 17.765 & 17.797 & 17.646\\
+NIST & Depthwise TCN & 1 h & power-active & 28.343 & 28.333 & 28.601\\
+NIST & Depthwise TCN & 4 h & full & 28.778 & 30.005 & 28.563\\
+NIST & Depthwise TCN & 4 h & power-active & 42.795 & 42.891 & 42.637\\
+NIST & Depthwise TCN & 8 h & full & 41.116 & 42.985 & 39.375\\
+NIST & Depthwise TCN & 8 h & power-active & 54.724 & 55.132 & 54.110\\
+NIST & Depthwise TCN & 12 h & full & 45.901 & 47.414 & 42.542\\
+NIST & Depthwise TCN & 12 h & power-active & 60.960 & 61.433 & 58.096\\
 \bottomrule\end{longtable}
 \begin{longtable}{llrrrrr}
 \caption{Frozen 24-run matrix, parameter counts, selected Validation epoch/MSE and training seconds. These are historical run records; no training is performed for manuscript preparation.}\label{tabs:externalruns}\\
@@ -267,20 +267,20 @@ NIST & Depthwise TCN & 44 & 682384 & 25 & 0.018794 & 181.9\\
 \caption{External post hoc descriptive envelope against Daily on identical target points. It is not the prespecified primary model or a deployable strategy.}\label{tabs:externalenvelope}\\
 \toprule Site & H & Scope & Envelope member & RMSE & Daily & Skill (\%)\\\midrule
 \endfirsthead\toprule Site & H & Scope & Envelope member & RMSE & Daily & Skill (\%)\\\midrule\endhead
-Yulara & H12 & full & Inverted-variate & 10.289 & 16.147 & +36.28\\
-Yulara & H12 & daylight & Inverted-variate & 13.988 & 22.302 & +37.28\\
-Yulara & H48 & full & Inverted-variate & 13.368 & 16.154 & +17.25\\
-Yulara & H48 & daylight & Inverted-variate & 17.659 & 22.305 & +20.83\\
-Yulara & H96 & full & Inverted-variate & 15.699 & 16.137 & +2.71\\
-Yulara & H96 & daylight & Inverted-variate & 20.927 & 22.286 & +6.10\\
-Yulara & H144 & full & Inverted-variate & 15.805 & 16.066 & +1.62\\
-Yulara & H144 & daylight & Inverted-variate & 21.203 & 22.201 & +4.50\\
-NIST Ground & H12 & full & Discrete recurrent & 17.285 & 42.074 & +58.92\\
-NIST Ground & H12 & daylight & Inverted-variate & 28.364 & 69.198 & +59.01\\
-NIST Ground & H48 & full & Discrete recurrent & 27.662 & 41.955 & +34.07\\
-NIST Ground & H48 & daylight & Depthwise TCN & 42.745 & 69.477 & +38.48\\
-NIST Ground & H96 & full & Discrete recurrent & 39.850 & 41.831 & +4.74\\
-NIST Ground & H96 & daylight & Depthwise TCN & 54.599 & 69.706 & +21.67\\
-NIST Ground & H144 & full & Discrete recurrent & 44.388 & 41.899 & -5.94\\
-NIST Ground & H144 & daylight & Depthwise TCN & 60.100 & 69.748 & +13.83\\
+Yulara & 1 h & full & Inverted-variate & 10.289 & 16.147 & +36.28\\
+Yulara & 1 h & power-active & Inverted-variate & 13.988 & 22.302 & +37.28\\
+Yulara & 4 h & full & Inverted-variate & 13.368 & 16.154 & +17.25\\
+Yulara & 4 h & power-active & Inverted-variate & 17.659 & 22.305 & +20.83\\
+Yulara & 8 h & full & Inverted-variate & 15.699 & 16.137 & +2.71\\
+Yulara & 8 h & power-active & Inverted-variate & 20.927 & 22.286 & +6.10\\
+Yulara & 12 h & full & Inverted-variate & 15.805 & 16.066 & +1.62\\
+Yulara & 12 h & power-active & Inverted-variate & 21.203 & 22.201 & +4.50\\
+NIST Ground & 1 h & full & Discrete recurrent & 17.285 & 42.074 & +58.92\\
+NIST Ground & 1 h & power-active & Inverted-variate & 28.364 & 69.198 & +59.01\\
+NIST Ground & 4 h & full & Discrete recurrent & 27.662 & 41.955 & +34.07\\
+NIST Ground & 4 h & power-active & Depthwise TCN & 42.745 & 69.477 & +38.48\\
+NIST Ground & 8 h & full & Discrete recurrent & 39.850 & 41.831 & +4.74\\
+NIST Ground & 8 h & power-active & Depthwise TCN & 54.599 & 69.706 & +21.67\\
+NIST Ground & 12 h & full & Discrete recurrent & 44.388 & 41.899 & -5.94\\
+NIST Ground & 12 h & power-active & Depthwise TCN & 60.100 & 69.748 & +13.83\\
 \bottomrule\end{longtable}

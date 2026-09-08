@@ -1,22 +1,14 @@
-# Cover letter draft — final author approval and signature required
-
-**Target:** Journal of Renewable and Sustainable Energy; Research Article
-**Manuscript:** Leakage-Aware Multi-Horizon Benchmarking of Compact Neural PV Forecasts Across Technologies and Sites
-**Corresponding authors:** Zhicong Chen (zhicong.chen@fzu.edu.cn) and Lijun Wu (lijun.wu@fzu.edu.cn)
+# Cover letter — corresponding-author draft
 
 Dear Editor,
 
-Please consider our manuscript for publication as a Research Article in the *Journal of Renewable and Sustainable Energy*. It presents a two-level photovoltaic forecasting benchmark: a comparison of three co-located technology arrays at Alice Springs and independently fitted common-input replications at Yulara and NIST Ground.
+Please consider “Reference Information and Target-Power Regimes in Multi-Window Photovoltaic Forecasting” as an original research article. The manuscript examines how reference history and target-power composition change the interpretation of photovoltaic forecasting gains, using three co-located Alice Springs arrays and independently fitted replications at Yulara and NIST Ground.
 
-The study evaluates four compact neural implementations across four forecast horizons and full-timeline/daylight scopes, using 60 completed runs. Train-only preprocessing, explicit measurement availability, split-local windows and elementwise target matching define the comparisons. The original 17-channel experiment and the seven-channel external replications remain separate evidence groups.
+Daily Persistence exceeds a favorable neural envelope in most Alice comparisons, while the prespecified external model usually improves on both persistence references. A pointwise squared-error decomposition explains the NIST twelve-hour aggregate reversal: lower power-active error is offset by additional low-power error. Post hoc Ridge comparisons across all five systems further isolate the contribution of available previous-day information. Common-origin sensitivity and paired temporal-block intervals qualify these comparisons.
 
-The results distinguish improvement beyond present-value continuity from improvement beyond daily recurrence. Daily Persistence has lower error than the post hoc neural envelope in 22 of 24 Alice comparisons. At the external sites, the prespecified Inverted-variate model improves on Last-value in all sixteen comparisons and on matched Daily in fifteen. Its leading rank at Yulara changes at NIST, where recurrent and depthwise implementations lead different scopes. This combination provides evidence on site-, horizon- and scope-dependent forecasting performance relevant to solar-energy operation and evaluation.
+The work contributes an empirical interpretation of forecast skill rather than a new neural architecture. It preserves unfavorable results, distinguishes two input regimes, and provides reproducible metric and figure materials. Source data remain available through their official providers subject to their terms.
 
-The Supplement reports the complete model comparisons, individual seeds, support counts, data-quality inventory and historical training records. Source observations are obtained from official DKASC and NIST services under provider terms; the repository does not redistribute raw data. The manuscript describes the current code-availability boundary pending final author confirmation.
-
-Authors, in order: Jiangkun Zhu, Mengling Yang, Zhicong Chen, and Lijun Wu. Exclusive submission has been confirmed by the user; the corresponding authors will reconfirm its applicability on the upload date. All authors' approval of this M3 revision, final declarations, related-manuscript/preprint disclosure and the signed letter remain pending. No reviewer or editor name has been inferred.
+Target journal proposal: Renewable Energy; subsequent route Solar Energy, then JRSE, subject to the authors' final scope, official classification and fee checks. This draft has not been submitted. Final author approval, exclusivity wording, declarations, public-code URL and signature must be confirmed before upload.
 
 Sincerely,
-
-Zhicong Chen and Lijun Wu
-`FINAL_CORRESPONDING_AUTHOR_SIGNATURE_REQUIRED`
+Corresponding authors (signature pending)

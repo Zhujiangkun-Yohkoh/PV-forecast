@@ -1,0 +1,1 @@
+Left: additive active/low-power contributions to full MSE on NIST twelve-hour Daily-matched targets; neural contributions are averaged over seeds. Right: one seed42 trajectory from the fixed calendar selection, not a rolling reconstruction.

@@ -1,0 +1,1 @@
+Ten trajectory panels include predetermined dates plus both favorable and unfavorable error extremes for the same fixed seed.

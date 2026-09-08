@@ -7,12 +7,12 @@
 \usepackage{xcolor}
 \usepackage{hyperref}
 \usepackage{amsmath,amssymb}
-\hypersetup{colorlinks=true,linkcolor=blue!45!black,urlcolor=blue!45!black,pdftitle={Supplementary Material: Leakage-Aware Multi-Horizon Benchmarking of Compact Neural PV Forecasts},pdfauthor={Jiangkun Zhu, Mengling Yang, Zhicong Chen, and Lijun Wu}}
+\hypersetup{colorlinks=true,linkcolor=blue!45!black,urlcolor=blue!45!black,pdftitle={Supplementary Material: Reference Information and Target-Power Regimes in Multi-Window Photovoltaic Forecasting},pdfauthor={Jiangkun Zhu, Mengling Yang, Zhicong Chen, and Lijun Wu}}
 \begin{document}
 \renewcommand{\thetable}{S\arabic{table}}
 \renewcommand{\thefigure}{S\arabic{figure}}
 \renewcommand{\theequation}{S\arabic{equation}}
-\title{Supplementary Material for ``Leakage-Aware Multi-Horizon Benchmarking of Compact Neural PV Forecasts Across Technologies and Sites''}
+\title{Supplementary Material for ``Reference Information and Target-Power Regimes in Multi-Window Photovoltaic Forecasting''}
 \author{Jiangkun Zhu$^{1}$, Mengling Yang$^{1}$, Zhicong Chen$^{1,2,*}$, and Lijun Wu$^{1,2,*}$\\[0.5em]
 \small $^{1}$College of Advanced Manufacturing, Fuzhou University, 1 Shuicheng Road, Quanzhou 362251, China\\
 \small $^{2}$College of Physics and Information Engineering, Fuzhou University, 2 Xueyuan Road, Fuzhou 350116, China\\
@@ -22,7 +22,7 @@
 \maketitle
 
 \section{Evidence scope}
-This supplement reports the frozen evidence supporting the main manuscript. The benchmark comprises three co-located Alice Springs arrays (36 runs, 17 channels) and two separately fitted external facilities, Yulara and NIST Ground (24 runs, seven channels). Each experiment uses four compact neural implementations, seeds 42, 43, and 44, and direct 144-step forecasts at five-minute resolution. Primary H12, H48, H96, and H144 metrics use horizon-specific valid origins. Daily Persistence comparisons instead use an elementwise intersection mask that is valid for the daily lag, labels, Last-value Persistence, and every neural forecast.
+This supplement reports the frozen evidence supporting the main manuscript. The benchmark comprises three co-located Alice Springs arrays (36 runs, 17 channels) and two separately fitted external facilities, Yulara and NIST Ground (24 runs, seven channels). Each experiment uses four compact neural implementations, seeds 42, 43, and 44, and 144-step trajectory forecasts at five-minute resolution. Primary H12, H48, H96, and H144 metrics use horizon-specific valid origins. Daily Persistence comparisons instead use an elementwise intersection mask that is valid for the daily lag, labels, Last-value Persistence, and every neural forecast.
 
 \section{Input and preprocessing configuration}
 For Alice Springs, each history has 72 time steps and 17 channels: Performance Ratio; ambient temperature; relative humidity; global and diffuse horizontal radiation; global and diffuse tilted radiation; Active Power; eight corresponding missingness indicators; and one Isolation Forest indicator. The imputer, feature scaler, target scaler, and Isolation Forest are fitted on Train only. No forecast-origin successor value enters the input. Windows remain within chronological splits and within a regular five-minute coordinate.
@@ -49,9 +49,9 @@ Random seeds & 42, 43, 44\\
 \end{table}
 
 \section{Architecture identity and full layer configuration}
-The Discrete recurrent decoder combines three temporal-convolution branches (dilations 1, 2, and 4; 24 channels each), a 64-dimensional one-layer Transformer, a learned feature gate, bidirectional GRU attention, and an autoregressive GRUCell trajectory decoder. The Inverted-variate Transformer treats the 17 Alice or seven external channels as tokens, projects each 72-point history to 64 dimensions, applies one four-head Transformer layer, then flattens the encoded tokens into a 144-output linear map. The Joint-patch Transformer forms overlapping joint multivariate patches of length 12 and stride 6, uses one 64-dimensional four-head Transformer layer, and maps the encoded patches to 144 outputs. The Depthwise TCN uses an input projection followed by four depthwise-separable temporal blocks with 64 channels and kernel size 5, then a flattened linear H144 head.
+The Discrete recurrent decoder combines three temporal-convolution branches (dilations 1, 2, and 4; 24 channels each), a 64-dimensional one-layer Transformer, a learned feature gate, bidirectional GRU attention, and a recurrent hidden-state GRUCell trajectory decoder with fixed context and no previous-power feedback. The Inverted-variate Transformer treats the 17 Alice or seven external channels as tokens, projects each 72-point history to 64 dimensions, applies one four-head Transformer layer, then flattens the encoded tokens into a 144-output linear map. The Joint-patch Transformer forms overlapping joint multivariate patches of length 12 and stride 6, uses one 64-dimensional four-head Transformer layer, and maps the encoded patches to 144 outputs. The Depthwise TCN uses an input projection followed by four depthwise-separable temporal blocks with 64 channels and kernel size 5, then a flattened linear H144 head.
 
-These are project implementations for a controlled mechanism comparison. The inverted model omits the full official iTransformer embedding, normalization, and decoder design; the joint-patch model does not use the channel-independent PatchTST pipeline; and the depthwise model omits the full ModernTCN large-kernel and multi-scale block system. Accordingly, the reported rankings do not rank the official architectures.
+These are project implementations for a controlled mechanism comparison. The inverted model omits the full official iTransformer embedding, normalization, and decoder design; the joint-patch model does not use the channel-independent PatchTST pipeline; and the depthwise model omits the full ModernTCN large-kernel and multi-scale block system. The recurrent convolution branches use dropout 0.1; both compact attention encoders use the PyTorch TransformerEncoderLayer default dropout 0.1 and layer normalization. The TCN has neither an added dropout nor a normalization layer. Accordingly, the reported rankings concern the listed implementations.
 
 \section{Metrics and masks}
 For a fixed valid-point set $\mathcal{I}$ with $n=|\mathcal{I}|$,
@@ -59,10 +59,10 @@ For a fixed valid-point set $\mathcal{I}$ with $n=|\mathcal{I}|$,
 \mathrm{RMSE}&=\sqrt{n^{-1}\sum_{i\in\mathcal{I}}(\hat y_i-y_i)^2},\\
 \mathrm{MAE}&=n^{-1}\sum_{i\in\mathcal{I}}|\hat y_i-y_i|,\\
 R^2&=1-\frac{\sum_{i\in\mathcal{I}}(\hat y_i-y_i)^2}{\sum_{i\in\mathcal{I}}(y_i-\bar y)^2},\\
-\mathrm{range\mbox{-}nRMSE}&=\frac{\mathrm{RMSE}}{y_{\max,\mathrm{Train}}-y_{\min,\mathrm{Train}}},\\
-\mathrm{RMSE\ skill}&=1-\frac{\mathrm{RMSE}_{\mathrm{model}}}{\mathrm{RMSE}_{\mathrm{reference}}}.
+\mathrm{range\mbox{-}nRMSE}(\%)&=100\frac{\mathrm{RMSE}}{y_{\max,\mathrm{Train}}-y_{\min,\mathrm{Train}}},\\
+\mathrm{RMSE\ skill}(\%)&=100\left(1-\frac{\mathrm{RMSE}_{\mathrm{model}}}{\mathrm{RMSE}_{\mathrm{reference}}}\right).
 \end{align}
-The daylight mask is true target Active Power greater than 1\% of the corresponding array's Train maximum. It is an evaluation-only mask. Daily Persistence takes each target timestamp's power 24 hours earlier without interpolation. If that point is unavailable, it is removed from every method in that Daily-matched comparison.
+The power-active mask is true target Active Power greater than 1\% of the corresponding array's Train maximum. It is an evaluation-only mask. Daily Persistence takes each target timestamp's power 24 hours earlier without interpolation. If that point is unavailable, it is removed from every method in that Daily-matched comparison.
 
 \section{Alice Springs quantitative evidence}
 The following tables are generated directly from the frozen \texttt{corrected\_metrics.csv}; they are not transcribed into this source file. They provide per-seed primary metrics, primary support, complete-H144-origin sensitivity, and matched Daily Persistence results.
@@ -89,7 +89,7 @@ No complete NIST 2017 Ground operation log was obtained. This is recorded as a n
 \section{External preprocessing and analysis details}
 The seven channels, in order, are historical AC power, temperature, GHI, their three original missingness masks, and the Isolation Forest flag. Non-numeric and non-finite inputs are missing. KNN imputation uses five neighbors and is fitted on Train numerical inputs. Isolation Forest uses the imputed Train values (100 trees, contamination 0.01, random state 42). Masks and flag are appended before the seven-channel MinMaxScaler is fitted on Train. The target scaler uses finite unimputed Train power. Validation and Test only transform; labels are never imputed. Finite negative external targets are retained. Alice's frozen nonnegative-target rule is unchanged.
 
-Train is January--August 2017, Validation September, and Test October--December, interpreted in each fixed coordinate. Windows retain the regular grid, stay within one split, contain 72 historical positions, and start their targets at origin+5 min. Training and Validation use full H144 targets and true finite origin power. Test eligibility is evaluated separately at each prefix. The 1\% daylight threshold uses the site's Train maximum and future true labels only for evaluation. Daily uses an exact timestamp-minus-24-hour join, with the same elementwise intersection for every model, seed, and deterministic baseline. Common points do not imply common historical information.
+Train is January--August 2017, Validation September, and Test October--December, interpreted in each fixed coordinate. Windows retain the regular grid, stay within one split, contain 72 historical positions, and start their targets at origin+5 min. Training and Validation use full H144 targets and true finite origin power. Test eligibility is evaluated separately at each prefix. The 1\% power-active threshold uses the site's Train maximum and future true labels only for evaluation. Daily uses an exact timestamp-minus-24-hour join, with the same elementwise intersection for every model, seed, and deterministic baseline. Common points do not imply common historical information.
 
 The external primary model is Inverted-variate, selected before external Test predictions. All four implementations and every seed remain in the secondary tables. RMSE skills use matched reference errors and no epsilon when a reference is zero. Bias is mean prediction minus observation; negative $R^2$ is retained and zero target variance leaves it undefined. Sample SD uses three seeds with divisor two. Deterministic baselines have no stochastic seed repetitions. The external Test split was inspected for data quality, and is a held-out performance split rather than untouched external confirmation.
 
@@ -101,42 +101,94 @@ The tables below are generated from \path{DATA_AUDIT_SUMMARY.csv}, \path{metrics
 \endgroup
 
 \section{Evidence verification for the external replications}
-All 24 completed runs have seven-channel checkpoints and finite saved predictions. Before manuscript editing, the M1-R data/protocol tests passed 43/43, M2 ordinary tests 17/17, and artifact tests 10/10, with zero failures, errors, or skips. The independent verifier recomputed 10,432 numerical comparisons from saved artifacts without importing the training metric functions. All passed. Checkpoints reproduced saved predictions within the registered numerical tolerance, and the original 96 support groups remained unchanged.
+All 24 completed runs have seven-channel checkpoints and finite saved predictions. The historical M3 audit recorded that, before its manuscript editing, the M1-R data/protocol tests passed 43/43, M2 ordinary tests 17/17, and artifact tests 10/10, with zero failures, errors, or skips. The independent verifier recomputed 10,432 numerical comparisons from saved artifacts without importing the training metric functions. All passed. Checkpoints reproduced saved predictions within the registered numerical tolerance, and the original 96 support groups remained unchanged.
 
-The original 36 Alice checkpoints, completion records, and prediction files were also inspected as 36 complete, correctly identified groups. Manuscript preparation performs no training or checkpoint updates. External source data and both sets of model artifacts remain read-only, with file sizes and nanosecond modification times checked before and after. Original Alice raw files were not accessed during this manuscript revision. Programmatic paper comparisons distinguish Alice's descriptive focal model from the external prespecified model and from the post hoc envelope; no pooled forty-comparison inference is made.
+The original 36 Alice checkpoints, completion records, and prediction files were also inspected as 36 complete, correctly identified groups. Manuscript preparation performs no training or checkpoint updates. External source data and both sets of model artifacts remain read-only, with file sizes and nanosecond modification times checked before and after. Original Alice raw files were read with author authorization during the later post hoc review; no source observations were changed. Programmatic paper comparisons distinguish Alice's descriptive focal model from the external prespecified model and from the post hoc envelope; no pooled forty-comparison inference is made.
 
 \section{Provider documentation}
 Official sources checked on September 7, 2026 include the NIST data paper (doi:10.6028/jres.122.040), dataset (doi:10.18434/M3S67G), NIST Data Dictionary v1.0, the Data.gov NIST campus PV catalogue, the DKA Yulara download/system pages, glossary, and download terms. The provider URLs are included in the main bibliography and the frozen external protocol. The missing 2017 log and partial Yulara metadata remain explicitly recorded; unavailable documents are not reconstructed from observed model behavior.
 \clearpage\section{Alice rank sensitivity}
-Figure~\ref{figs:rank} gives all Alice primary ranks. Figures~\ref{figs:horizons} and \ref{figs:efficiency} retain the horizon/scope curves and the hardware-specific accuracy--latency comparison.
-\begin{figure}[p]
-\centering
-\includegraphics[width=0.86\textwidth]{figures/figS1_rank_heatmap.pdf}
-\caption{RMSE ranks for all 24 primary array--horizon--scope combinations. Rank one denotes the smallest error. Short column names correspond to Last-value Persistence, Discrete recurrent decoder, Inverted-variate Transformer, Joint-patch Transformer, and Depthwise convolutional TCN.}
-\label{figs:rank}
-\par\small\textit{Alt text: Heat map of RMSE ranks across 24 array, horizon, and scope combinations. Columns denote Last-value Persistence, Discrete recurrent, Inverted-variate, Joint-patch, and Depthwise TCN; rankings change across conditions.}\par
-\end{figure}
+The review figure sequence below provides Alice neural ranks, support sensitivity and hardware-specific timing.
+
 
 \section{Independent evidence verification}
-An independent NumPy/Pandas verifier reads the saved H144 predictions, labels, timestamps, and validity arrays without importing the production metric or mask functions. It re-derives primary and Daily-matched masks, Persistence forecasts, RMSE, MAE, Train-range nRMSE, ranks, and sample counts. The frozen Alice audit records all 4,414 comparisons passing the registered numerical tolerances; the maximum absolute discrepancy was $8.51\times10^{-12}$ and the maximum relative discrepancy was $3.23\times10^{-11}$. The verifier confirmed primary wins of 12, 9, 2, and 1 for the Inverted-variate, Depthwise, Joint-patch, and Discrete implementations, respectively, with zero for Last-value Persistence. It also confirmed that Daily Persistence was lower than the post hoc best-of-four neural envelope in 22 comparisons; the two envelope wins were Hanwha H12 full-timeline and daylight.
+An independent NumPy/Pandas verifier reads the saved H144 predictions, labels, timestamps, and validity arrays without importing the production metric or mask functions. It re-derives primary and Daily-matched masks, Persistence forecasts, RMSE, MAE, Train-range nRMSE, ranks, and sample counts. The frozen Alice audit records all 4,414 comparisons passing the registered numerical tolerances; the maximum absolute discrepancy was $8.51\times10^{-12}$ and the maximum relative discrepancy was $3.23\times10^{-11}$. The verifier confirmed primary wins of 12, 9, 2, and 1 for the Inverted-variate, Depthwise, Joint-patch, and Discrete implementations, respectively, with zero for Last-value Persistence. It also confirmed that Daily Persistence was lower than the post hoc best-of-four neural envelope in 22 comparisons; the two envelope wins were Hanwha H12 full-timeline and power-active.
 
 
-\begin{figure}[p]\centering
-\includegraphics[width=0.97\textwidth]{figures/fig3_horizon_technology.pdf}
-\caption{Alice primary Train-range nRMSE for every horizon, array, and scope.}
-\label{figs:horizons}
-\par\small\textit{Alt text: Six panels separate full/daylight scopes and three co-located arrays, showing all four compact models and Last-value across H12, H48, H96, and H144.}\par
-\end{figure}
-\begin{figure}[p]\centering
-\includegraphics[width=0.85\textwidth]{figures/fig4_accuracy_efficiency.pdf}
-\caption{Alice 17-channel accuracy and measured inference latency on the documented RTX 3060 Laptop GPU. Timing excludes data ingestion and preprocessing.}
-\label{figs:efficiency}
-\par\small\textit{Alt text: Aligned rows show parameters, average normalized error and latency for four implementations on zero-based axes. A dashed line marks Last-value error. Joint-patch is fastest and Inverted-variate has the lowest average normalized error.}\par
-\end{figure}
+
+
 \section{Alice inference measurement details}
 Parameter counts include all learned tensors. Batch-one latency and batch-256 throughput were measured in evaluation and inference modes on an NVIDIA GeForce RTX 3060 Laptop GPU with float32 inputs of shape $[B,72,17]$. Warm-up preceded synchronized repetitions. Timing excludes model loading, disk input/output, data loading, and host-to-device transfer. Peak allocation is reported in MiB. These hardware-specific measurements support only within-environment comparisons.
 
 \section{Unmatched-sample diagnostic}
 Deleting unavailable lag points from Daily Persistence alone changes its target support and can reverse a headline comparison even when each metric is calculated correctly. The matched-support analysis applies one point mask to Daily Persistence, Last-value Persistence, every neural seed, and the labels. Unmatched-support values are therefore treated only as a methodological diagnostic and never as model-performance evidence.
+
+
+\clearpage\section{Post hoc review: support, uncertainty and linear references}
+These analyses were planned after the original performance results were known; they do not change the frozen neural experiments. H12/H48/H96/H144 are cumulative 1/4/8/12 h windows. Common-H144 comparisons retain only complete twelve-hour origins and evaluate every prefix there. Fixed-lead curves score individual leads on that same support. Daily comparisons use the same elementwise target intersection for every method. The tables in the accompanying review CSVs include both origin and target counts for every support.
+
+Power-active targets have true power above 1\% of Train maximum; low-power is the complement, not night. All 2400 tested full/active/low-power squared-error identities passed on saved neural and reference arrays. Full MSE is the sum of subset SSE divided by the full target count. The per-seed decomposition file also records MAE, bias, counts and each weighted MSE contribution. Its neural summaries must average per-seed metrics rather than square an averaged RMSE.
+
+The paired block procedure uses fixed 24/48/72 h nonoverlapping origin blocks anchored at Test midnight, 2000 resamples, and random state 20260908. Forty-eight hours is the primary block length. Empty blocks are retained. Methods and seeds share each draw. Per-seed RMSE is recomputed from summed SSE and count; the reported statistic is the mean of per-seed reference skill. Percentile intervals condition on the fitted models and observed dates. Dependence can persist across block boundaries, and Alice has much shorter temporal support than the external sites. No p-values or independent-comparison interpretation are attached to win counts.
+
+Ridge A uses 72 times the neural input width in flattened, Train-standardized features (1224 at Alice and 504 externally). Ridge B adds 144 lagged power values at target time minus 24 h and 144 missingness indicators, giving 1512 or 792 features. Train medians fill missing lag inputs. The same Train-only numerical imputer, masks, Isolation Forest and neural feature transformations precede these linear designs. A separate standardizer is fitted to each final design. The target transformation is fitted to valid Train power. A single regularization parameter per system and variant is selected from 0.1, 1, 10, 100, 1000 on complete H144 Validation global MSE. Deterministic spectral ridge solutions include an unpenalized intercept; no Test values choose regularization. All ten fitted references and all 50 Validation candidate scores are retained, including the unfavorable Yulara results.
+
+Monthly summaries assign complete H144 origins to October, November or December. Fixed cases use the first eligible origin at or after the 15th at 10:00. Additional best/worst cases explicitly use post hoc seed42 Daily-error differences on complete Daily-valid trajectories. Each displayed twelve-hour curve belongs to one origin. Neither weather conditions nor operation events are inferred from appearance.
+
+This review re-read all 60 training histories and verified each recorded best Validation epoch. It independently checked 480 Ridge metric rows, all ten selected parameters and finite prediction shapes, and five synthetic spectral/direct solver equivalences: 565 checks passed, zero failed or skipped. The 43/17/10 historical protocol/artifact suites and 10432 M2 evidence comparisons reported above are historical audit results, not newly repeated full suites in this review. No neural fit, checkpoint update or prediction regeneration was performed. A further 6720 metric/count comparisons between the new point-array reductions and the unchanged historical CSVs passed, with zero failures or skips. Eight additional synthetic forward checks confirmed both input widths and participation of parameter-owning modules, without loading checkpoints. The saved-prediction audits and their explicit scope accompany the review materials.
+
+\clearpage\begin{figure}[p]\centering
+\includegraphics[width=0.98\textwidth,height=0.82\textheight,keepaspectratio]{review_figures/figS1_alice_ranks.pdf}
+\caption{Alice neural ranks by cumulative window and target-power scope. F: full; A: power-active; four discrete rank levels.}
+\label{figs:review1}
+\end{figure}
+
+\clearpage\begin{figure}[p]\centering
+\includegraphics[width=0.98\textwidth,height=0.82\textheight,keepaspectratio]{review_figures/figS2_common_origins.pdf}
+\caption{Horizon-specific (HS, solid) versus common-H144-origin (CO, dashed) cumulative errors. Bars are seed SD. Left panels preserve reference error ranges; right panels show neural detail on separately labelled axes.}
+\label{figs:review2}
+\end{figure}
+
+\clearpage\begin{figure}[p]\centering
+\includegraphics[width=0.98\textwidth,height=0.82\textheight,keepaspectratio]{review_figures/figS3_latency.pdf}
+\caption{Historical 17-channel inference timings on RTX 3060 Laptop GPU, excluding loading/preprocessing. Point summaries do not establish a stable difference between 0.535 and 0.558 ms; no new timing experiment.}
+\label{figs:review3}
+\end{figure}
+
+\clearpage\begin{figure}[p]\centering
+\includegraphics[width=0.98\textwidth,height=0.82\textheight,keepaspectratio]{review_figures/figS4_fixed_leads.pdf}
+\caption{Lead-specific error at each five-minute lead on common complete-H144 origins and Daily-valid targets. These are not cumulative-prefix metrics. Neural curves average per-seed RMSE.}
+\label{figs:review4}
+\end{figure}
+
+\clearpage\begin{figure}[p]\centering
+\includegraphics[width=0.98\textwidth,height=0.82\textheight,keepaspectratio]{review_figures/figS5_block_intervals.pdf}
+\caption{Paired temporal-block percentile intervals (2000 resamples; 24/48/72 h). SSE/count is aggregated before each seed RMSE, then seed skills are averaged. These intervals are conditional on observed dates and fitted models, not prediction intervals.}
+\label{figs:review5}
+\end{figure}
+
+\clearpage\begin{figure}[p]\centering
+\includegraphics[width=0.98\textwidth,height=0.82\textheight,keepaspectratio]{review_figures/figS6_monthly.pdf}
+\caption{Monthly errors assign each full twelve-hour trajectory to its forecast-origin month on common H144 Daily-valid support. Bars show seed SD.}
+\label{figs:review6}
+\end{figure}
+
+\clearpage\begin{figure}[p]\centering
+\includegraphics[width=0.98\textwidth,height=0.82\textheight,keepaspectratio]{review_figures/figS7_cases.pdf}
+\caption{Fixed calendar and explicitly post hoc best/worst seed42 H144 Daily-improvement cases. Each curve is one forecast origin; extremes are diagnostic, not representative frequencies. No weather or outage labels are inferred.}
+\label{figs:review7}
+\end{figure}
+
+\clearpage\begin{figure}[p]\centering
+\includegraphics[width=0.98\textwidth,height=0.82\textheight,keepaspectratio]{review_figures/figS8_ridge.pdf}
+\caption{Post hoc Ridge with recent history and Ridge plus available previous-day trajectory; alphas selected on Validation only. Daily-matched full targets are identical to the neural comparison. Ridge is deterministic; neural bars are three-seed SD.}
+\label{figs:review8}
+\end{figure}
+
+\clearpage\begin{figure}[p]\centering
+\includegraphics[width=0.98\textwidth,height=0.82\textheight,keepaspectratio]{review_figures/figS9_learning_budget.pdf}
+\caption{Historical NIST TCN learning records. All three selected checkpoints occur at the fixed maximum budget of 25 epochs. These curves document the budget boundary, not convergence or a new fit.}
+\label{figs:review9}
+\end{figure}
 
 \end{document}

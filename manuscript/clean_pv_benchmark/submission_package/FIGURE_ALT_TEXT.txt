@@ -1,95 +1,82 @@
-M3 accessibility descriptions: 8 figures and 23 tables.
-Generated alongside the final figure and table sources.
+fig1_design
+Caption: Independent fitting and forecast-time information. Every step is five minutes; cumulative windows use the first 12, 48, 96 or 144 future steps.
+Alt: Three site boxes feed a common evaluation protocol, not a pooled model. A time axis separates six-hour inputs, origin and twelve-hour targets; Daily uses target minus twenty-four hours.
 
-Figure 1
-Three separate columns show Alice Springs with three co-located arrays and 17 channels, Yulara with one combined facility and seven channels, and NIST with one facility and seven channels. Each target is fitted separately before matched evaluation.
+fig2_alice_references
+Caption: Post hoc minimum three-seed mean neural RMSE relative to both references on the same Daily-valid targets. F: full; A: power-active. The envelope is descriptive, not deployable.
+Alt: Twenty-four Alice comparisons on shared logarithmic axes: both references use the Daily intersection. Ratio one is the comparison boundary; unfavorable ratios remain visible.
 
-Figure 2
-Two panels show the Alice post hoc neural envelope divided by Last-value or Daily RMSE for every array, horizon and scope. Ratios below one favor the envelope. Daily leads in 22 comparisons; Hanwha H12 provides the two exceptions.
+fig3_external_skills
+Caption: Prespecified external Inverted-variate skill. Dots are individual seeds; bars show sample SD of three seed metrics, not temporal confidence intervals. Each reference uses its own matched support.
+Alt: Four panels show two external sites and two references, with full and power-active curves. NIST twelve-hour full crosses below zero for Daily; no Alice extreme compresses this scale.
 
-Figure 3
-Signed heat-map cells show Inverted-variate skill against Last-value for five target systems and four horizons, separated into full and daylight panels. All cells are positive. A dashed line separates descriptive 17-channel Alice results from prespecified seven-channel external results.
+fig4_neural_gaps
+Caption: Relative RMSE gaps from the best mean neural implementation in each cumulative window and power scope. Zero identifies the lowest error; small gaps are shown as small gaps rather than enlarged rank differences.
+Alt: Four model curves show NIST full and power-active winners differing across windows, while Yulara favors Inverted-variate. Axes begin at zero and retain all relative gaps.
 
-Figure 4
-Signed heat-map cells show Inverted-variate skill against matched Daily for all five systems and four horizons. Alice cells are negative. Yulara cells and seven NIST cells are positive; NIST H144 full is negative. White marks zero on a symmetric color scale.
+fig5_decomposition_case
+Caption: Left: additive active/low-power contributions to full MSE on NIST twelve-hour Daily-matched targets; neural contributions are averaged over seeds. Right: one seed42 trajectory from the fixed calendar selection, not a rolling reconstruction.
+Alt: Stacked squared-error contributions show active error savings offset by low-power excess. A fixed October origin compares observed, neural and Daily trajectories without claiming a weather event.
 
-Figure 5
-Printed mean neural ranks and gray shading compare four implementations across three Alice arrays, Yulara and NIST. Inverted-variate leads Yulara; recurrent has the best NIST average. Alice array rows remain separately visible above the external-site boundary.
+figS1_alice_ranks
+Caption: Alice neural ranks by cumulative window and target-power scope. F: full; A: power-active; four discrete rank levels.
+Alt: Three facets retain co-located arrays separately and show discrete numerical ranks for four models.
 
-Figure S1
-The original Alice heat map displays all five primary method ranks in twenty-four array, horizon and scope combinations. Rank one indicates lowest RMSE. The best compact implementation changes with array, horizon and evaluation scope.
+figS2_common_origins
+Caption: Horizon-specific (HS, solid) versus common-H144-origin (CO, dashed) cumulative errors. Bars are seed SD. Left panels preserve reference error ranges; right panels show neural detail on separately labelled axes.
+Alt: Five target rows compare original support with a fixed complete twelve-hour origin set; changes cannot be attributed solely to window length.
 
-Figure S2
-Six panels show Alice Train-range normalized RMSE by horizon for every method. Columns identify three co-located arrays and rows distinguish full timeline from daylight. Line style and marker shape supplement color to identify implementations.
+figS3_latency
+Caption: Historical 17-channel inference timings on RTX 3060 Laptop GPU, excluding loading/preprocessing. Point summaries do not establish a stable difference between 0.535 and 0.558 ms; no new timing experiment.
+Alt: A logarithmic latency axis displays all four models and their parameter counts without compressing sub-millisecond values into zero.
 
-Figure S3
-Aligned rows show the four Alice implementations, parameter counts, average normalized error and batch-one latency. Both axes start at zero, and a dashed line shows Last-value normalized error. Joint-patch is fastest; Inverted-variate has the lowest average normalized error.
+figS4_fixed_leads
+Caption: Lead-specific error at each five-minute lead on common complete-H144 origins and Daily-valid targets. These are not cumulative-prefix metrics. Neural curves average per-seed RMSE.
+Alt: Five system panels show fixed-lead curves on one origin set, distinguishing them from cumulative windows.
 
-Table I
-Three geographic sites are compared by target systems, descriptive DC ratings, input width, chronological splits, sampling and time coordinates. Alice contains three co-located arrays. Yulara and NIST each contribute one separately fitted external facility with documented metadata limits.
+figS5_block_intervals
+Caption: Paired temporal-block percentile intervals (2000 resamples; 24/48/72 h). SSE/count is aggregated before each seed RMSE, then seed skills are averaged. These intervals are conditional on observed dates and fitted models, not prediction intervals.
+Alt: Temporal intervals expose uncertainty around small long-window Daily improvements. All three prechosen block sizes are shown, including intervals crossing zero.
 
-Table II
-The Alice post hoc envelope and Last-value normalized errors are shown for H12 and H144 in both scopes for each array. Every envelope skill is positive; the selected envelope implementation changes across the twelve displayed conditions.
+figS6_monthly
+Caption: Monthly errors assign each full twelve-hour trajectory to its forecast-origin month on common H144 Daily-valid support. Bars show seed SD.
+Alt: October, November and December are compared without assigning months by target time or treating them as independent climate replications.
 
-Table S1
-The shared historical training configuration specifies AdamW, learning rate, weight decay, batch size, maximum budget, patience, minimum improvement, clipping, global H144 Validation objective and three seeds. These settings describe completed experiments, not a new training request.
+figS7_cases
+Caption: Fixed calendar and explicitly post hoc best/worst seed42 H144 Daily-improvement cases. Each curve is one forecast origin; extremes are diagnostic, not representative frequencies. No weather or outage labels are inferred.
+Alt: Ten trajectory panels include predetermined dates plus both favorable and unfavorable error extremes for the same fixed seed.
 
-Table S2
-Per-seed root mean square errors show how forecast accuracy changes across arrays, scopes, and horizons for the four compact neural implementations. Seed spread reflects initialization variability rather than independent data replication.
+figS8_ridge
+Caption: Post hoc Ridge with recent history and Ridge plus available previous-day trajectory; alphas selected on Validation only. Daily-matched full targets are identical to the neural comparison. Ridge is deterministic; neural bars are three-seed SD.
+Alt: Five systems compare simple learned references against Inverted-variate and Daily; all unfavorable results are retained.
 
-Table S3
-Per-seed mean absolute errors provide a less tail-sensitive comparison of the four compact neural implementations across arrays, scopes, and horizons. The pattern complements RMSE by reducing the influence of large residuals.
+figS9_learning_budget
+Caption: Historical NIST TCN learning records. All three selected checkpoints occur at the fixed maximum budget of 25 epochs. These curves document the budget boundary, not convergence or a new fit.
+Alt: Three historical training and validation curves expose continued improvement at the budget boundary; no extended training was performed.
 
-Table S4
-Per-seed coefficients of determination show horizon- and scope-dependent explained variance, including negative values where forecasts underperform the target mean. Values are descriptive because adjacent forecast origins overlap.
+Table I: Three sites, five target systems, two input widths, chronological splits and fixed time conventions.
+Table II: Alice short/full cumulative primary normalized errors and descriptive envelope, reported as percentages.
+Table III: All sixteen external primary model comparisons, with per-seed mean and sample SD.
+Table IV: Disjoint active and low-power squared-error contributions add to full MSE at NIST.
+Table V: All five systems compare deterministic Ridge variants with Daily and neural mean metrics on matched twelve-hour targets.
+Supplement Tables S1–S18: Table-specific alt text remains adjacent to the historical quantitative tables or in the preserved M3 accessibility record; scopes now mean power-active, and window columns are cumulative hours.
 
-Table S5
-Per-seed mean errors identify underprediction and overprediction patterns across the three arrays, two scopes, and four forecast horizons. Positive values indicate overprediction, and negative values indicate underprediction.
-
-Table S6
-Per-seed Train-range normalized RMSE values permit within-array comparison of error growth while avoiding unsupported AC-capacity normalization. The denominator is fitted only on Train and differs by array.
-
-Table S7
-Per-seed RMSE skill relative to Last-value Persistence quantifies improvement beyond local continuity; positive values favor the neural implementation. Every value uses the same origins, labels, and masks as its reference.
-
-Table S8
-Forecast-origin and valid-target counts decrease with horizon and are shared by every method within each array-specific comparison. Full and daylight scopes report their target support separately.
-
-Table S9
-Restricting every prefix to complete H144 origins preserves the main pattern of horizon-dependent error without changing the primary horizon-specific analysis. This analysis is secondary to the horizon-specific evaluation.
-
-Table S10
-On identical Daily-valid target points, Daily Persistence has lower RMSE than the post hoc neural envelope in 22 of 24 comparisons; the exceptions are Hanwha H12 full and daylight.
-
-Table III
-Normalized errors and matched skills for all sixteen external primary comparisons. The NIST H144 full-timeline Daily skill is negative; all other Daily skills and all Last-value skills are positive.
-
-Table IV
-Inverted-variate has the best mean rank at Alice Springs and Yulara. Recurrent has the best mean rank at NIST. Ranks average within-setting comparisons rather than cross-site kilowatt errors.
-
-Table V
-Programmatically counted wins distinguish the focal or prespecified model from the post hoc neural envelope and distinguish the two matched persistence references.
-
-Table S11
-Six common numerical fields are summarized. Both negative and large finite observations remain in the external experiment; GHI units are not equated across sites.
-
-Table S12
-Every implementation retains its compact structure with the seven-channel input width; counts differ from the original seventeen-channel networks.
-
-Table S13
-Every split, horizon, scope and matching regime is represented; larger horizons retain fewer eligible origins.
-
-Table S14
-All four compact models are shown without selecting favorable seeds; negative coefficients of determination are retained.
-
-Table S15
-All four compact models are shown without selecting favorable seeds; negative coefficients of determination are retained.
-
-Table S16
-Every external model, horizon and scope has three displayed seed errors; none is selected as the reported best seed.
-
-Table S17
-Two facilities, four models and three seeds yield exactly twenty-four completed runs with individually recorded Validation checkpoints.
-
-Table S18
-The best neural mean on each Daily-matched target set defines a favorable descriptive envelope. Both wins and losses are retained.
+Supplement quantitative-table descriptions (source captions):
+Fixed optimization configuration for all compact neural implementations.}
+Alice neural ranks by cumulative window and target-power scope. F: full; A: power-active; four discrete rank levels.}
+Horizon-specific (HS, solid) versus common-H144-origin (CO, dashed) cumulative errors. Bars are seed SD. Left panels preserve reference error ranges; right panels show neural detail on separately labelled axes.}
+Historical 17-channel inference timings on RTX 3060 Laptop GPU, excluding loading/preprocessing. Point summaries do not establish a stable difference between 0.535 and 0.558 ms; no new timing experiment.}
+Lead-specific error at each five-minute lead on common complete-H144 origins and Daily-valid targets. These are not cumulative-prefix metrics. Neural curves average per-seed RMSE.}
+Paired temporal-block percentile intervals (2000 resamples; 24/48/72 h). SSE/count is aggregated before each seed RMSE, then seed skills are averaged. These intervals are conditional on observed dates and fitted models, not prediction intervals.}
+Monthly errors assign each full twelve-hour trajectory to its forecast-origin month on common H144 Daily-valid support. Bars show seed SD.}
+Fixed calendar and explicitly post hoc best/worst seed42 H144 Daily-improvement cases. Each curve is one forecast origin; extremes are diagnostic, not representative frequencies. No weather or outage labels are inferred.}
+Post hoc Ridge with recent history and Ridge plus available previous-day trajectory; alphas selected on Validation only. Daily-matched full targets are identical to the neural comparison. Ridge is deterministic; neural bars are three-seed SD.}
+Historical NIST TCN learning records. All three selected checkpoints occur at the fixed maximum budget of 25 epochs. These curves document the budget boundary, not convergence or a new fit.}
+Primary per-seed RMSE values.}\label{tabs:rmse}\\
+Primary per-seed MAE values.}\label{tabs:mae}\\
+Primary per-seed R2 values.}\label{tabs:r2}\\
+Primary per-seed Bias values.}\label{tabs:bias}\\
+Primary per-seed range\_nRMSE values (\%).}\label{tabs:rangenrmse}\\
+Primary per-seed RMSE\_skill values (\%).}\label{tabs:rmseskill}\\
+Primary horizon-specific evaluation support.}\label{tabs:counts}\\
+Complete-12 h-origin sensitivity: Train-range nRMSE (\%) for every evaluated prefix. All horizons within a row use origins that possess a complete valid 12 h target.}\label{tabs:h144sensitivity}\\
