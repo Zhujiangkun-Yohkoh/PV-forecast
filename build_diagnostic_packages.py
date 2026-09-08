@@ -9,7 +9,7 @@ def sha(p):
  return h.hexdigest()
 def run(paths,expanded,destination):
  dest=Path(destination);dest.mkdir(parents=True,exist_ok=True);stamp=datetime.datetime.now().strftime('%Y-%m-%d_%H%M%S')
- git=lambda *x:subprocess.check_output(['git','-c','safe.directory='+str(ROOT),*x],cwd=ROOT).decode().strip()
+ git=lambda *x:subprocess.check_output(['git','-c','safe.directory='+ROOT.as_posix(),*x],cwd=ROOT).decode().strip()
  commit=git('rev-parse','HEAD');state=git('status','--short');assert not state,'Commit source changes before packaging'
  cfg=json.loads(Path(paths).read_text());ext=json.loads(Path(cfg['external_paths']).read_text());project={};full={};stats={}
  def add(mapping,p,rel,role):
