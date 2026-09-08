@@ -11,7 +11,7 @@ def run(paths,expanded,destination):
  dest=Path(destination);dest.mkdir(parents=True,exist_ok=True);stamp=datetime.datetime.now().strftime('%Y-%m-%d_%H%M%S')
  git=lambda *x:subprocess.check_output(['git','-c','safe.directory='+ROOT.as_posix(),*x],cwd=ROOT).decode().strip()
  commit=git('rev-parse','HEAD');state=git('status','--short');assert not state,'Commit source changes before packaging'
- cfg=json.loads(Path(paths).read_text());ext=json.loads(Path(cfg['external_paths']).read_text());project={};full={};stats={}
+ cfg=json.loads(Path(paths).read_text(encoding='utf8'));ext=json.loads(Path(cfg['external_paths']).read_text(encoding='utf8'));project={};full={};stats={}
  def add(mapping,p,rel,role):
   p=Path(p);assert p.is_file(),p;assert rel not in mapping,rel;assert not any(x in p.parts for x in ['__pycache__','.git']);assert p.suffix.lower() not in ['.zip','.pyc'] and p.name!='.env';s=p.stat();stats[str(p)]=(s.st_size,s.st_mtime_ns);mapping[rel]=(p,role)
  prefixes=['GFNODE_experiments/scheme_A_submission_correction/','GFNODE_experiments/scheme_A_multisite_extension/','GFNODE_experiments/scheme_A_review_extension/','GFNODE_experiments/scheme_A_diagnostic_revision/','manuscript/clean_pv_benchmark/']
@@ -80,15 +80,15 @@ Full and Lite run verify_light.py, which independently reconstructs 270 paired i
    assert z.testzip() is None;assert all(not Path(k).is_absolute() and '..' not in Path(k).parts for k in z.namelist());z.extractall(extract)
   for k,v in entries.items():p=extract/k;assert p.stat().st_size==v[1] and sha(p)==v[2],k
   if kind!='Figure_Handoff':
-   process=subprocess.run([sys.executable,'-B','GFNODE_experiments/scheme_A_diagnostic_revision/verify_light.py'],cwd=extract/'project',capture_output=True,text=True);assert process.returncode==0,process.stdout+process.stderr;check=process.stdout
+   process=subprocess.run([sys.executable,'-X','utf8','-B','GFNODE_experiments/scheme_A_diagnostic_revision/verify_light.py'],cwd=extract/'project',capture_output=True,text=True,encoding='utf8');assert process.returncode==0,process.stdout+process.stderr;check=process.stdout
   else:
    figs=extract/'project/manuscript/clean_pv_benchmark/diagnostic_figures';names=[p.stem for p in figs.glob('fig*.pdf')];assert len(names)==20
    for stem in names:
     for ending in ['.pdf','.svg','.png','_data.csv','_caption.txt','_alt.txt']:assert (figs/(stem+ending)).stat().st_size>0
    check='20 figure groups / six required assets per group; no heavy prediction replay.'
   for p,s in stats.items():assert (Path(p).stat().st_size,Path(p).stat().st_mtime_ns)==s,p
-  digest=sha(target);target.with_suffix('.sha256').write_text(digest+'  '+target.name+'\n');result=dict(kind=kind,path=str(target),commit=commit,sha256=digest,bytes=target.stat().st_size,manifest_files=len(entries),CRC=True,fresh_full_extraction=True,all_manifest_hashes=True,light_validation=check,source_size_mtime_unchanged=True,neural_training=False)
-  target.with_suffix('.verification.json').write_text(json.dumps(result,indent=2));outcomes.append(result);print('Verified',target.name,round(target.stat().st_size/1024**2,2),'MiB',flush=True)
- (dest/('DELIVERY_'+stamp+'.json')).write_text(json.dumps(outcomes,indent=2));print(json.dumps(outcomes,indent=2))
+  digest=sha(target);target.with_suffix('.sha256').write_text(digest+'  '+target.name+'\n', encoding='utf8');result=dict(kind=kind,path=str(target),commit=commit,sha256=digest,bytes=target.stat().st_size,manifest_files=len(entries),CRC=True,fresh_full_extraction=True,all_manifest_hashes=True,light_validation=check,source_size_mtime_unchanged=True,neural_training=False)
+  target.with_suffix('.verification.json').write_text(json.dumps(result,indent=2), encoding='utf8');outcomes.append(result);print('Verified',target.name,round(target.stat().st_size/1024**2,2),'MiB',flush=True)
+ (dest/('DELIVERY_'+stamp+'.json')).write_text(json.dumps(outcomes,indent=2), encoding='utf8');print(json.dumps(outcomes,indent=2))
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--paths',required=True);p.add_argument('--expanded',nargs='+',required=True);p.add_argument('--destination',required=True);a=p.parse_args();run(a.paths,a.expanded,a.destination)

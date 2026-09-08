@@ -11,7 +11,7 @@ def run(paths,sites):
  for site in sites:
   d=reconstruct(paths,site);align+=d['alignment'];print(site,'matrices reconstructed',flush=True)
   for variant in ['Ridge','Ridge+day']:
-   raw,X,c,names=variant_design(d,variant);Y=(d['labels']['train']*c['target_scale']+c['target_min'])-c['intercept'];xt=X['train'];alpha=json.loads((d['folder']/(variant.replace('+','_')+'_completed.json')).read_text())['selected_alpha']
+   raw,X,c,names=variant_design(d,variant);Y=(d['labels']['train']*c['target_scale']+c['target_min'])-c['intercept'];xt=X['train'];alpha=json.loads((d['folder']/(variant.replace('+','_')+'_completed.json')).read_text(encoding='utf8'))['selected_alpha']
    gram=xt.T@xt;rhs=xt.T@Y;system=gram+alpha*np.eye(xt.shape[1]);stable=cho_solve(cho_factor(system),rhs);saved=c['coef'];eig=np.linalg.eigvalsh(gram)
    residual=lambda z:np.linalg.norm(system@z-rhs)/np.linalg.norm(rhs)
    obj=lambda z:float(np.square(xt@z-Y).sum()+alpha*np.square(z).sum())

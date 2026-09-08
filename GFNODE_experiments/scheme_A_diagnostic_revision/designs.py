@@ -13,7 +13,7 @@ SITES=['Sanyo','Hanwha','Qcells','YULARA_COMBINED','NIST_GROUND']
 def load_npz(p):
  with np.load(p) as z:return {k:z[k] for k in z.files}
 def reconstruct(paths,site):
- cfg=json.loads(Path(paths).read_text());folder=Path(cfg['new_results'])/site;external=site in SITES[3:]
+ cfg=json.loads(Path(paths).read_text(encoding='utf8'));folder=Path(cfg['new_results'])/site;external=site in SITES[3:]
  with (folder/'ridge_preprocessor.pkl').open('rb') as f:proc=pickle.load(f)
  if external:
   config=m.a.config();frame=m.load_site(cfg['external_paths'],site,config);splits={s:m.split_frame(frame,config,s) for s in config['splits']};xs={s:proc.transform(f) for s,f in splits.items()};target=proc.target;power=frame.power;channels=config['input_channels']

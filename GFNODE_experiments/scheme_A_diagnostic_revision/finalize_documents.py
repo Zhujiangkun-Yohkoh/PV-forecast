@@ -6,19 +6,19 @@ from PIL import Image,ImageDraw
 HERE=Path(__file__).resolve().parent;ROOT=HERE.parents[1];P=ROOT/'manuscript/clean_pv_benchmark';F=P/'diagnostic_figures'
 def words(t):
  t=re.sub(r'(?<!\\)%[^\n]*','',t);t=re.sub(r'\\[a-zA-Z]+\*?(?:\[[^]]*\])?', ' ',t);return len(re.findall(r"[A-Za-z0-9]+(?:[-'][A-Za-z0-9]+)*",t))
-text=(P/'main.tex').read_text();abstract=re.search(r'\\begin\{abstract\}(.*?)\\end\{abstract\}',text,re.S).group(1)
+text=(P/'main.tex').read_text(encoding='utf8');abstract=re.search(r'\\begin\{abstract\}(.*?)\\end\{abstract\}',text,re.S).group(1)
 def expand(t):
- return re.sub(r'\\input\{([^}]+)\}',lambda m:expand((P/(m[1]+('.tex' if not m[1].endswith('.tex') else ''))).read_text()),t)
+ return re.sub(r'\\input\{([^}]+)\}',lambda m:expand((P/(m[1]+('.tex' if not m[1].endswith('.tex') else ''))).read_text(encoding='utf8')),t)
 expanded=expand(text);figblocks=re.findall(r'\\begin\{figure\*?\}.*?\\end\{figure\*?\}',expanded,re.S);tabs=re.findall(r'\\begin\{table\*?\}.*?\\end\{table\*?\}',expanded,re.S)
 body=expanded[expanded.index('\\section{Introduction}'):expanded.index('\\section*{Supplementary Material}')]
 for b in figblocks+tabs:body=body.replace(b,'')
 body=re.sub(r'\\(cite|ref|label)\{[^}]*\}','',body)
-counts={'abstract':words(abstract),'body_excluding_float_environments':words(body),'figure_captions':sum(words(b) for b in figblocks),'table_environments_including_captions_headers_values':sum(words(b) for b in tabs),'references_bbl':words((ROOT/'.local/tex-diag-main/main.bbl').read_text()),'main_figures':len(figblocks),'main_tables':len(tabs),'method':'Token regex over TeX after command stripping and input expansion. Body excludes floats; figure captions include their source labels/paths tokens (approximate), table count includes headers and numbers; BBL separately. Not PDF full-text word count and not publisher TeXcount.'}
-(HERE/'results/WORD_COUNTS.json').write_text(json.dumps(counts,indent=2));assert counts['abstract']<=250
-records=json.loads((F/'FIGURE_CAPTIONS_AND_ALT.json').read_text());monthly=next(x for x in records if x['name']=='figS6_monthly');monthly['caption']=monthly['caption'].split(' O denotes')[0]+' O denotes origins and N scored origin--lead target pairs, printed for each month.';(F/'FIGURE_CAPTIONS_AND_ALT.json').write_text(json.dumps(records,indent=2));(F/'figS6_monthly_caption.txt').write_text(monthly['caption'])
+counts={'abstract':words(abstract),'body_excluding_float_environments':words(body),'figure_captions':sum(words(b) for b in figblocks),'table_environments_including_captions_headers_values':sum(words(b) for b in tabs),'references_bbl':words((ROOT/'.local/tex-diag-main/main.bbl').read_text(encoding='utf8')),'main_figures':len(figblocks),'main_tables':len(tabs),'method':'Token regex over TeX after command stripping and input expansion. Body excludes floats; figure captions include their source labels/paths tokens (approximate), table count includes headers and numbers; BBL separately. Not PDF full-text word count and not publisher TeXcount.'}
+(HERE/'results/WORD_COUNTS.json').write_text(json.dumps(counts,indent=2), encoding='utf8');assert counts['abstract']<=250
+records=json.loads((F/'FIGURE_CAPTIONS_AND_ALT.json').read_text(encoding='utf8'));monthly=next(x for x in records if x['name']=='figS6_monthly');monthly['caption']=monthly['caption'].split(' O denotes')[0]+' O denotes origins and N scored origin--lead target pairs, printed for each month.';(F/'FIGURE_CAPTIONS_AND_ALT.json').write_text(json.dumps(records,indent=2), encoding='utf8');(F/'figS6_monthly_caption.txt').write_text(monthly['caption'], encoding='utf8')
 def tex(s):
  return s.replace('%','\\%').replace('&','\\&').replace('²','$^2$').replace('10^-4','$10^{-4}$').replace('10^8','$10^8$')
-sp=(P/'supplementary_diagnostic_figures.tex').read_text();sp=re.sub(r'\\caption\{Monthly errors.*?\}\n',lambda _:r'\caption{'+tex(monthly['caption'])+'}\n',sp);(P/'supplementary_diagnostic_figures.tex').write_text(sp,encoding='utf8')
+sp=(P/'supplementary_diagnostic_figures.tex').read_text(encoding='utf8');sp=re.sub(r'\\caption\{Monthly errors.*?\}\n',lambda _:r'\caption{'+tex(monthly['caption'])+'}\n',sp);(P/'supplementary_diagnostic_figures.tex').write_text(sp,encoding='utf8')
 pkg=P/'submission_package'
 (pkg/'FIGURE_ALT_TEXT.txt').write_text('\n\n'.join(r['name']+'\nCaption: '+r['caption']+'\nAlt: '+r['alt'] for r in records),encoding='utf8')
 (pkg/'FILE_UPLOAD_MANIFEST.md').write_text(f'''# Current author-review files (2026-09-09)
@@ -37,7 +37,7 @@ Sources: main.tex, supplementary.tex, supplementary_diagnostic_front.tex, supple
 - Current author fields retained. Authors must approve final manuscript, declarations, journal, license and public code details; nothing filled or submitted on their behalf.
 - Final target-specific format and publication option remain open. No OA selection, payment or visibility change.
 ''',encoding='utf8')
-cover=(pkg/'COVER_LETTER_DRAFT.md').read_text();needle='The work contributes';addition='The revision diagnoses rare-missingness extrapolation in the original Yulara Ridge design using actual matrices and a matched independent solver. A uniformly expanded Validation-selected grid is reported separately, including unfavorable changes. It also attributes the Qcells complete-window selection to the frozen negative-label rule and gives paired temporal intervals for the original Ridge contrasts. These findings qualify simple-reference and neural comparisons rather than hiding unstable or adverse results.\n\n'
+cover=(pkg/'COVER_LETTER_DRAFT.md').read_text(encoding='utf8');needle='The work contributes';addition='The revision diagnoses rare-missingness extrapolation in the original Yulara Ridge design using actual matrices and a matched independent solver. A uniformly expanded Validation-selected grid is reported separately, including unfavorable changes. It also attributes the Qcells complete-window selection to the frozen negative-label rule and gives paired temporal intervals for the original Ridge contrasts. These findings qualify simple-reference and neural comparisons rather than hiding unstable or adverse results.\n\n'
 if addition not in cover:cover=cover.replace(needle,addition+needle)
 (pkg/'COVER_LETTER_DRAFT.md').write_text(cover,encoding='utf8')
 env=ROOT/'ENVIRONMENT_AND_REPRODUCTION.md';old=env.read_text(encoding='utf8');intro='''# 本轮入口（2026-09-09，优先于下方历史指南）

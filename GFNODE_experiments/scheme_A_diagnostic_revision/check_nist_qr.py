@@ -8,7 +8,7 @@ from threadpoolctl import threadpool_limits
 from designs import variant_design,load_npz,HERE
 def run(cache,folder):
  with Path(cache).open('rb') as f:d=pickle.load(f)
- assert d['folder'].name=='NIST_GROUND';_,X,c,_=variant_design(d,'Ridge');folder=Path(folder);saved=load_npz(folder/'Ridge_predictions.npz');alpha=json.loads((folder/'Ridge_completed.json').read_text())['selected_alpha'];assert alpha==.0001
+ assert d['folder'].name=='NIST_GROUND';_,X,c,_=variant_design(d,'Ridge');folder=Path(folder);saved=load_npz(folder/'Ridge_predictions.npz');alpha=json.loads((folder/'Ridge_completed.json').read_text(encoding='utf8'))['selected_alpha'];assert alpha==.0001
  Y=d['labels']['train']*c['target_scale']+c['target_min']-c['intercept'];cols=X['train'].shape[1];coef,_,rank,_=lstsq(np.vstack([X['train'],np.sqrt(alpha)*np.eye(cols)]),np.vstack([Y,np.zeros((cols,144))]),lapack_driver='gelsy');pred=(X['test']@coef+c['intercept']-c['target_min'])/c['target_scale'];assert np.array_equal(saved['forecast_origin'],d['archive']['forecast_origin']);a=d['archive'];y=a['labels'];base=a['target_valid'].all(1)[:,None]&a['target_valid']&np.isfinite(a['daily'])&np.isfinite(a['last_power'])[:,None];rows=[]
  for scope,mask in [('full',base),('power-active',base&(y>a['daylight_threshold'])),('low-power',base&(y<=a['daylight_threshold']))]:
   sr=np.sqrt(np.mean((saved['predictions'][mask]-y[mask])**2));qr=np.sqrt(np.mean((pred[mask]-y[mask])**2));rows.append(dict(site='NIST_GROUND',model='Ridge',alpha=alpha,scope=scope,points=int(mask.sum()),spectral_RMSE=sr,QR_RMSE=qr,RMSE_difference=qr-sr,max_prediction_difference=np.abs(pred[mask]-saved['predictions'][mask]).max(),augmented_rank=rank))

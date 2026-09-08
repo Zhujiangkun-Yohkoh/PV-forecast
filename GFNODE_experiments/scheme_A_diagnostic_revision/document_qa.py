@@ -3,7 +3,7 @@ from pathlib import Path
 import json,re
 import pandas as pd
 HERE=Path(__file__).resolve().parent;ROOT=HERE.parents[1];P=ROOT/'manuscript/clean_pv_benchmark';F=P/'diagnostic_figures'
-qa=json.loads((HERE/'results/PDF_QA.json').read_text());records=json.loads((F/'FIGURE_CAPTIONS_AND_ALT.json').read_text());mapping=pd.read_csv(F/'FIGURE_NUMBER_MAP.csv').set_index('source_figure').current_number
+qa=json.loads((HERE/'results/PDF_QA.json').read_text(encoding='utf8'));records=json.loads((F/'FIGURE_CAPTIONS_AND_ALT.json').read_text(encoding='utf8'));mapping=pd.read_csv(F/'FIGURE_NUMBER_MAP.csv').set_index('source_figure').current_number
 for n,r in qa.items():
  assert not r['overfull_lines'] and not r['undefined_references'];assert all(p['raster_images']==0 for p in r['pages']);assert all(not p['small_character_text'] or set(p['small_character_text'])<=set('01') for p in r['pages'])
  for line in r['font_table'].splitlines()[2:]:

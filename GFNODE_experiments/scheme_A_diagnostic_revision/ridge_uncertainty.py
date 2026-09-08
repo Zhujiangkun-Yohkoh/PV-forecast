@@ -14,14 +14,14 @@ def effects(blocks,seed=20260908):
   delta=rm['Ridge B']-r;skill=np.mean([1-rm['Ridge B']/rm['Inverted'+str(s)] for s in [42,43,44]],axis=0) if ref.endswith('mean') else 1-rm['Ridge B']/r;lo,hi=np.quantile(delta,[.025,.975]);sl,sh=np.quantile(skill,[.025,.975]);rows.append(dict(reference=ref,rmse_B=point['Ridge B'],rmse_reference=rp,effect_kW=point['Ridge B']-rp,ci_low_kW=lo,ci_high_kW=hi,skill=float(np.mean([1-point['Ridge B']/point['Inverted'+str(s)] for s in [42,43,44]])) if ref.endswith('mean') else 1-point['Ridge B']/rp,skill_ci_low=sl,skill_ci_high=sh,replicates=2000,valid_replicates=int(ok.sum())))
  return rows
 def run(paths):
- c=json.loads(Path(paths).read_text());out=HERE/'results';out.mkdir(exist_ok=True);rows=[];blockrows=[];support=[]
+ c=json.loads(Path(paths).read_text(encoding='utf8'));out=HERE/'results';out.mkdir(exist_ok=True);rows=[];blockrows=[];support=[]
  for site in ['Sanyo','Hanwha','Qcells','YULARA_COMBINED','NIST_GROUND']:
   f=Path(c['new_results'])/site;a=read(f/'Ridge_predictions.npz');b=read(f/'Ridge_day_predictions.npz');y=a['labels'];v=a['target_valid'];o=pd.DatetimeIndex(pd.to_datetime(a['forecast_origin'])).as_unit('ns');preds={'Ridge A':a['predictions'],'Ridge B':b['predictions'],'Daily':a['daily']}
   for name in ['forecast_origin','target_start','target_valid']:assert np.array_equal(a[name],b[name])
   assert np.allclose(a['labels'],b['labels'],equal_nan=True);assert np.allclose(a['daily'],b['daily'],equal_nan=True)
   external=site in ['YULARA_COMBINED','NIST_GROUND'];root=Path(c['external_results' if external else 'alice_results']);loaded=[]
   for p in root.glob('*/completed.json'):
-   info=json.loads(p.read_text());ss=info.get('site',info.get('dataset'));model=info['model']
+   info=json.loads(p.read_text(encoding='utf8'));ss=info.get('site',info.get('dataset'));model=info['model']
    if ss!=site or 'inverted' not in model.lower():continue
    z=read(p.parent/('test_predictions.npz' if external else 'test_H144.npz'));assert np.array_equal(z['forecast_origin'],a['forecast_origin']);assert np.array_equal(z['target_start'],a['target_start']);assert np.array_equal(z['target_valid'],v);assert np.allclose(z['labels'],y,equal_nan=True);preds['Inverted'+str(info['seed'])]=z['predictions'];loaded.append(info['seed'])
   assert sorted(loaded)==[42,43,44]

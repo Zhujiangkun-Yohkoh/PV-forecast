@@ -8,7 +8,7 @@ def digest(p):
   for part in iter(lambda:f.read(8*1024*1024),b''):h.update(part)
  return h.hexdigest()
 def inventory(path):
- c=json.loads(Path(path).read_text()); ext=json.loads(Path(c['external_paths']).read_text()); items=[]
+ c=json.loads(Path(path).read_text(encoding='utf8')); ext=json.loads(Path(c['external_paths']).read_text(encoding='utf8')); items=[]
  for key in ['alice_results','external_results','new_results']:
   root=Path(c[key])
   items += [(key+'/'+p.relative_to(root).as_posix(),p) for p in root.rglob('*') if p.is_file() and p.suffix not in ['.pyc','.zip']]
@@ -22,5 +22,5 @@ def inventory(path):
 if __name__=='__main__':
  a=argparse.ArgumentParser();a.add_argument('--paths',required=True);a.add_argument('--phase',choices=['before','after'],required=True);v=a.parse_args();o=HERE/'results';o.mkdir(exist_ok=True);x=inventory(v.paths)
  if v.phase=='after':
-  old=json.loads((o/'FROZEN_HASH_BEFORE.json').read_text());assert x==old,'Frozen evidence hash/stat mismatch'
+  old=json.loads((o/'FROZEN_HASH_BEFORE.json').read_text(encoding='utf8'));assert x==old,'Frozen evidence hash/stat mismatch'
  (o/('FROZEN_HASH_'+v.phase.upper()+'.json')).write_text(json.dumps(x,indent=2,ensure_ascii=False),encoding='utf8');print('Protected',len(x),'files:',v.phase,flush=True)
