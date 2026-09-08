@@ -1,0 +1,1 @@
+Rare Train missing-mask exposure and frequent later missingness yield extrapolating linear contributions; real-matrix solvers agree numerically. Both adverse prediction ranges are retained.

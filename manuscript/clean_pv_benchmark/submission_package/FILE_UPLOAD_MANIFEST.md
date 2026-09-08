@@ -1,7 +1,5 @@
-# Current review-file manifest
+# Current author-review files (2026-09-09)
 
-Main PDF:10 pages,196-word abstract,5 figures,5 tables. Supplement PDF:36 pages,9 figures,18 tables. PDF copies here are byte-identical to manuscript-directory PDFs. All fourteen current formal figures are in review_figures, with PDF/SVG/320dpi PNG, CSV, caption and alt. The old figures directory is historical.
+Main: 12 pages, 203 words by documented token rule, 6 figures and 5 tables. Supplement: 43 pages, 14 figures and 18 historical tables. Latest plot source is diagnostic_figures (20 groups: PDF, SVG, 320dpi PNG, CSV, caption, alt). Older review_figures/figures remain historical. PDF copies in this directory are identical to paper-root copies.
 
-Source files: main.tex, supplementary.tex, references.bib, main_result_tables.tex, review_external_table.tex, review_decomposition_table.tex, review_ridge_table.tex, supplementary_tables.tex, multisite_quality_tables.tex, multisite_supplementary_tables.tex. Complete metric CSVs remain in the two frozen experiment directories; new review results are separate in scheme_A_review_extension.
-
-Author review only: cover letter, metadata and declaration drafts; no upload authorization implied. The full private review ZIP also includes local evidence and source data, but those are NOT designated journal-upload files or a public release. PACKAGE_MANIFEST.csv in the ZIP inventories every included file. Exact git commit/tree are in GIT_DELIVERY.md in the ZIP.
+Sources: main.tex, supplementary.tex, supplementary_diagnostic_front.tex, supplementary_diagnostic_figures.tex, supplementary_historical_body.tex, references.bib, all included table TeX files. New diagnostics: scheme_A_diagnostic_revision; old frozen/reference evidence remains separately named. Final journal formatting, author signoff and license/public URL are not supplied by this review. No upload performed. Full private-review evidence is not automatically a journal attachment or authorized public redistribution.

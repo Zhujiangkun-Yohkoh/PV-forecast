@@ -1,0 +1,1 @@
+Qcells support composition in every split. Left: origin-hour proportions. Right: finite one-hour power-pair distributions in explicit bins. Complete-H144 conditioning selects different hours and power ranges in Train and Validation as well as Test.

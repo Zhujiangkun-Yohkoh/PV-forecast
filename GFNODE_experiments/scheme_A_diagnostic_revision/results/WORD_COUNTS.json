@@ -1,0 +1,10 @@
+{
+  "abstract": 203,
+  "body_excluding_float_environments": 3723,
+  "figure_captions": 302,
+  "table_environments_including_captions_headers_values": 772,
+  "references_bbl": 1391,
+  "main_figures": 6,
+  "main_tables": 5,
+  "method": "Token regex over TeX after command stripping and input expansion. Body excludes floats; figure captions include their source labels/paths tokens (approximate), table count includes headers and numbers; BBL separately. Not PDF full-text word count and not publisher TeXcount."
+}

@@ -1,0 +1,14 @@
+{
+  "site": "NIST_GROUND",
+  "model": "Ridge",
+  "alpha": 0.0001,
+  "columns": 504,
+  "QR_augmented_rank": 504,
+  "spectral_QR_maxdiff": 0.0023895683094039555,
+  "Cholesky_QR_maxdiff": 0.0004016985538157769,
+  "spectral_Cholesky_maxdiff": 0.002389896288008231,
+  "spectral_validation_MSE": 2280.4474854258174,
+  "QR_validation_MSE": 2280.447485425821,
+  "spectral_relative_normal_residual": 3.1130004456461404e-15,
+  "QR_relative_normal_residual": 2.203848978795718e-15
+}

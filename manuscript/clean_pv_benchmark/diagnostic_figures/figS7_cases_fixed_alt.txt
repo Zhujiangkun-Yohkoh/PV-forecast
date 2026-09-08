@@ -1,0 +1,1 @@
+Readable site labels distinguish provider-local Yulara and fixed-EST NIST. Each twelve-hour curve comes from one origin; no weather events are inferred.

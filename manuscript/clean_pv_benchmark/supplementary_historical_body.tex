@@ -1,0 +1,102 @@
+\section{Evidence scope}
+This supplement reports the frozen evidence supporting the main manuscript. The benchmark comprises three co-located Alice Springs arrays (36 runs, 17 channels) and two separately fitted external facilities, Yulara and NIST Ground (24 runs, seven channels). Each experiment uses four compact neural implementations, seeds 42, 43, and 44, and 144-step trajectory forecasts at five-minute resolution. Primary H12, H48, H96, and H144 metrics use horizon-specific valid origins. Daily Persistence comparisons instead use an elementwise intersection mask that is valid for the daily lag, labels, Last-value Persistence, and every neural forecast.
+
+\section{Input and preprocessing configuration}
+For Alice Springs, each history has 72 time steps and 17 channels: Performance Ratio; ambient temperature; relative humidity; global and diffuse horizontal radiation; global and diffuse tilted radiation; Active Power; eight corresponding missingness indicators; and one Isolation Forest indicator. The imputer, feature scaler, target scaler, and Isolation Forest are fitted on Train only. No forecast-origin successor value enters the input. Windows remain within chronological splits and within a regular five-minute coordinate.
+
+\begin{table}[h]
+\caption{Fixed optimization configuration for all compact neural implementations.}
+\par\small\textit{Alt text: The shared optimization configuration fixes the optimizer, learning rate, batch size, epoch budget, early-stopping rule, gradient clipping, H144 validation objective, and three random seeds for all four compact implementations.}\par
+\centering
+\begin{tabular}{ll}
+\toprule Setting & Value\\
+\midrule
+Optimizer & AdamW\\
+Learning rate & $10^{-3}$\\
+Weight decay & $10^{-5}$\\
+Batch size & 256\\
+Maximum epochs & 25\\
+Early-stopping patience & 5\\
+Minimum improvement & $10^{-8}$\\
+Gradient clipping & 1.0\\
+Checkpoint objective & Validation global masked MSE on H144\\
+Random seeds & 42, 43, 44\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Architecture identity and full layer configuration}
+The Discrete recurrent decoder combines three temporal-convolution branches (dilations 1, 2, and 4; 24 channels each), a 64-dimensional one-layer Transformer, a learned feature gate, bidirectional GRU attention, and a recurrent hidden-state GRUCell trajectory decoder with fixed context and no previous-power feedback. The Inverted-variate Transformer treats the 17 Alice or seven external channels as tokens, projects each 72-point history to 64 dimensions, applies one four-head Transformer layer, then flattens the encoded tokens into a 144-output linear map. The Joint-patch Transformer forms overlapping joint multivariate patches of length 12 and stride 6, uses one 64-dimensional four-head Transformer layer, and maps the encoded patches to 144 outputs. The Depthwise TCN uses an input projection followed by four depthwise-separable temporal blocks with 64 channels and kernel size 5, then a flattened linear H144 head.
+
+These are project implementations for a controlled mechanism comparison. The inverted model omits the full official iTransformer embedding, normalization, and decoder design; the joint-patch model does not use the channel-independent PatchTST pipeline; and the depthwise model omits the full ModernTCN large-kernel and multi-scale block system. The recurrent convolution branches use dropout 0.1; both compact attention encoders use the PyTorch TransformerEncoderLayer default dropout 0.1 and layer normalization. The TCN has neither an added dropout nor a normalization layer. Accordingly, the reported rankings concern the listed implementations.
+
+\section{Metrics and masks}
+For a fixed valid-point set $\mathcal{I}$ with $n=|\mathcal{I}|$,
+\begin{align}
+\mathrm{RMSE}&=\sqrt{n^{-1}\sum_{i\in\mathcal{I}}(\hat y_i-y_i)^2},\\
+\mathrm{MAE}&=n^{-1}\sum_{i\in\mathcal{I}}|\hat y_i-y_i|,\\
+R^2&=1-\frac{\sum_{i\in\mathcal{I}}(\hat y_i-y_i)^2}{\sum_{i\in\mathcal{I}}(y_i-\bar y)^2},\\
+\mathrm{range\mbox{-}nRMSE}(\%)&=100\frac{\mathrm{RMSE}}{y_{\max,\mathrm{Train}}-y_{\min,\mathrm{Train}}},\\
+\mathrm{RMSE\ skill}(\%)&=100\left(1-\frac{\mathrm{RMSE}_{\mathrm{model}}}{\mathrm{RMSE}_{\mathrm{reference}}}\right).
+\end{align}
+The power-active mask is true target Active Power greater than 1\% of the corresponding array's Train maximum. It is an evaluation-only mask. Daily Persistence takes each target timestamp's power 24 hours earlier without interpolation. If that point is unavailable, it is removed from every method in that Daily-matched comparison.
+
+\section{Alice Springs quantitative evidence}
+The following tables are generated directly from the frozen \texttt{corrected\_metrics.csv}; they are not transcribed into this source file. They provide per-seed primary metrics, primary support, complete-H144-origin sensitivity, and matched Daily Persistence results.
+
+\input{supplementary_tables.tex}
+
+
+\clearpage
+\section{External data, time coordinates, and limitations}
+Yulara is one 106.6 kW combined facility, not three independent subarray sites. Its file spans 2016-04-01 23:45 to 2026-02-19 23:55. The 2017 segment has 105,122 distinct ordered rows: 105,120 regular five-minute timestamps and two off-grid records. The filename's 2016 label is not the experiment year. The off-grid timestamps are 2017-02-22 15:30:02 (75.150801518689 kW) and 2017-08-07 05:20:01 ($-0.047513291616942$ kW); temperature and GHI are missing in both. Both have existing floor and ceiling grid records. They are excluded without rounding, filling the regular record, or modifying the source.
+
+Yulara retains its provider local coordinate, with status \texttt{PROVIDER\_LOCAL\_TIME\_OFFSET\_UNCONFIRMED}. An observed value at raw timestamp $t$ is available at $t+5$ min. This fixed coordinate has no introduced DST jumps. The official download and system pages identify the facility and power variable. Temperature follows the Celsius field name; GHI retains the provider-native numbers. Detailed aggregation, sensor uncertainty, and invalid-code definitions remain partial. This is a nonblocking documentation limitation under the frozen protocol; it does not authorize guessed unit conversions or absolute cross-site GHI comparisons.
+
+NIST comprises 365 one-minute CSVs with consistent headers and 525,595 distinct ordered timestamps from 2017-01-01 00:00 to 2017-12-31 23:59. Five minutes are absent: 2017-10-20 23:59 and 2017-10-21 00:00, 00:01, 00:02, and 00:03, all at UTC$-05{:}00$. Parsing, bins, grids, splits, and Daily joins retain this timezone-aware fixed EST/LST coordinate. There are no DST missing or repeated hours.
+
+At an end time $T$, each variable uses exactly five distinct finite minute observations in $[T-5\mathrm{min},T)$. Bins have a midnight origin, five-minute anchor, left closure, right label, and availability $T$. An incomplete variable has a missing bin value, never a partial mean. The official CSV supplies \texttt{Pyra1\_Wm2\_Avg} directly, and no \texttt{Pyra1\_mV\_Avg} column is present. The AC meter field \texttt{PwrMtrP\_kW\_Avg} supplies input power and labels. \texttt{InvPAC\_kW\_Avg} has 4,712 entries equal to $-999$ and is excluded from both inputs and labels.
+
+Train-only timing diagnostics compared energy increments with average power and inspected power/GHI correspondence. The unshifted power comparison had mean absolute energy discrepancy 0.164 kWh, versus 0.226 kWh at either adjacent-minute alignment. Power/GHI correlation was 0.972 without a five-minute displacement versus approximately 0.929 with either displacement. These are diagnostic summaries, not predictive results or a Test-based rule search. The conservative interval-end availability remains the frozen rule.
+
+No complete NIST 2017 Ground operation log was obtained. This is recorded as a nonblocking documentation limitation, not evidence that no maintenance, snow, outage, or instrument event occurred. Finite negative power and GHI, and high-GHI/nonpositive-power observations, are retained. NIST has 14,418 negative power and 271,221 negative GHI minute records; 751 records have native GHI above 500 with nonpositive power. Yulara's 2017 raw segment has 52,807 negative power and 50,504 negative GHI records, with zero in the analogous high-GHI/nonpositive-power category. These are descriptive counts, not quality filters or cross-site irradiance comparisons.
+
+\input{multisite_quality_tables.tex}
+
+\section{External preprocessing and analysis details}
+The seven channels, in order, are historical AC power, temperature, GHI, their three original missingness masks, and the Isolation Forest flag. Non-numeric and non-finite inputs are missing. KNN imputation uses five neighbors and is fitted on Train numerical inputs. Isolation Forest uses the imputed Train values (100 trees, contamination 0.01, random state 42). Masks and flag are appended before the seven-channel MinMaxScaler is fitted on Train. The target scaler uses finite unimputed Train power. Validation and Test only transform; labels are never imputed. Finite negative external targets are retained. Alice's frozen nonnegative-target rule is unchanged.
+
+Train is January--August 2017, Validation September, and Test October--December, interpreted in each fixed coordinate. Windows retain the regular grid, stay within one split, contain 72 historical positions, and start their targets at origin+5 min. Training and Validation use full H144 targets and true finite origin power. Test eligibility is evaluated separately at each prefix. The 1\% power-active threshold uses the site's Train maximum and future true labels only for evaluation. Daily uses an exact timestamp-minus-24-hour join, with the same elementwise intersection for every model, seed, and deterministic baseline. Common points do not imply common historical information.
+
+The external primary model is Inverted-variate, selected before external Test predictions. All four implementations and every seed remain in the secondary tables. RMSE skills use matched reference errors and no epsilon when a reference is zero. Bias is mean prediction minus observation; negative $R^2$ is retained and zero target variance leaves it undefined. Sample SD uses three seeds with divisor two. Deterministic baselines have no stochastic seed repetitions. The external Test split was inspected for data quality, and is a held-out performance split rather than untouched external confirmation.
+
+\section{External quantitative evidence}
+The tables below are generated from \path{DATA_AUDIT_SUMMARY.csv}, \path{metrics_per_seed.csv}, and \path{metrics_summary_mean_sd.csv}. The complete per-seed CSV includes RMSE, MAE, bias, $R^2$, Train-range nRMSE, both matched skills, origin/target counts, and run metadata. The complete summary CSV includes means and sample SDs for all metrics. They are repository materials; the compact PDF tables preserve all model/seed/horizon/scope combinations without printing the entire long-form data inventory.
+
+\begingroup\small\setlength{\tabcolsep}{3pt}
+\input{multisite_supplementary_tables.tex}
+\endgroup
+
+\section{Evidence verification for the external replications}
+All 24 completed runs have seven-channel checkpoints and finite saved predictions. The historical M3 audit recorded that, before its manuscript editing, the M1-R data/protocol tests passed 43/43, M2 ordinary tests 17/17, and artifact tests 10/10, with zero failures, errors, or skips. The independent verifier recomputed 10,432 numerical comparisons from saved artifacts without importing the training metric functions. All passed. Checkpoints reproduced saved predictions within the registered numerical tolerance, and the original 96 support groups remained unchanged.
+
+The original 36 Alice checkpoints, completion records, and prediction files were also inspected as 36 complete, correctly identified groups. Manuscript preparation performs no training or checkpoint updates. External source data and both sets of model artifacts remain read-only, with file sizes and nanosecond modification times checked before and after. Original Alice raw files were read with author authorization during the later post hoc review; no source observations were changed. Programmatic paper comparisons distinguish Alice's descriptive focal model from the external prespecified model and from the post hoc envelope; no pooled forty-comparison inference is made.
+
+\section{Provider documentation}
+Official sources checked on September 7, 2026 include the NIST data paper (doi:10.6028/jres.122.040), dataset (doi:10.18434/M3S67G), NIST Data Dictionary v1.0, the Data.gov NIST campus PV catalogue, the DKA Yulara download/system pages, glossary, and download terms. The provider URLs are included in the main bibliography and the frozen external protocol. The missing 2017 log and partial Yulara metadata remain explicitly recorded; unavailable documents are not reconstructed from observed model behavior.
+
+
+
+\section{Independent evidence verification}
+An independent NumPy/Pandas verifier reads the saved H144 predictions, labels, timestamps, and validity arrays without importing the production metric or mask functions. It re-derives primary and Daily-matched masks, Persistence forecasts, RMSE, MAE, Train-range nRMSE, ranks, and sample counts. The frozen Alice audit records all 4,414 comparisons passing the registered numerical tolerances; the maximum absolute discrepancy was $8.51\times10^{-12}$ and the maximum relative discrepancy was $3.23\times10^{-11}$. The verifier confirmed primary wins of 12, 9, 2, and 1 for the Inverted-variate, Depthwise, Joint-patch, and Discrete implementations, respectively, with zero for Last-value Persistence. It also confirmed that Daily Persistence was lower than the post hoc best-of-four neural envelope in 22 comparisons; the two envelope wins were Hanwha H12 full-timeline and power-active.
+
+
+
+
+\section{Alice inference measurement details}
+Parameter counts include all learned tensors. Batch-one latency and batch-256 throughput were measured in evaluation and inference modes on an NVIDIA GeForce RTX 3060 Laptop GPU with float32 inputs of shape $[B,72,17]$. Warm-up preceded synchronized repetitions. Timing excludes model loading, disk input/output, data loading, and host-to-device transfer. Peak allocation is reported in MiB. These hardware-specific measurements support only within-environment comparisons.
+
+\section{Unmatched-sample diagnostic}
+Deleting unavailable lag points from Daily Persistence alone changes its target support and can reverse a headline comparison even when each metric is calculated correctly. The matched-support analysis applies one point mask to Daily Persistence, Last-value Persistence, every neural seed, and the labels. Unmatched-support values are therefore treated only as a methodological diagnostic and never as model-performance evidence.
+
+

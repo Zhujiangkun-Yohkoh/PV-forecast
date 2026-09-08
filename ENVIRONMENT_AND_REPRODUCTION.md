@@ -1,3 +1,15 @@
+# 本轮入口（2026-09-09，优先于下方历史指南）
+
+①CSV→最新20组图：`python -B GFNODE_experiments/scheme_A_diagnostic_revision/build_figures.py`。依赖numpy/pandas/matplotlib，输出diagnostic_figures，使用DejaVu，无私人字体路径。本轮实际运行并在最终PDF检查；旧portable_entry figures输出上轮图，不是当前入口。
+
+②保存预测→新诊断：`python -B GFNODE_experiments/scheme_A_diagnostic_revision/ridge_uncertainty.py --paths review_paths.json`。真实矩阵：`diagnose_ridge.py --paths review_paths.json`；Qcells：`diagnose_qcells.py --paths review_paths.json`。本轮均执行；完整包在project目录提供相对配置。轻量包仅运行`python -B GFNODE_experiments/scheme_A_diagnostic_revision/verify_light.py`，不需要raw或PyTorch，只复算CSV/块SSE。缺失重型路径会明确失败，不搜索磁盘。已有可信pickle需匹配环境：Python3.12、numpy2.0、pandas2.2.2、sklearn1.5、scipy1.13.1、torch2.7.1+cu118。
+
+③官方数据→训练：保留原代码、明确路径及上轮prepare_training_copy；本轮未运行60次神经训练，不能将包内验证称为全训练复现。新增Ridge网格的expanded_ridge.py是明确的补充拟合入口，不是轻量检查。QR脚本需实际矩阵cache；可由expanded_ridge --matrix-cache在显式目录产生，cache不打包，因为原始数据/系数/处理器足以重建。
+
+本轮命令和运行中修复见新诊断VALIDATION_REPORT.md。完整包包含全部已知本地证据；原Alice神经处理器并未另存，不能把新的Ridge处理器称为该历史对象。下文所有“本轮”字样指9月8日上一轮历史记录。
+
+## 旧指南（历史记录）
+
 # 环境与三条复现路径
 
 本轮日期：2026-09-08。所有命令从项目根目录执行；不包含私人绝对路径、自动全盘搜索或需要历史 git show 的默认入口。

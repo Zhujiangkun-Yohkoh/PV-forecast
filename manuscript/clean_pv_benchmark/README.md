@@ -1,3 +1,5 @@
+> 当前诊断修订（2026-09-09）：先读根目录 START_HERE_REVIEW.md、PROJECT_REPORT_CN.md 与 scheme_A_diagnostic_revision 三份诊断报告。最新图件位于 diagnostic_figures；以下旧阶段记录需按日期解释。
+
 # Scheme A：当前投稿前审核版
 
 **Reference Information and Target-Power Regimes in Multi-Window Photovoltaic Forecasting**。当前首投建议及待核实分区见根目录 JOURNAL_STRATEGY_CN.md，不默认JRSE。

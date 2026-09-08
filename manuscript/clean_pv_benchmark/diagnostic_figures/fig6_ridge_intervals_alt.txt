@@ -1,0 +1,1 @@
+Conditional temporal intervals distinguish observed error reductions from stability in unobserved periods. Ridge is deterministic; intervals do not include refitting.
