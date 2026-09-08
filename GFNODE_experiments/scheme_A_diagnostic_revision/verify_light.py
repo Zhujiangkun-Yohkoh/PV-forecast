@@ -28,6 +28,11 @@ def run():
    qr=pd.read_csv(OUT/'nist_QR_metric_sensitivity.csv');assert len(qr)==3;assert (qr.augmented_rank==504).all();assert (qr.RMSE_difference.abs()<1e-6).all();assert np.allclose(qr.QR_RMSE-qr.spectral_RMSE,qr.RMSE_difference,atol=1e-12)
   else:assert r.real_matrix_solver_maxdiff_kW<1e-5
  checks['expanded_grid_Validation_selections']=10
+ original=pd.read_csv(HERE.parent/'scheme_A_review_extension/results/ridge_run_summary.csv');assert len(original)==10;assert original.selected_alpha.isin([.1,1000]).sum()==7;checks['original_endpoint_choices']=7
+ decomposition=pd.read_csv(OUT/'NIST_DECOMPOSITION_RECHECK.csv')
+ for seed,g in decomposition.groupby('seed'):
+  full=g[g.scope=='full'].iloc[0];parts=g[g.scope!='full'];assert parts.points.sum()==full.points;assert np.isclose(parts.neural_SSE.sum(),full.neural_SSE);assert np.isclose(parts.Daily_SSE.sum(),full.Daily_SSE);assert np.isclose(parts.weighted_MSE_difference.sum(),full.weighted_MSE_difference)
+ checks['NIST_per_seed_additive_MSE']=3
  a=json.loads((OUT/'FROZEN_HASH_BEFORE.json').read_text());b=json.loads((OUT/'FROZEN_HASH_AFTER.json').read_text());assert a==b;checks['immutable_source_inventory_record']=len(a)
  result=dict(checks=checks,failed=0,skipped=0,scope='Light package: recomputes CSV/block arithmetic and record consistency. Does not re-read heavy raw/checkpoint files or reconstruct real matrices. Full-path scripts and original evidence are required for those checks.');(OUT/'LIGHT_VERIFICATION.json').write_text(json.dumps(result,indent=2));print(json.dumps(result,indent=2))
 if __name__=='__main__':run()

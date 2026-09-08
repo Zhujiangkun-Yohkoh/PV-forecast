@@ -4,6 +4,8 @@
     "split_horizon_exclusion_reconciliation": 6,
     "paired_interval_rows_from_block_SSE": 270,
     "expanded_grid_Validation_selections": 10,
+    "original_endpoint_choices": 7,
+    "NIST_per_seed_additive_MSE": 3,
     "immutable_source_inventory_record": 764
   },
   "failed": 0,

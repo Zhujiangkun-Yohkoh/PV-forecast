@@ -86,7 +86,7 @@ write('VALIDATION_REPORT.md','''# 本轮实际验证与命令范围
 |PY diagnose_qcells.py --paths .local/review_paths.json|三个split候选筛选，冻结Test timestamps/labels/masks逐元素一致|
 |PY ridge_uncertainty.py --paths .local/review_paths.json|原A/B/神经预测配对，270区间行与块SSE；不是270独立实验|
 |PY expanded_ridge.py --paths .local/review_paths.json --destination LOCAL_OUTPUT [--sites ...]|五系统×A/B，统一13alpha；130 Validation候选，10个选定拟合，30范围指标；无神经拟合|
-|PY check_nist_qr.py --help（实际参数见该脚本入口）|真实增广矩阵QR复核；数值敏感性与RMSE影响单独保存|
+|PY check_nist_qr.py --cache LOCAL_MATRIX_CACHE/NIST_GROUND.pkl --folder LOCAL_EXPANDED/NIST_GROUND|真实增广矩阵QR复核；数值敏感性与RMSE影响单独保存；LOCAL参数为明确的未提交目录|
 |PY verify_light.py|独立CSV/块SSE算术复算，失败0、skip0；不是checkpoint前向复现|
 
 原M1-R 43、M2普通17、artifact10、10432独立比较及上轮60checkpoint前向/训练日志记录是历史证据，本轮未完整重跑，不计作本轮通过。新增真实矩阵诊断、哈希和块重采样是本轮执行。
