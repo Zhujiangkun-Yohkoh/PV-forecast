@@ -53,7 +53,7 @@ def run(paths,expanded,destination):
  configs={'alice_results':'../evidence/alice','external_results':'../evidence/external','new_results':'../evidence/original_ridge','alice_raw':{s:'../data/Alice/'+Path(p).name for s,p in cfg['alice_raw'].items()},'external_paths':'external_paths.json'}
  configs.update({'expanded_results':{s:'../evidence/expanded_ridge/'+s for s in cfg['expanded_results']},'destination':'../outputs/fixed_period','nist_2018':'../data/nist_2018'})
  lite={k:v for k,v in project.items() if '/figures/' not in k and '/review_figures/' not in k and not k.endswith('build_figures_legacy.py')}
- figure={k:v for k,v in project.items() if '/fixed_period_figures/' in k or k.endswith('/scheme_A_fixed_period_review/build_figures.py') or k.endswith('/scheme_A_diagnostic_revision/additional_figures.py') or ('/scheme_A_review_extension/results/' in k and k.endswith('.csv')) or ('/scheme_A_diagnostic_revision/results/' in k and k.endswith('.csv')) or k.endswith('/scheme_A_submission_correction/corrected_metrics.csv') or ('/scheme_A_fixed_period_review/results/' in k and k.endswith('.csv')) or k.endswith('/FIGURE_QA.md')}
+ figure={k:v for k,v in project.items() if '/fixed_period_figures/' in k or k.endswith('/scheme_A_fixed_period_review/build_figures.py') or k.endswith('/scheme_A_diagnostic_revision/additional_figures.py') or k.endswith('/scheme_A_diagnostic_revision/build_figures.py') or ('/scheme_A_review_extension/results/' in k and k.endswith('.csv')) or ('/scheme_A_diagnostic_revision/results/' in k and k.endswith('.csv')) or k.endswith('/scheme_A_submission_correction/corrected_metrics.csv') or ('/scheme_A_fixed_period_review/results/' in k and k.endswith('.csv')) or k.endswith('/FIGURE_QA.md')}
  outcomes=[]
  for kind,source in [('Full_Project_Review',full),('Review_Lite',lite),('Figure_Handoff',figure)]:
   name=f'Scheme_A_{kind}_{stamp}';target=dest/(name+'.zip');extract=dest/(name+'_trial');assert not target.exists() and not extract.exists();extra={}
@@ -100,4 +100,3 @@ Full and Lite run the current verify_light.py, replaying 1368 paired rows from b
  (dest/('DELIVERY_'+stamp+'.json')).write_text(json.dumps(outcomes,indent=2), encoding='utf8');print(json.dumps(outcomes,indent=2))
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--paths',required=True);p.add_argument('--expanded',nargs='+',required=True);p.add_argument('--destination',required=True);a=p.parse_args();run(a.paths,a.expanded,a.destination)
-

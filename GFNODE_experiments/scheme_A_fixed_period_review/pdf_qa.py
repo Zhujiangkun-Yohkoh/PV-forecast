@@ -23,4 +23,3 @@ def run(dest):
  (HERE/'results/PDF_QA.json').write_text(json.dumps(results,indent=2), encoding='utf8');print(json.dumps({k:{'pages':len(v['pages']),'minimum_figure_font':min([p['figure_min_font_pt'] for p in v['pages'] if p['figure_min_font_pt'] is not None]),'overfull':v['overfull_lines']} for k,v in results.items()},indent=2))
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--destination',required=True);a=p.parse_args();run(a.destination)
-

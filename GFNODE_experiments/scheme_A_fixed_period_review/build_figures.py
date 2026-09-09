@@ -8,7 +8,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 HERE=Path(__file__).resolve().parent;ROOT=HERE.parents[1];PAPER=ROOT/'manuscript/clean_pv_benchmark';OUT=PAPER/'fixed_period_figures';OUT.mkdir(exist_ok=True)
 for p in (PAPER/'diagnostic_figures').glob('*'):
- if p.is_file():shutil.copy2(p,OUT/p.name)
+ if p.is_file() and not (OUT/p.name).exists():shutil.copy2(p,OUT/p.name)
 plt.rcParams.update({'font.family':'DejaVu Sans','font.size':10,'axes.titlesize':11,'axes.labelsize':10,'xtick.labelsize':10,'ytick.labelsize':10,'legend.fontsize':10,'pdf.fonttype':42,'ps.fonttype':42,'svg.fonttype':'none','axes.spines.top':False,'axes.spines.right':False})
 records=json.loads((OUT/'FIGURE_CAPTIONS_AND_ALT.json').read_text(encoding='utf8'))
 def save(fig,stem,data,caption,alt):
