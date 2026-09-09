@@ -1,3 +1,16 @@
+# 当前收尾修改（基线89e494f）
+
+- 将数值容差与科学指标影响分开；不再将整个Alice场址停止评分。
+- 新增Hanwha/Qcells三seed主模型S1/S2与新增起报结果；Sanyo不补假三seed均值。
+- 外部2017/2018统一候选缓冲，形成complete/pointwise四格，保留原归档数字。
+- 摘要重写为182词；主文只保留5幅决定性图，将3幅未改动历史图移入补充。两幅核心图重绘，其余数据不变。
+- “The decisive diagnostic”改为证据支持的诊断表达。补充材料记录批次与处理器限制，主文不写环境排错过程。
+- 原所有预测、参数、checkpoint、Ridge网格和旧失败记录不覆盖。没有训练、参数搜索或新增起报月份。
+
+
+---
+## 89e494f及以前的历史记录（下文“本轮”不是当前收尾）
+
 # Fixed-period review changes — 2026-09-09
 
 - Source: ad59ed2; historical raw/weights/predictions/grids preserved.

@@ -1,0 +1,1 @@
+Historical NIST TCN learning records. All three selected checkpoints occur at the fixed maximum budget of 25 epochs. These curves document the budget boundary, not convergence or a new fit.

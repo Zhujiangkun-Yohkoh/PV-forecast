@@ -1,3 +1,11 @@
+# Current closeout entries
+
+From project root: `python GFNODE_experiments/scheme_A_support_closeout/verify_light.py` independently recomputes block-weight intervals without importing production interval functions, and reports observed replay status without expecting a fixed failure count. `audit_points.py --paths LOCAL.json` needs the full saved prediction evidence. `reduce_periods.py --paths LOCAL.json` only reduces existing arrays. `period_forward.py` refuses an existing output file; use an explicitly fresh destination for new inference, never archive evidence. No processor fitting or model training is invoked.
+
+Current figure entry: `python manuscript/clean_pv_benchmark/build_figures.py`; current folder closeout_figures. Only two affected plots are regenerated; twenty unchanged figures are retained with their source scripts. The full handoff includes earlier builders and their CSV inputs. Core scientific state is B, not a claim of complete historical neural-state recovery. The original fixed_period_review/verify_light.py remains a frozen historical 20-failure snapshot.
+
+## Earlier entries (historical)
+
 # Current fixed-period reproduction scope
 
 Run from the project root. Current plotting entry: `python manuscript/clean_pv_benchmark/build_figures.py` (NumPy, pandas, Matplotlib); it creates/refreshes fixed_period_figures from versioned CSVs and preserved historical figure sources. Use a standard scientific Python environment with DejaVu Sans, without private Windows font paths.

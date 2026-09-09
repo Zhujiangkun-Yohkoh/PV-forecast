@@ -1,3 +1,20 @@
+# 当前收尾响应矩阵（基线89e494f）
+
+|问题|实际修改|证据|状态|剩余限制|
+|---|---|---|---|---|
+|R1 布尔回放失败|36组分布、W/kW、216指标影响和误差界限；5代表GPU批次|Alice_prediction_differences、Alice_metric_impact、batch_probe、ALICE_REPLAY_IMPACT_REPORT|完成诊断，历史数值状态部分未恢复|原16/20状态不变，不能宣称恢复历史处理器|
+|R2 整场址阻塞|按方法接受；Hanwha/Qcells三个Inv种子正式评分，Sanyo单seed；S1/S2/新增按各前缀|Alice_accepted_metrics、Alice_diagnostic_metrics、各site块CSV|完成约定核心，Sanyo三seed均值合理不生成|训练支持仍不变；诊断模型不入正式排名|
+|R3 支持/时期混杂|两站2017/2018×complete/pointwise四格；统一缓冲，原归档另表|four_cell_summary/intervals/MSE、boundary_audit、6原神经回放|完成|不是纯季节因果；2017推理分组明确记录|
+|独立复算|不调用生产interval的块计数矩阵法；动态回放状态|independent_verify、POINT_AUDIT、INDEPENDENT_AUDIT|完成|检查行数不是独立实验数；不证明重新训练结果|
+|R4文稿/图件|5主图，支持与四格前置，3张历史图移补充；弱化decisive|main、Supplement、closeout_figures|完成后依PDF QA定稿|作者声明与期刊格式待最终流程|
+|PR描述|仅生成本地草稿，不写外部PR描述|PR_DESCRIPTION_DRAFT.md|按要求完成|不绕过此前自动审批拒绝|
+
+结论B：新增核心收窄至经回放验证的方法，可进入投稿准备，不把全部次要模型逐点通过作为条件。
+
+
+---
+## 89e494f及以前的历史记录（下文“本轮”不是当前收尾）
+
 # 本次固定范围审核响应（2026-09-09）
 
 |问题|原位置|措施与实际执行|证据|状态|剩余限制|

@@ -1,0 +1,1 @@
+Lead-specific error at each five-minute lead on common complete-H144 origins and Daily-valid targets. These are not cumulative-prefix metrics. Neural curves average per-seed RMSE.

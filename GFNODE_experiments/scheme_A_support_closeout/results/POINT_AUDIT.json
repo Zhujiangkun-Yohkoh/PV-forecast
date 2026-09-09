@@ -1,0 +1,8 @@
+{
+  "actual_saved_point_metric_rows": 1836,
+  "support_groups": 114,
+  "failed": 0,
+  "skipped": 0,
+  "neural_training": false,
+  "independent_of_production_mask_and_metrics": true
+}

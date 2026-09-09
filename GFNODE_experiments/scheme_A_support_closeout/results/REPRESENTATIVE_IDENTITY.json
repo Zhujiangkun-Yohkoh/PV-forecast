@@ -1,0 +1,332 @@
+[
+  {
+    "site": "Qcells",
+    "model": "Depthwise convolutional TCN",
+    "seed": 44,
+    "checkpoint": "Depthwise_convolutional_TCN_Qcells_44",
+    "state_keys": [
+      "epoch",
+      "state_dict",
+      "validation_global_mse"
+    ],
+    "strict_missing": [],
+    "strict_unexpected": [],
+    "eval_not_training": true,
+    "input_dtype": "float32",
+    "input_channels": [
+      "Performance_Ratio",
+      "Weather_Temperature_Celsius",
+      "Weather_Relative_Humidity",
+      "Global_Horizontal_Radiation",
+      "Diffuse_Horizontal_Radiation",
+      "Radiation_Global_Tilted",
+      "Radiation_Diffuse_Tilted",
+      "Active_Power",
+      "missing:Performance_Ratio",
+      "missing:Weather_Temperature_Celsius",
+      "missing:Weather_Relative_Humidity",
+      "missing:Global_Horizontal_Radiation",
+      "missing:Diffuse_Horizontal_Radiation",
+      "missing:Radiation_Global_Tilted",
+      "missing:Radiation_Diffuse_Tilted",
+      "missing:Active_Power",
+      "isolation_forest"
+    ],
+    "imputer_fit_shape": [
+      30528,
+      8
+    ],
+    "feature_scaler_scale": [
+      0.004802555311471224,
+      0.02392491139471531,
+      0.011567569337785244,
+      0.0009329566964879632,
+      0.0018101901514455676,
+      0.0008173712412826717,
+      0.0017580324783921242,
+      0.16537576913833618,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "target_scale": [
+      0.16564972322067303
+    ],
+    "target_min": [
+      0.0
+    ],
+    "processor_identity": "later saved Ridge Train-only processor; no separately saved historical neural object for direct comparison",
+    "original_neural_KNN_IF_scaler_state_available": false,
+    "parameter_count": 683024
+  },
+  {
+    "site": "Sanyo",
+    "model": "Depthwise convolutional TCN",
+    "seed": 42,
+    "checkpoint": "Depthwise_convolutional_TCN_Sanyo_42",
+    "state_keys": [
+      "epoch",
+      "state_dict",
+      "validation_global_mse"
+    ],
+    "strict_missing": [],
+    "strict_unexpected": [],
+    "eval_not_training": true,
+    "input_dtype": "float32",
+    "input_channels": [
+      "Performance_Ratio",
+      "Weather_Temperature_Celsius",
+      "Weather_Relative_Humidity",
+      "Global_Horizontal_Radiation",
+      "Diffuse_Horizontal_Radiation",
+      "Radiation_Global_Tilted",
+      "Radiation_Diffuse_Tilted",
+      "Active_Power",
+      "missing:Performance_Ratio",
+      "missing:Weather_Temperature_Celsius",
+      "missing:Weather_Relative_Humidity",
+      "missing:Global_Horizontal_Radiation",
+      "missing:Diffuse_Horizontal_Radiation",
+      "missing:Radiation_Global_Tilted",
+      "missing:Radiation_Diffuse_Tilted",
+      "missing:Active_Power",
+      "isolation_forest"
+    ],
+    "imputer_fit_shape": [
+      30528,
+      8
+    ],
+    "feature_scaler_scale": [
+      0.0017256709979847074,
+      0.02392491139471531,
+      0.011567569337785244,
+      0.0009329566964879632,
+      0.0018101901514455676,
+      0.0008173712412826717,
+      0.0017580324783921242,
+      0.16500015556812286,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "target_scale": [
+      0.1650746032797138
+    ],
+    "target_min": [
+      0.0
+    ],
+    "processor_identity": "later saved Ridge Train-only processor; no separately saved historical neural object for direct comparison",
+    "original_neural_KNN_IF_scaler_state_available": false,
+    "parameter_count": 683024
+  },
+  {
+    "site": "Sanyo",
+    "model": "Inverted-variate Transformer",
+    "seed": 43,
+    "checkpoint": "Inverted_variate_Transformer_Sanyo_43",
+    "state_keys": [
+      "epoch",
+      "state_dict",
+      "validation_global_mse"
+    ],
+    "strict_missing": [],
+    "strict_unexpected": [],
+    "eval_not_training": true,
+    "input_dtype": "float32",
+    "input_channels": [
+      "Performance_Ratio",
+      "Weather_Temperature_Celsius",
+      "Weather_Relative_Humidity",
+      "Global_Horizontal_Radiation",
+      "Diffuse_Horizontal_Radiation",
+      "Radiation_Global_Tilted",
+      "Radiation_Diffuse_Tilted",
+      "Active_Power",
+      "missing:Performance_Ratio",
+      "missing:Weather_Temperature_Celsius",
+      "missing:Weather_Relative_Humidity",
+      "missing:Global_Horizontal_Radiation",
+      "missing:Diffuse_Horizontal_Radiation",
+      "missing:Radiation_Global_Tilted",
+      "missing:Radiation_Diffuse_Tilted",
+      "missing:Active_Power",
+      "isolation_forest"
+    ],
+    "imputer_fit_shape": [
+      30528,
+      8
+    ],
+    "feature_scaler_scale": [
+      0.0017256709979847074,
+      0.02392491139471531,
+      0.011567569337785244,
+      0.0009329566964879632,
+      0.0018101901514455676,
+      0.0008173712412826717,
+      0.0017580324783921242,
+      0.16500015556812286,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "target_scale": [
+      0.1650746032797138
+    ],
+    "target_min": [
+      0.0
+    ],
+    "processor_identity": "later saved Ridge Train-only processor; no separately saved historical neural object for direct comparison",
+    "original_neural_KNN_IF_scaler_state_available": false,
+    "parameter_count": 194960
+  },
+  {
+    "site": "Sanyo",
+    "model": "Inverted-variate Transformer",
+    "seed": 44,
+    "checkpoint": "Inverted_variate_Transformer_Sanyo_44",
+    "state_keys": [
+      "epoch",
+      "state_dict",
+      "validation_global_mse"
+    ],
+    "strict_missing": [],
+    "strict_unexpected": [],
+    "eval_not_training": true,
+    "input_dtype": "float32",
+    "input_channels": [
+      "Performance_Ratio",
+      "Weather_Temperature_Celsius",
+      "Weather_Relative_Humidity",
+      "Global_Horizontal_Radiation",
+      "Diffuse_Horizontal_Radiation",
+      "Radiation_Global_Tilted",
+      "Radiation_Diffuse_Tilted",
+      "Active_Power",
+      "missing:Performance_Ratio",
+      "missing:Weather_Temperature_Celsius",
+      "missing:Weather_Relative_Humidity",
+      "missing:Global_Horizontal_Radiation",
+      "missing:Diffuse_Horizontal_Radiation",
+      "missing:Radiation_Global_Tilted",
+      "missing:Radiation_Diffuse_Tilted",
+      "missing:Active_Power",
+      "isolation_forest"
+    ],
+    "imputer_fit_shape": [
+      30528,
+      8
+    ],
+    "feature_scaler_scale": [
+      0.0017256709979847074,
+      0.02392491139471531,
+      0.011567569337785244,
+      0.0009329566964879632,
+      0.0018101901514455676,
+      0.0008173712412826717,
+      0.0017580324783921242,
+      0.16500015556812286,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "target_scale": [
+      0.1650746032797138
+    ],
+    "target_min": [
+      0.0
+    ],
+    "processor_identity": "later saved Ridge Train-only processor; no separately saved historical neural object for direct comparison",
+    "original_neural_KNN_IF_scaler_state_available": false,
+    "parameter_count": 194960
+  },
+  {
+    "site": "Qcells",
+    "model": "Inverted-variate Transformer",
+    "seed": 42,
+    "checkpoint": "Inverted_variate_Transformer_Qcells_42",
+    "state_keys": [
+      "epoch",
+      "state_dict",
+      "validation_global_mse"
+    ],
+    "strict_missing": [],
+    "strict_unexpected": [],
+    "eval_not_training": true,
+    "input_dtype": "float32",
+    "input_channels": [
+      "Performance_Ratio",
+      "Weather_Temperature_Celsius",
+      "Weather_Relative_Humidity",
+      "Global_Horizontal_Radiation",
+      "Diffuse_Horizontal_Radiation",
+      "Radiation_Global_Tilted",
+      "Radiation_Diffuse_Tilted",
+      "Active_Power",
+      "missing:Performance_Ratio",
+      "missing:Weather_Temperature_Celsius",
+      "missing:Weather_Relative_Humidity",
+      "missing:Global_Horizontal_Radiation",
+      "missing:Diffuse_Horizontal_Radiation",
+      "missing:Radiation_Global_Tilted",
+      "missing:Radiation_Diffuse_Tilted",
+      "missing:Active_Power",
+      "isolation_forest"
+    ],
+    "imputer_fit_shape": [
+      30528,
+      8
+    ],
+    "feature_scaler_scale": [
+      0.004802555311471224,
+      0.02392491139471531,
+      0.011567569337785244,
+      0.0009329566964879632,
+      0.0018101901514455676,
+      0.0008173712412826717,
+      0.0017580324783921242,
+      0.16537576913833618,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "target_scale": [
+      0.16564972322067303
+    ],
+    "target_min": [
+      0.0
+    ],
+    "processor_identity": "later saved Ridge Train-only processor; no separately saved historical neural object for direct comparison",
+    "original_neural_KNN_IF_scaler_state_available": false,
+    "parameter_count": 194960
+  }
+]

@@ -1,0 +1,1 @@
+Original-grid Yulara prediction ranges (thin), 1st–99th percentiles (thick) and medians (markers), over saved candidate trajectories. The dotted line is the Train target maximum, not clipping. Missing temperature at origin occurs in 4/69333 Train origins (0.0058%). These diagnostics support a missing-pattern extrapolation explanation, not an identified unique cause.

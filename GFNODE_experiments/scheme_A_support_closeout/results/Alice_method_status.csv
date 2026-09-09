@@ -1,0 +1,37 @@
+site,method,model,seed,passed_original_tolerance,status,checkpoint,rtol,atol
+Sanyo,Depthwise convolutional TCN42,Depthwise convolutional TCN,42,False,diagnostic,Depthwise_convolutional_TCN_Sanyo_42,2e-05,2e-05
+Sanyo,Depthwise convolutional TCN43,Depthwise convolutional TCN,43,False,diagnostic,Depthwise_convolutional_TCN_Sanyo_43,2e-05,2e-05
+Sanyo,Depthwise convolutional TCN44,Depthwise convolutional TCN,44,False,diagnostic,Depthwise_convolutional_TCN_Sanyo_44,2e-05,2e-05
+Sanyo,Discrete recurrent decoder42,Discrete recurrent decoder,42,False,diagnostic,Discrete_recurrent_decoder_Sanyo_42,2e-05,2e-05
+Sanyo,Discrete recurrent decoder43,Discrete recurrent decoder,43,False,diagnostic,Discrete_recurrent_decoder_Sanyo_43,2e-05,2e-05
+Sanyo,Discrete recurrent decoder44,Discrete recurrent decoder,44,False,diagnostic,Discrete_recurrent_decoder_Sanyo_44,2e-05,2e-05
+Sanyo,Inverted42,Inverted-variate Transformer,42,True,accepted,Inverted_variate_Transformer_Sanyo_42,2e-05,2e-05
+Sanyo,Inverted43,Inverted-variate Transformer,43,False,diagnostic,Inverted_variate_Transformer_Sanyo_43,2e-05,2e-05
+Sanyo,Inverted44,Inverted-variate Transformer,44,False,diagnostic,Inverted_variate_Transformer_Sanyo_44,2e-05,2e-05
+Sanyo,Joint-patch Transformer42,Joint-patch Transformer,42,True,accepted,Joint_patch_Transformer_Sanyo_42,2e-05,2e-05
+Sanyo,Joint-patch Transformer43,Joint-patch Transformer,43,True,accepted,Joint_patch_Transformer_Sanyo_43,2e-05,2e-05
+Sanyo,Joint-patch Transformer44,Joint-patch Transformer,44,True,accepted,Joint_patch_Transformer_Sanyo_44,2e-05,2e-05
+Hanwha,Depthwise convolutional TCN42,Depthwise convolutional TCN,42,False,diagnostic,Depthwise_convolutional_TCN_Hanwha_42,2e-05,2e-05
+Hanwha,Depthwise convolutional TCN43,Depthwise convolutional TCN,43,False,diagnostic,Depthwise_convolutional_TCN_Hanwha_43,2e-05,2e-05
+Hanwha,Depthwise convolutional TCN44,Depthwise convolutional TCN,44,False,diagnostic,Depthwise_convolutional_TCN_Hanwha_44,2e-05,2e-05
+Hanwha,Discrete recurrent decoder42,Discrete recurrent decoder,42,False,diagnostic,Discrete_recurrent_decoder_Hanwha_42,2e-05,2e-05
+Hanwha,Discrete recurrent decoder43,Discrete recurrent decoder,43,False,diagnostic,Discrete_recurrent_decoder_Hanwha_43,2e-05,2e-05
+Hanwha,Discrete recurrent decoder44,Discrete recurrent decoder,44,False,diagnostic,Discrete_recurrent_decoder_Hanwha_44,2e-05,2e-05
+Hanwha,Inverted42,Inverted-variate Transformer,42,True,accepted,Inverted_variate_Transformer_Hanwha_42,2e-05,2e-05
+Hanwha,Inverted43,Inverted-variate Transformer,43,True,accepted,Inverted_variate_Transformer_Hanwha_43,2e-05,2e-05
+Hanwha,Inverted44,Inverted-variate Transformer,44,True,accepted,Inverted_variate_Transformer_Hanwha_44,2e-05,2e-05
+Hanwha,Joint-patch Transformer42,Joint-patch Transformer,42,True,accepted,Joint_patch_Transformer_Hanwha_42,2e-05,2e-05
+Hanwha,Joint-patch Transformer43,Joint-patch Transformer,43,True,accepted,Joint_patch_Transformer_Hanwha_43,2e-05,2e-05
+Hanwha,Joint-patch Transformer44,Joint-patch Transformer,44,True,accepted,Joint_patch_Transformer_Hanwha_44,2e-05,2e-05
+Qcells,Depthwise convolutional TCN42,Depthwise convolutional TCN,42,False,diagnostic,Depthwise_convolutional_TCN_Qcells_42,2e-05,2e-05
+Qcells,Depthwise convolutional TCN43,Depthwise convolutional TCN,43,False,diagnostic,Depthwise_convolutional_TCN_Qcells_43,2e-05,2e-05
+Qcells,Depthwise convolutional TCN44,Depthwise convolutional TCN,44,False,diagnostic,Depthwise_convolutional_TCN_Qcells_44,2e-05,2e-05
+Qcells,Discrete recurrent decoder42,Discrete recurrent decoder,42,False,diagnostic,Discrete_recurrent_decoder_Qcells_42,2e-05,2e-05
+Qcells,Discrete recurrent decoder43,Discrete recurrent decoder,43,False,diagnostic,Discrete_recurrent_decoder_Qcells_43,2e-05,2e-05
+Qcells,Discrete recurrent decoder44,Discrete recurrent decoder,44,False,diagnostic,Discrete_recurrent_decoder_Qcells_44,2e-05,2e-05
+Qcells,Inverted42,Inverted-variate Transformer,42,True,accepted,Inverted_variate_Transformer_Qcells_42,2e-05,2e-05
+Qcells,Inverted43,Inverted-variate Transformer,43,True,accepted,Inverted_variate_Transformer_Qcells_43,2e-05,2e-05
+Qcells,Inverted44,Inverted-variate Transformer,44,True,accepted,Inverted_variate_Transformer_Qcells_44,2e-05,2e-05
+Qcells,Joint-patch Transformer42,Joint-patch Transformer,42,True,accepted,Joint_patch_Transformer_Qcells_42,2e-05,2e-05
+Qcells,Joint-patch Transformer43,Joint-patch Transformer,43,True,accepted,Joint_patch_Transformer_Qcells_43,2e-05,2e-05
+Qcells,Joint-patch Transformer44,Joint-patch Transformer,44,True,accepted,Joint_patch_Transformer_Qcells_44,2e-05,2e-05

@@ -1,0 +1,1 @@
+ORIGINAL GRID. Recent-history Ridge and Ridge plus available previous-day trajectory, with original Validation-selected alphas. Daily-matched full targets use the historical horizon-specific support. Ridge is deterministic; neural bars are seed SD, not temporal intervals. Expanded-grid results are separately labeled.

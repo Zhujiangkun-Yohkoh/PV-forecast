@@ -1,0 +1,51 @@
+[
+  {
+    "check": "Inverted42 original_batch",
+    "max_absolute_difference_kW": 0.0,
+    "rtol": 2e-05,
+    "atol": 2e-05,
+    "passed": true
+  },
+  {
+    "check": "Inverted43 original_batch",
+    "max_absolute_difference_kW": 0.0,
+    "rtol": 2e-05,
+    "atol": 2e-05,
+    "passed": true
+  },
+  {
+    "check": "Inverted44 original_batch",
+    "max_absolute_difference_kW": 0.0,
+    "rtol": 2e-05,
+    "atol": 2e-05,
+    "passed": true
+  },
+  {
+    "check": "Original A",
+    "max_absolute_difference_kW": 6.821210263296962e-13,
+    "rtol": 2e-05,
+    "atol": 2e-05,
+    "passed": true
+  },
+  {
+    "check": "Original B",
+    "max_absolute_difference_kW": 1.7053025658242404e-13,
+    "rtol": 2e-05,
+    "atol": 2e-05,
+    "passed": true
+  },
+  {
+    "check": "Expanded A",
+    "max_absolute_difference_kW": 3.019806626980426e-14,
+    "rtol": 2e-05,
+    "atol": 2e-05,
+    "passed": true
+  },
+  {
+    "check": "Expanded B",
+    "max_absolute_difference_kW": 1.1368683772161603e-13,
+    "rtol": 2e-05,
+    "atol": 2e-05,
+    "passed": true
+  }
+]

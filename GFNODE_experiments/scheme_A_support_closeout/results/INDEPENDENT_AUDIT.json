@@ -1,0 +1,11 @@
+{
+  "independent_interval_rows": 6120,
+  "block_groups": 342,
+  "Alice_original_tolerance_pass": 16,
+  "Alice_original_tolerance_unresolved": 20,
+  "failed": 0,
+  "skipped": 0,
+  "production_interval_import": false,
+  "neural_forward_in_this_check": false,
+  "meaning": "independent block-weight arithmetic and acceptance/seed isolation; not independent experiments"
+}

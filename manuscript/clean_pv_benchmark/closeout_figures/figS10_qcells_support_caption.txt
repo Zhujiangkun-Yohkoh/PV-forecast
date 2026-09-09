@@ -1,0 +1,1 @@
+Historical Qcells support. Unequal-width power bins are categorical points, not a continuous density. Each power series is normalized by its target-pair count in the displayed bins. Origin-hour series use all origins in the named support. Repeated target times remain overlapping forecast pairs.
