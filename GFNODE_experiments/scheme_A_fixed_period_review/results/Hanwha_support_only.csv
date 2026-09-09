@@ -1,0 +1,11 @@
+site,horizon,support,origins,points,unique_targets,active_points,status
+Hanwha,12,Original,6625,79392,6792,36421,support_only_prediction_replay_unresolved
+Hanwha,12,S1,6816,81339,6807,36938,support_only_prediction_replay_unresolved
+Hanwha,12,S2,6816,81445,6816,36938,support_only_prediction_replay_unresolved
+Hanwha,12,S1_new_origins,191,1947,332,517,support_only_prediction_replay_unresolved
+Hanwha,12,S2_new_origins,191,2053,341,517,support_only_prediction_replay_unresolved
+Hanwha,144,Original,4521,649735,6657,287368,support_only_prediction_replay_unresolved
+Hanwha,144,S1,6816,966467,6807,435619,support_only_prediction_replay_unresolved
+Hanwha,144,S2,6816,967761,6816,435619,support_only_prediction_replay_unresolved
+Hanwha,144,S1_new_origins,2295,316732,4137,148251,support_only_prediction_replay_unresolved
+Hanwha,144,S2_new_origins,2295,318026,4146,148251,support_only_prediction_replay_unresolved

@@ -1,0 +1,65 @@
+{
+  "passed": 8,
+  "failed": 0,
+  "skipped": 0,
+  "checkpoint_loaded": false,
+  "training": false,
+  "records": [
+    {
+      "model": "Discrete recurrent decoder",
+      "input_dim": 17,
+      "parameters": 99362,
+      "parameter_owning_modules": 16,
+      "all_modules_observed": true
+    },
+    {
+      "model": "Inverted-variate Transformer",
+      "input_dim": 17,
+      "parameters": 194960,
+      "parameter_owning_modules": 7,
+      "all_modules_observed": true
+    },
+    {
+      "model": "Joint-patch Transformer",
+      "input_dim": 17,
+      "parameters": 148112,
+      "parameter_owning_modules": 7,
+      "all_modules_observed": true
+    },
+    {
+      "model": "Depthwise convolutional TCN",
+      "input_dim": 17,
+      "parameters": 683024,
+      "parameter_owning_modules": 10,
+      "all_modules_observed": true
+    },
+    {
+      "model": "Discrete recurrent decoder",
+      "input_dim": 7,
+      "parameters": 96562,
+      "parameter_owning_modules": 16,
+      "all_modules_observed": true
+    },
+    {
+      "model": "Inverted-variate Transformer",
+      "input_dim": 7,
+      "parameters": 102800,
+      "parameter_owning_modules": 7,
+      "all_modules_observed": true
+    },
+    {
+      "model": "Joint-patch Transformer",
+      "input_dim": 7,
+      "parameters": 140432,
+      "parameter_owning_modules": 7,
+      "all_modules_observed": true
+    },
+    {
+      "model": "Depthwise convolutional TCN",
+      "input_dim": 7,
+      "parameters": 682384,
+      "parameter_owning_modules": 10,
+      "all_modules_observed": true
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+Relative RMSE gaps from the best mean neural implementation in each cumulative window and power scope. Zero identifies the lowest error; small gaps are shown as small gaps rather than enlarged rank differences.

@@ -1,0 +1,11 @@
+site,horizon,support,origins,points,unique_targets,active_points,status
+Sanyo,12,Original,6589,79005,6790,36190,support_only_prediction_replay_unresolved
+Sanyo,12,S1,6816,81337,6807,36612,support_only_prediction_replay_unresolved
+Sanyo,12,S2,6816,81442,6816,36612,support_only_prediction_replay_unresolved
+Sanyo,12,S1_new_origins,227,2332,397,422,support_only_prediction_replay_unresolved
+Sanyo,12,S2_new_origins,227,2437,406,422,support_only_prediction_replay_unresolved
+Sanyo,144,Original,4160,598317,6726,259345,support_only_prediction_replay_unresolved
+Sanyo,144,S1,6816,966542,6807,431594,support_only_prediction_replay_unresolved
+Sanyo,144,S2,6816,967835,6816,431594,support_only_prediction_replay_unresolved
+Sanyo,144,S1_new_origins,2656,368225,5060,172249,support_only_prediction_replay_unresolved
+Sanyo,144,S2_new_origins,2656,369518,5069,172249,support_only_prediction_replay_unresolved

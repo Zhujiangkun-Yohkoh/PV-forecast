@@ -1,0 +1,1 @@
+Three site boxes feed a common evaluation protocol, not a pooled model. A time axis separates six-hour inputs, origin and twelve-hour targets; Daily uses target minus twenty-four hours.

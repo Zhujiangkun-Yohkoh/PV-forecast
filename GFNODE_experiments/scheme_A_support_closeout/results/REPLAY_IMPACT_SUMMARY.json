@@ -1,0 +1,12 @@
+{
+  "original_tolerance_pass": 16,
+  "original_tolerance_unresolved": 20,
+  "maximum_point_difference_W": 1.2869834899902344,
+  "maximum_prediction_difference_RMS_W": 0.0203115835221662,
+  "maximum_RMSE_change_W": 0.0005667185902502,
+  "maximum_MAE_change_W": 0.00042483785892,
+  "maximum_bias_change_W": 0.0010442452938463,
+  "historical_support_rank_changes": 0,
+  "Daily_effect_sign_changes": 0,
+  "interpretation": "metric sensitivity on checked support, not proof of historical input identity or a bound on new origins"
+}

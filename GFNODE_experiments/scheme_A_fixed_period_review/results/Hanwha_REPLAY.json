@@ -1,0 +1,120 @@
+[
+  {
+    "check": "Original A",
+    "max_absolute_difference_kW": 7.549516567451064e-15,
+    "rtol": 2e-05,
+    "atol": 2e-05,
+    "passed": true
+  },
+  {
+    "check": "Original B",
+    "max_absolute_difference_kW": 4.440892098500626e-15,
+    "rtol": 2e-05,
+    "atol": 2e-05,
+    "passed": true
+  },
+  {
+    "check": "Expanded A",
+    "max_absolute_difference_kW": 7.549516567451064e-15,
+    "rtol": 2e-05,
+    "atol": 2e-05,
+    "passed": true
+  },
+  {
+    "check": "Expanded B",
+    "max_absolute_difference_kW": 4.440892098500626e-15,
+    "rtol": 2e-05,
+    "atol": 2e-05,
+    "passed": true
+  },
+  {
+    "check": "Depthwise convolutional TCN42",
+    "passed": false,
+    "error": "Original prediction replay mismatch Depthwise convolutional TCN42 0.0006260871887207031",
+    "max_absolute_difference_kW": 0.0006260871887207031,
+    "rtol": 2e-05,
+    "atol": 2e-05
+  },
+  {
+    "check": "Depthwise convolutional TCN43",
+    "passed": false,
+    "error": "Original prediction replay mismatch Depthwise convolutional TCN43 0.0006761550903320312",
+    "max_absolute_difference_kW": 0.0006761550903320312,
+    "rtol": 2e-05,
+    "atol": 2e-05
+  },
+  {
+    "check": "Depthwise convolutional TCN44",
+    "passed": false,
+    "error": "Original prediction replay mismatch Depthwise convolutional TCN44 0.0004440993070602417",
+    "max_absolute_difference_kW": 0.0004440993070602417,
+    "rtol": 2e-05,
+    "atol": 2e-05
+  },
+  {
+    "check": "Discrete recurrent decoder42",
+    "passed": false,
+    "error": "Original prediction replay mismatch Discrete recurrent decoder42 0.0001653432846069336",
+    "max_absolute_difference_kW": 0.0001653432846069336,
+    "rtol": 2e-05,
+    "atol": 2e-05
+  },
+  {
+    "check": "Discrete recurrent decoder43",
+    "passed": false,
+    "error": "Original prediction replay mismatch Discrete recurrent decoder43 0.00022649765014648438",
+    "max_absolute_difference_kW": 0.00022649765014648438,
+    "rtol": 2e-05,
+    "atol": 2e-05
+  },
+  {
+    "check": "Discrete recurrent decoder44",
+    "passed": false,
+    "error": "Original prediction replay mismatch Discrete recurrent decoder44 0.00013649463653564453",
+    "max_absolute_difference_kW": 0.00013649463653564453,
+    "rtol": 2e-05,
+    "atol": 2e-05
+  },
+  {
+    "check": "Inverted42",
+    "max_absolute_difference_kW": 1.4662742614746094e-05,
+    "rtol": 2e-05,
+    "atol": 2e-05,
+    "passed": true
+  },
+  {
+    "check": "Inverted43",
+    "max_absolute_difference_kW": 1.0423362255096436e-05,
+    "rtol": 2e-05,
+    "atol": 2e-05,
+    "passed": true
+  },
+  {
+    "check": "Inverted44",
+    "max_absolute_difference_kW": 9.73045825958252e-06,
+    "rtol": 2e-05,
+    "atol": 2e-05,
+    "passed": true
+  },
+  {
+    "check": "Joint-patch Transformer42",
+    "max_absolute_difference_kW": 1.598149538040161e-05,
+    "rtol": 2e-05,
+    "atol": 2e-05,
+    "passed": true
+  },
+  {
+    "check": "Joint-patch Transformer43",
+    "max_absolute_difference_kW": 1.3947486877441406e-05,
+    "rtol": 2e-05,
+    "atol": 2e-05,
+    "passed": true
+  },
+  {
+    "check": "Joint-patch Transformer44",
+    "max_absolute_difference_kW": 1.52587890625e-05,
+    "rtol": 2e-05,
+    "atol": 2e-05,
+    "passed": true
+  }
+]

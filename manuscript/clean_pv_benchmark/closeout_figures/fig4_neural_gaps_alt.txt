@@ -1,0 +1,1 @@
+Four model curves show NIST full and power-active winners differing across windows, while Yulara favors Inverted-variate. Zero-valued points have visible lower margins; gap = 100 times (RMSE/best neural RMSE minus one).

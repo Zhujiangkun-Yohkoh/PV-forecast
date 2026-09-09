@@ -1,0 +1,9 @@
+{
+  "neural_runs": 60,
+  "additive_SSE_checks": 2400,
+  "protected_files": 300,
+  "source_stats_unchanged": true,
+  "training_executed": false,
+  "new_analysis": "post hoc",
+  "tests_not_rerun": "Historical M1/M2/M3 suites not rerun in this script"
+}

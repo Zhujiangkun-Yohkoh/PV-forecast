@@ -1,0 +1,1 @@
+Three facets retain co-located arrays separately and show discrete numerical ranks for four models.

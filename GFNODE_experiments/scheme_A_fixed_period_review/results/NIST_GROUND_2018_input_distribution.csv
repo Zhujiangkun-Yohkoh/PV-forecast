@@ -1,0 +1,8 @@
+site,channel,rows,minimum,maximum,below_zero_fraction,above_one_fraction
+NIST_GROUND,historical_ac_active_power,26208,0.0002201666502514854,1.0019381046295166,0.0,3.8156288156288156e-05
+NIST_GROUND,ambient_temperature,26208,0.2288544774055481,0.9483599066734314,0.0,0.0
+NIST_GROUND,global_horizontal_irradiance,26208,-0.004812336526811123,0.9125639200210571,0.00034340659340659343,0.0
+NIST_GROUND,power_missing,26208,0.0,1.0,0.0,0.0
+NIST_GROUND,temperature_missing,26208,0.0,1.0,0.0,0.0
+NIST_GROUND,ghi_missing,26208,0.0,1.0,0.0,0.0
+NIST_GROUND,isolation_forest_flag,26208,0.0,1.0,0.0,0.0

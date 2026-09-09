@@ -1,0 +1,1 @@
+The 12 h Inverted-minus-Daily and Inverted-minus-expanded-B differences remain positive after restoring origins; one-hour comparisons and their intervals are retained without assuming the same selected target population.

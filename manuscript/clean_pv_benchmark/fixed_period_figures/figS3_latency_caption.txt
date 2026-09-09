@@ -1,0 +1,1 @@
+Historical 17-channel inference timings on RTX 3060 Laptop GPU, excluding loading/preprocessing. Point summaries do not establish a stable difference between 0.535 and 0.558 ms; no new timing experiment.

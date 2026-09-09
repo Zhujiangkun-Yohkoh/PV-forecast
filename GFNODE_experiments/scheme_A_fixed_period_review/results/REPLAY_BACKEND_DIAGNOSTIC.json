@@ -1,0 +1,23 @@
+[
+  {
+    "device": "cuda",
+    "cudnn_tf32": true,
+    "max_abs": 0.00024771690368652344,
+    "median": 0.0,
+    "passed_frozen_tolerance": false
+  },
+  {
+    "device": "cuda",
+    "cudnn_tf32": false,
+    "max_abs": 0.006972551345825195,
+    "median": 0.0004466921091079712,
+    "passed_frozen_tolerance": false
+  },
+  {
+    "device": "cpu",
+    "cudnn_tf32": false,
+    "max_abs": 0.0069732666015625,
+    "median": 0.00044664740562438965,
+    "passed_frozen_tolerance": false
+  }
+]

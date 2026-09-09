@@ -1,0 +1,1 @@
+Uniform expanded alpha grid 10^-4 through 10^8, selected solely by full-H144 Validation MSE for all five systems and both information sets. Original and expanded Test errors use identical Daily-matched full targets; all ten comparisons are shown.

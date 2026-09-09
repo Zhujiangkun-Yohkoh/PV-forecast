@@ -1,0 +1,1 @@
+Yulara original Ridge distributions and weather-missing exposure. Thin lines show extrema, thick lines 1st–99th percentiles, markers medians. The dotted line is the Train target maximum, not a clipping threshold.

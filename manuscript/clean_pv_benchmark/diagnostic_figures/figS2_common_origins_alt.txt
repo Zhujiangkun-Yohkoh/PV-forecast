@@ -1,0 +1,1 @@
+Five target rows compare original support with a fixed complete twelve-hour origin set; changes cannot be attributed solely to window length.

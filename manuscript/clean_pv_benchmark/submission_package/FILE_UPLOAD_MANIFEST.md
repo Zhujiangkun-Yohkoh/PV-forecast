@@ -1,27 +1,11 @@
-# JRSE file upload manifest
+# Current author-review metadata — support closeout
 
-## Current preparation package
+Title: Reference History and Target Support in Multi-Window Photovoltaic Forecasting.
 
-| File | Current status | Upload status |
-|---|---|---|
-| `main.pdf` | Twelve-page, accessibility-corrected working article; declarations remain drafts | Do not upload until all-author approval is complete |
-| `supplementary.pdf` | Nineteen-page Supplementary Material with S1--S10 table alt text, Figure S1 alt text, configurations, metrics, counts, sensitivity, and verification summary | Do not upload until all-author approval is complete |
-| `FIGURE_ALT_TEXT.txt` | 25--50-word descriptions for all figures and principal tables | Supply through the live workflow or as requested by AIP |
-| `COVER_LETTER_DRAFT.md` | Four-author and two-corresponding-author draft; exclusive-submission status recorded | Final signature and all-author approval required |
-| `SUBMISSION_METADATA_CHECKLIST.md` | Author-facing checklist | Internal preparation file, not a manuscript attachment |
-| `AUTHOR_AND_DECLARATIONS_DRAFT.md` | Consolidated source for author metadata and declaration drafts | Internal preparation file; transfer only after confirmation |
-| `AUTHOR_SIGNOFF_CHECKLIST.md` | Itemized author-owned confirmation record | Internal preparation file; retain until every declaration is confirmed |
+Main: 12 pages, 182 abstract whitespace words, 5 figures / 5 tables. Supplement: 47 pages, 17 figures / 18 historical tables. Current closeout_figures has 22 PDF/SVG/320 dpi PNG/data/caption/alt groups. Paper and submission-package PDFs are byte-identical.
 
-## Final upload set after author approval
+Sources: main.tex, supplementary.tex, supplementary_closeout.tex, supplementary_diagnostic_front.tex, supplementary_diagnostic_figures.tex, supplementary_historical_body.tex, references.bib and included table sources. supplementary_fixed_period.tex remains historical and is not currently included.
 
-- Author-approved compiled manuscript PDF and separate Supplementary Material PDF.
-- Cover letter if requested or used by the live submission workflow.
-- When requested: `main.tex`, `supplementary.tex`, `references.bib`, generated table sources, and the five vector figure PDFs.
-- Alt text in the form required by the live JRSE workflow.
+Current evidence: scheme_A_support_closeout; previous frozen outputs remain unchanged. Scientific state B permits preparation of the narrower verified core: Hanwha/Qcells three-seed support sensitivity and two-site four-cell analysis. Sanyo restored-support Inverted remains single-seed; unresolved methods are excluded from new rankings. Original/expanded grids remain separate. No training or alpha selection occurred.
 
-The current PDF is not named or represented as a final submission file. No final author approval is asserted.
-
-## Explicit exclusions
-
-Do not upload raw PV data, local `results/`, checkpoints, NPZ predictions, caches, LaTeX auxiliary files, Git credentials, submission-system account information, or unconfirmed declarations.
-
+Renewable Energy is a conditional stretch candidate; Solar Energy directly matches the topic. CAS edition/major/minor categories remain pending authoritative institutional verification, not inferred from JCR. Existing author/declaration fields remain unchanged; final signoff, journal, public-code scope and publication options remain author decisions. No upload occurred. Full private evidence archives are not automatically journal attachments or redistribution licenses.

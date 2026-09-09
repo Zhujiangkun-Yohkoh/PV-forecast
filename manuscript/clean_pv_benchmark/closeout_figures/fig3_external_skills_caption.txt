@@ -1,0 +1,1 @@
+Inverted-variate mean seed skill with 95% paired temporal-block intervals: 48 h blocks, 2000 resamples. These are conditional time-sample intervals, not seed SD. Each reference has its own matched targets.

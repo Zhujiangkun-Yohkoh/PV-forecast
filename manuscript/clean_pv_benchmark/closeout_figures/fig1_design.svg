@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="519.481451pt" height="260.39952pt" viewBox="0 0 519.481451 260.39952" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-09-09T00:30:40.714676</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.1, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 260.39952
+L 519.481451 260.39952
+L 519.481451 -0
+L 0 -0
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 38.492031 222.197958
+L 509.362626 222.197958
+L 509.362626 7.2
+L 38.492031 7.2
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="matplotlib.axis_1">
+    <g id="xtick_1">
+     <g id="line2d_1">
+      <defs>
+       <path id="m96ee9b9927" d="M 0 0
+L 0 3.5
+" style="stroke: #000000; stroke-width: 0.8"/>
+      </defs>
+      <g>
+       <use xlink:href="#m96ee9b9927" x="51.915973" y="222.197958" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_1">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="51.915973" y="236.796395" transform="rotate(-0 51.915973 236.796395)">−23 h 55 min</text>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_2">
+      <g>
+       <use xlink:href="#m96ee9b9927" x="199.579339" y="222.197958" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_2">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="199.579339" y="236.796395" transform="rotate(-0 199.579339 236.796395)">−12 h</text>
+     </g>
+    </g>
+    <g id="xtick_3">
+     <g id="line2d_3">
+      <g>
+       <use xlink:href="#m96ee9b9927" x="274.959939" y="222.197958" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_3">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="274.959939" y="236.796395" transform="rotate(-0 274.959939 236.796395)">−5 h 55 min</text>
+     </g>
+    </g>
+    <g id="xtick_4">
+     <g id="line2d_4">
+      <g>
+       <use xlink:href="#m96ee9b9927" x="348.275317" y="222.197958" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_4">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="348.275317" y="236.796395" transform="rotate(-0 348.275317 236.796395)">Origin</text>
+     </g>
+    </g>
+    <g id="xtick_5">
+     <g id="line2d_5">
+      <g>
+       <use xlink:href="#m96ee9b9927" x="496.971294" y="222.197958" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_5">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="496.971294" y="236.796395" transform="rotate(-0 496.971294 236.796395)">+12 h</text>
+     </g>
+    </g>
+    <g id="text_6">
+     <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="273.927328" y="250.797176" transform="rotate(-0 273.927328 250.797176)">Time relative to forecast origin (five-minute samples)</text>
+    </g>
+   </g>
+   <g id="matplotlib.axis_2"/>
+   <g id="line2d_6">
+    <path d="M 51.915973 101.017291
+L 199.579339 101.017291
+" clip-path="url(#p3f5d272d2c)" style="fill: none; stroke: #56b4e9; stroke-width: 5; stroke-linecap: square"/>
+    <defs>
+     <path id="mb8ab7ee672" d="M 0 6
+L 0 -6
+" style="stroke: #56b4e9"/>
+    </defs>
+    <g clip-path="url(#p3f5d272d2c)">
+     <use xlink:href="#mb8ab7ee672" x="51.915973" y="101.017291" style="fill: #56b4e9; stroke: #56b4e9"/>
+     <use xlink:href="#mb8ab7ee672" x="199.579339" y="101.017291" style="fill: #56b4e9; stroke: #56b4e9"/>
+    </g>
+   </g>
+   <g id="line2d_7">
+    <path d="M 274.959939 147.925936
+L 348.275317 147.925936
+" clip-path="url(#p3f5d272d2c)" style="fill: none; stroke: #0072b2; stroke-width: 5; stroke-linecap: square"/>
+    <defs>
+     <path id="m79223f4ef8" d="M 0 6
+L 0 -6
+" style="stroke: #0072b2"/>
+    </defs>
+    <g clip-path="url(#p3f5d272d2c)">
+     <use xlink:href="#m79223f4ef8" x="274.959939" y="147.925936" style="fill: #0072b2; stroke: #0072b2"/>
+     <use xlink:href="#m79223f4ef8" x="348.275317" y="147.925936" style="fill: #0072b2; stroke: #0072b2"/>
+    </g>
+   </g>
+   <g id="line2d_8">
+    <path d="M 349.307928 187.016474
+L 496.971294 187.016474
+" clip-path="url(#p3f5d272d2c)" style="fill: none; stroke: #d55e00; stroke-width: 5; stroke-linecap: square"/>
+    <defs>
+     <path id="m65baa1ab50" d="M 0 6
+L 0 -6
+" style="stroke: #d55e00"/>
+    </defs>
+    <g clip-path="url(#p3f5d272d2c)">
+     <use xlink:href="#m65baa1ab50" x="349.307928" y="187.016474" style="fill: #d55e00; stroke: #d55e00"/>
+     <use xlink:href="#m65baa1ab50" x="496.971294" y="187.016474" style="fill: #d55e00; stroke: #d55e00"/>
+    </g>
+   </g>
+   <g id="line2d_9">
+    <path d="M 348.275317 218.288904
+L 348.275317 73.653914
+" clip-path="url(#p3f5d272d2c)" style="fill: none; stroke-dasharray: 3.7,1.6; stroke-dashoffset: 0; stroke: #000000"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 38.492031 222.197958
+L 509.362626 222.197958
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_7">
+    <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="273.927328" y="18.927161" transform="rotate(-0 273.927328 18.927161)">Alice: 3 arrays / 17 channels     Yulara and NIST: 1 system each / 7 channels</text>
+   </g>
+   <g id="text_8">
+    <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="273.927328" y="46.290538" transform="rotate(-0 273.927328 46.290538)">Independent system fits; no pooling or zero-shot transfer</text>
+   </g>
+   <g id="text_9">
+    <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="125.747656" y="89.290129" transform="rotate(-0 125.747656 89.290129)">Previous-day trajectory: target time minus 24 h</text>
+   </g>
+   <g id="text_10">
+    <text style="font-size: 10px; font-family: 'DejaVu Sans'" transform="translate(284.892628 124.19604)">6 h history</text>
+    <text style="font-size: 10px; font-family: 'DejaVu Sans'" transform="translate(282.882472 136.198775)">72 samples</text>
+   </g>
+   <g id="text_11">
+    <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="423.139611" y="175.289312" transform="rotate(-0 423.139611 175.289312)">144 future targets</text>
+   </g>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p3f5d272d2c">
+   <rect x="38.492031" y="7.2" width="470.870595" height="214.997958"/>
+  </clipPath>
+ </defs>
+</svg>

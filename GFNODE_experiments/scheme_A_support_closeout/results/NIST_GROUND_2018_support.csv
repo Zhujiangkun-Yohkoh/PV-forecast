@@ -1,0 +1,7 @@
+site,period,support,horizon,scope,candidate_origins,origins,points,unique_targets,active_points,active_fraction
+NIST_GROUND,2018,complete_H144,144,full,26208,17677,2514247,22072,1196270,0.4757965307306721
+NIST_GROUND,2018,complete_H144,144,power-active,26208,16956,1196270,11076,1196270,1.0
+NIST_GROUND,2018,complete_H144,144,low-power,26208,17361,1317977,10996,0,0.0
+NIST_GROUND,2018,pointwise_finite,144,full,26208,25333,3502466,24842,1753131,0.5005419039042778
+NIST_GROUND,2018,pointwise_finite,144,power-active,26208,24251,1753131,12391,1753131,1.0
+NIST_GROUND,2018,pointwise_finite,144,low-power,26208,24804,1749335,12451,0,0.0

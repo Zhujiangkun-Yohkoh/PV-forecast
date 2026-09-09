@@ -1,0 +1,20 @@
+\begin{longtable}{llrrrrrrr}
+\caption{External raw-field quality inventory for the 2017 segment, before availability shifts and aggregation. Nonnum: non-numeric; Inf: either infinity. Minima, medians, 95th percentiles and maxima use finite values.}\label{tabs:quality}\\
+\toprule Site & Variable & Null & Nonnum & Inf & Min & Median & P95 & Max\\\midrule
+\endfirsthead\toprule Site & Variable & Null & Nonnum & Inf & Min & Median & P95 & Max\\\midrule\endhead
+Yulara & AC power (kW) & 64 & 0 & 0 & -0.059 & -0.035 & 88.133 & 109.903\\
+Yulara & Temperature ($^\circ$C) & 2950 & 0 & 0 & -2.400 & 22.433 & 36.100 & 43.210\\
+Yulara & GHI (native) & 2950 & 0 & 0 & -12.872 & 1.458 & 970.905 & 1391.457\\
+NIST & AC meter power (kW) & 2127 & 0 & 0 & -0.647 & 0.000 & 199.400 & 258.400\\
+NIST & Temperature ($^\circ$C) & 2127 & 0 & 0 & -12.820 & 15.300 & 29.260 & 38.850\\
+NIST & GHI (W/m$^2$) & 2147 & 0 & 0 & -18.771 & -5.703 & 787.316 & 1412.584\\
+\bottomrule\end{longtable}
+\begin{longtable}{lrrr}
+\caption{Parameter counts for the two input widths. Changed projections follow from the input width; they are not new models or transferred checkpoints.}\label{tabs:parameters}\\
+\toprule Implementation & 17 channels & 7 channels & Difference\\\midrule
+\endfirsthead\toprule Implementation & 17 channels & 7 channels & Difference\\\midrule\endhead
+Discrete recurrent & 99,362 & 96,562 & -2,800\\
+Inverted-variate & 194,960 & 102,800 & -92,160\\
+Joint-patch & 148,112 & 140,432 & -7,680\\
+Depthwise TCN & 683,024 & 682,384 & -640\\
+\bottomrule\end{longtable}

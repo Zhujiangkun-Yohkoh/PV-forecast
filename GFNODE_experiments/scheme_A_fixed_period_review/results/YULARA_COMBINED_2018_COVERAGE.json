@@ -1,0 +1,22 @@
+{
+  "site": "YULARA_COMBINED",
+  "origin_first": "2018-04-01 00:00:00",
+  "origin_last": "2018-06-30 23:55:00",
+  "target_last": "2018-07-01 11:55:00",
+  "candidate_origins": 26208,
+  "raw_coordinate": "None",
+  "frame_missing": {
+    "power": 5,
+    "temperature": 6,
+    "ghi": 6
+  },
+  "period_missing_fraction": {
+    "power": 0.00015262515262515263,
+    "temperature": 0.00019078144078144078,
+    "ghi": 0.00019078144078144078
+  },
+  "negative_power": 14299,
+  "negative_GHI": 14135,
+  "threshold_from_2017": 1.0990315437317,
+  "fit_calls": 0
+}

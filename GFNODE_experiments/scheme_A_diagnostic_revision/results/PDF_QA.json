@@ -1,0 +1,346 @@
+{
+  "main": {
+    "pages": [
+      {
+        "page": 1,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 2,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 3,
+        "figure_min_font_pt": 9.533999999999992,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 4,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 5,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 6,
+        "figure_min_font_pt": 8.833199999999977,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 7,
+        "figure_min_font_pt": 9.485500000000002,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 8,
+        "figure_min_font_pt": 9.427799999999934,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 9,
+        "figure_min_font_pt": 9.485500000000002,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 10,
+        "figure_min_font_pt": 9.485499999999973,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 11,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 12,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      }
+    ],
+    "font_table": "name                                 type              encoding         emb sub uni object ID\n------------------------------------ ----------------- ---------------- --- --- --- ---------\nJEWNJE+CMSSBX10                      Type 1            Builtin          yes yes yes    150  0\nLAILJG+CMSS10                        Type 1            Builtin          yes yes yes    151  0\nPEGIDO+CMSS8                         Type 1            Builtin          yes yes yes    152  0\nOWADPU+CMR7                          Type 1            Builtin          yes yes yes    153  0\nTXIMYW+CMR6                          Type 1            Builtin          yes yes yes    154  0\nHQCNCD+CMTI9                         Type 1            Builtin          yes yes yes    155  0\nBTRSXK+CMR10                         Type 1            Builtin          yes yes yes    156  0\nAHUOLA+CMR8                          Type 1            Builtin          yes yes yes    158  0\nSXJPKC+CMSY10                        Type 1            Builtin          yes yes yes    186  0\nMQBPLI+CMMI10                        Type 1            Builtin          yes yes yes    187  0\nLMDZCH+CMTI10                        Type 1            Builtin          yes yes yes    188  0\nBHTHZS+CMMI7                         Type 1            Builtin          yes yes yes    190  0\nPXBGHL+CMSY7                         Type 1            Builtin          yes yes yes    191  0\nTFMKRT+CMR9                          Type 1            Builtin          yes yes yes    208  0\nBNPVUD+CMSY9                         Type 1            Builtin          yes yes yes    209  0\nPGUSHS+DejaVuSans                    CID TrueType      Identity-H       yes yes yes    211  0\nDSRLVY+DejaVuSans                    CID TrueType      Identity-H       yes yes yes    212  0\nIAIZJF+CMTT10                        Type 1            Builtin          yes yes yes    231  0\nHBAVSG+DejaVuSans                    CID TrueType      Identity-H       yes yes yes    248  0\nEKJTPF+DejaVuSans                    CID TrueType      Identity-H       yes yes yes    249  0\nDISFPV+DejaVuSans                    CID TrueType      Identity-H       yes yes yes    278  0\nGDCNQR+DejaVuSans                    CID TrueType      Identity-H       yes yes yes    300  0\nCODLCV+DejaVuSans                    CID TrueType      Identity-H       yes yes yes    301  0\nGUTCEP+DejaVuSans                    CID TrueType      Identity-H       yes yes yes    320  0\nHAJSMO+DejaVuSans                    CID TrueType      Identity-H       yes yes yes    321  0\nPQILTH+CMMI9                         Type 1            Builtin          yes yes yes    341  0\nFQURWN+DejaVuSans                    CID TrueType      Identity-H       yes yes yes    343  0\nGXDUII+DejaVuSans                    CID TrueType      Identity-H       yes yes yes    344  0\nSUQKXP+CMBX10                        Type 1            Builtin          yes yes yes    379  0\nLNXBRM+CMBX8                         Type 1            Builtin          yes yes yes    380  0\nJJVXAS+CMTI8                         Type 1            Builtin          yes yes yes    411  0\n",
+    "overfull_lines": [],
+    "undefined_references": false
+  },
+  "supplementary": {
+    "pages": [
+      {
+        "page": 1,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 2,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 3,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 4,
+        "figure_min_font_pt": 9.618200000000002,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 5,
+        "figure_min_font_pt": 9.406755136785193,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 6,
+        "figure_min_font_pt": 8.963842475792035,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 7,
+        "figure_min_font_pt": 8.157199999999932,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 8,
+        "figure_min_font_pt": 9.04019999999997,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 9,
+        "figure_min_font_pt": 9.618200000000002,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 10,
+        "figure_min_font_pt": 9.618200000000002,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 11,
+        "figure_min_font_pt": 5.9799600000000055,
+        "small_character_text": "01",
+        "raster_images": 0
+      },
+      {
+        "page": 12,
+        "figure_min_font_pt": 9.618200000000002,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 13,
+        "figure_min_font_pt": 9.618799999999965,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 14,
+        "figure_min_font_pt": 9.618200000000002,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 15,
+        "figure_min_font_pt": 9.618200000000002,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 16,
+        "figure_min_font_pt": 9.04019999999997,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 17,
+        "figure_min_font_pt": 9.618200000000002,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 18,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 19,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 20,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 21,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 22,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 23,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 24,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 25,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 26,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 27,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 28,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 29,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 30,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 31,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 32,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 33,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 34,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 35,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 36,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 37,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 38,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 39,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 40,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 41,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 42,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      },
+      {
+        "page": 43,
+        "figure_min_font_pt": null,
+        "small_character_text": "",
+        "raster_images": 0
+      }
+    ],
+    "font_table": "name                                 type              encoding         emb sub uni object ID\n------------------------------------ ----------------- ---------------- --- --- --- ---------\nTFLMCP+CMR17                         Type 1            Builtin          yes yes yes     84  0\nRUEMPC+CMR12                         Type 1            Builtin          yes yes yes     85  0\nJECCHE+CMR8                          Type 1            Builtin          yes yes yes     86  0\nGJQKZE+CMMI8                         Type 1            Builtin          yes yes yes     87  0\nUSNCYR+CMSY8                         Type 1            Builtin          yes yes yes     88  0\nUBJFCR+CMR7                          Type 1            Builtin          yes yes yes     89  0\nFASNFA+CMR10                         Type 1            Builtin          yes yes yes     90  0\nPJCEBU+CMSY7                         Type 1            Builtin          yes yes yes     91  0\nJJHALK+CMBX12                        Type 1            Builtin          yes yes yes     92  0\nBPBLUP+CMSY10                        Type 1            Builtin          yes yes yes     93  0\nTEJSWZ+CMMI10                        Type 1            Builtin          yes yes yes     94  0\nBGJYAT+DejaVuSans                    CID TrueType      Identity-H       yes yes yes    111  0\nEBQVFP+DejaVuSans                    CID TrueType      Identity-H       yes yes yes    112  0\nEQJRSZ+DejaVuSans                    CID TrueType      Identity-H       yes yes yes    136  0\nEFQOFZ+DejaVuSans                    CID TrueType      Identity-H       yes yes yes    155  0\nCUXQRL+DejaVuSans                    CID TrueType      Identity-H       yes yes yes    179  0\nGGYYDO+DejaVuSans                    CID TrueType      Identity-H       yes yes yes    253  0\nDZQUCF+DejaVuSans                    CID TrueType      Identity-H       yes yes yes    268  0\nDFYWRK+DejaVuSans                    CID TrueType      Identity-H       yes yes yes    298  0\nEHZHIC+DejaVuSans                    CID TrueType      Identity-H       yes yes yes    312  0\nQUHVTS+DejaVuSans                    CID TrueType      Identity-H       yes yes yes    327  0\nGXDUII+DejaVuSans                    CID TrueType      Identity-H       yes yes yes    328  0\nQKVQLY+DejaVuSans                    CID TrueType      Identity-H       yes yes yes    361  0\nBKTWTS+DejaVuSans                    CID TrueType      Identity-H       yes yes yes    381  0\nCPUQYB+DejaVuSans                    CID TrueType      Identity-H       yes yes yes    382  0\nFIVIXX+DejaVuSans                    CID TrueType      Identity-H       yes yes yes    402  0\nCPUQYB+DejaVuSans                    CID TrueType      Identity-H       yes yes yes    403  0\nFOXFED+DejaVuSans                    CID TrueType      Identity-H       yes yes yes    423  0\nEQUZIJ+DejaVuSans                    CID TrueType      Identity-H       yes yes yes    457  0\nXFVXYU+CMTI10                        Type 1            Builtin          yes yes yes    470  0\nJUIXUO+CMEX10                        Type 1            Builtin          yes yes yes    476  0\nVZPZBA+CMTT10                        Type 1            Builtin          yes yes yes    482  0\n",
+    "overfull_lines": [],
+    "undefined_references": false
+  }
+}

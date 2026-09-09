@@ -1,0 +1,1 @@
+Original-grid Ridge B minus each reference: negative RMSE differences favor B. Points and 95% paired 48-hour temporal-block intervals use identical complete-H144, Daily-finite targets within each system and scope. Inverted effects average three seed-specific contrasts under common draws. Panel scales differ; kW errors are not pooled.

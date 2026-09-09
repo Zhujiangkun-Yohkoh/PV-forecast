@@ -4,85 +4,26 @@
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{array}
+\usepackage{xcolor}
 \usepackage{hyperref}
 \usepackage{amsmath,amssymb}
-\hypersetup{colorlinks=true,linkcolor=blue!45!black,urlcolor=blue!45!black,pdftitle={Supplementary Material: Leakage-Aware Multi-Horizon Benchmarking of Compact Neural PV Forecasts},pdfauthor={Jiangkun Zhu, Mengling Yang, Zhicong Chen, and Lijun Wu}}
+\hypersetup{colorlinks=true,linkcolor=blue!45!black,urlcolor=blue!45!black,pdftitle={Supplementary Material: Reference History and Target Support in Multi-Window Photovoltaic Forecasting},pdfauthor={Jiangkun Zhu, Mengling Yang, Zhicong Chen, and Lijun Wu}}
 \begin{document}
 \renewcommand{\thetable}{S\arabic{table}}
 \renewcommand{\thefigure}{S\arabic{figure}}
 \renewcommand{\theequation}{S\arabic{equation}}
-\title{Supplementary Material for ``Leakage-Aware Multi-Horizon Benchmarking of Compact Neural PV Forecasts Across Co-Located Technologies''}
+\title{Supplementary Material for ``Reference History and Target Support in Multi-Window Photovoltaic Forecasting''}
 \author{Jiangkun Zhu$^{1}$, Mengling Yang$^{1}$, Zhicong Chen$^{1,2,*}$, and Lijun Wu$^{1,2,*}$\\[0.5em]
 \small $^{1}$College of Advanced Manufacturing, Fuzhou University, 1 Shuicheng Road, Quanzhou 362251, China\\
 \small $^{2}$College of Physics and Information Engineering, Fuzhou University, 2 Xueyuan Road, Fuzhou 350116, China\\
 \small $^{*}$Corresponding authors: zhicong.chen@fzu.edu.cn; lijun.wu@fzu.edu.cn\\
 \small Jiangkun Zhu ORCID: 0009-0009-5335-2345}
-\date{August 28, 2026 --- WORKING MANUSCRIPT; AUTHOR DECLARATIONS PENDING CONFIRMATION}
+\date{}
 \maketitle
 
-\section{Evidence scope}
-This supplement reports the frozen evidence supporting the main manuscript. The benchmark comprises four compact neural implementations, three co-located photovoltaic arrays, three random seeds (42, 43, and 44), and direct 144-step forecasts at five-minute resolution. Primary H12, H48, H96, and H144 metrics use horizon-specific valid origins. Daily Persistence comparisons instead use an elementwise intersection mask that is valid for the daily lag, labels, Last-value Persistence, and every neural forecast.
-
-\section{Input and preprocessing configuration}
-Each history has 72 time steps and 17 channels: Performance Ratio; ambient temperature; relative humidity; global and diffuse horizontal radiation; global and diffuse tilted radiation; Active Power; eight corresponding missingness indicators; and one Isolation Forest indicator. The imputer, feature scaler, target scaler, and Isolation Forest are fitted on Train only. No forecast-origin successor value enters the input. Windows remain within chronological splits and within a regular five-minute coordinate.
-
-\begin{table}[h]
-\caption{Fixed optimization configuration for all compact neural implementations.}
-\par\small\textit{Alt text: The shared optimization configuration fixes the optimizer, learning rate, batch size, epoch budget, early-stopping rule, gradient clipping, H144 validation objective, and three random seeds for all four compact implementations.}\par
-\centering
-\begin{tabular}{ll}
-\toprule Setting & Value\\
-\midrule
-Optimizer & AdamW\\
-Learning rate & $10^{-3}$\\
-Weight decay & $10^{-5}$\\
-Batch size & 256\\
-Maximum epochs & 25\\
-Early-stopping patience & 5\\
-Minimum improvement & $10^{-8}$\\
-Gradient clipping & 1.0\\
-Checkpoint objective & Validation global masked MSE on H144\\
-Random seeds & 42, 43, 44\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\section{Architecture identity and full layer configuration}
-The Discrete recurrent decoder combines three temporal-convolution branches (dilations 1, 2, and 4; 24 channels each), a 64-dimensional one-layer Transformer, a learned feature gate, bidirectional GRU attention, and an autoregressive GRUCell trajectory decoder. The Inverted-variate Transformer treats the 17 variables as tokens, projects each 72-point history to 64 dimensions, applies one four-head Transformer layer, then flattens the encoded tokens into a 144-output linear map. The Joint-patch Transformer forms overlapping joint multivariate patches of length 12 and stride 6, uses one 64-dimensional four-head Transformer layer, and maps the encoded patches to 144 outputs. The Depthwise TCN uses an input projection followed by four depthwise-separable temporal blocks with 64 channels and kernel size 5, then a flattened linear H144 head.
-
-These are project implementations for a controlled mechanism comparison. The inverted model omits the full official iTransformer embedding, normalization, and decoder design; the joint-patch model does not use the channel-independent PatchTST pipeline; and the depthwise model omits the full ModernTCN large-kernel and multi-scale block system. Accordingly, the reported rankings do not rank the official architectures.
-
-\section{Metrics and masks}
-For a fixed valid-point set $\mathcal{I}$ with $n=|\mathcal{I}|$,
-\begin{align}
-\mathrm{RMSE}&=\sqrt{n^{-1}\sum_{i\in\mathcal{I}}(\hat y_i-y_i)^2},\\
-\mathrm{MAE}&=n^{-1}\sum_{i\in\mathcal{I}}|\hat y_i-y_i|,\\
-R^2&=1-\frac{\sum_{i\in\mathcal{I}}(\hat y_i-y_i)^2}{\sum_{i\in\mathcal{I}}(y_i-\bar y)^2},\\
-\mathrm{range\mbox{-}nRMSE}&=\frac{\mathrm{RMSE}}{y_{\max,\mathrm{Train}}-y_{\min,\mathrm{Train}}},\\
-\mathrm{RMSE\ skill}&=1-\frac{\mathrm{RMSE}_{\mathrm{model}}}{\mathrm{RMSE}_{\mathrm{reference}}}.
-\end{align}
-The daylight mask is true target Active Power greater than 1\% of the corresponding array's Train maximum. It is an evaluation-only mask. Daily Persistence takes each target timestamp's power 24 hours earlier without interpolation. If that point is unavailable, it is removed from every method in that Daily-matched comparison.
-
-\section{Complete quantitative evidence}
-The following tables are generated directly from the frozen \texttt{corrected\_metrics.csv}; they are not transcribed into this source file. They provide per-seed primary metrics, primary support, complete-H144-origin sensitivity, and matched Daily Persistence results.
-
-\input{supplementary_tables.tex}
-
-\section{Rank sensitivity}
-\begin{figure}[p]
-\centering
-\includegraphics[width=0.86\textwidth]{figures/figS1_rank_heatmap.pdf}
-\caption{RMSE ranks for all 24 primary array--horizon--scope combinations. Rank one denotes the smallest error. Short column names correspond to Last-value Persistence, Discrete recurrent decoder, Inverted-variate Transformer, Joint-patch Transformer, and Depthwise convolutional TCN.}
-\par\small\textit{Alt text: Heat map of RMSE ranks across 24 array, horizon, and scope combinations. Columns denote Last-value Persistence, Discrete recurrent, Inverted-variate, Joint-patch, and Depthwise TCN; rankings change across conditions.}\par
-\end{figure}
-
-\section{Independent evidence verification}
-An independent NumPy/Pandas verifier reads the saved H144 predictions, labels, timestamps, and validity arrays without importing the production metric or mask functions. It re-derives primary and Daily-matched masks, Persistence forecasts, RMSE, MAE, Train-range nRMSE, ranks, and sample counts. All 4,414 comparisons passed the registered numerical tolerances; the maximum absolute discrepancy was $8.51\times10^{-12}$ and the maximum relative discrepancy was $3.23\times10^{-11}$. The verifier confirmed primary wins of 12, 9, 2, and 1 for the Inverted-variate, Depthwise, Joint-patch, and Discrete implementations, respectively, with zero for Last-value Persistence. It also confirmed that Daily Persistence was lower than the post hoc best-of-four neural envelope in 22 comparisons; the two envelope wins were Hanwha H12 full-timeline and daylight.
-
-\section{Inference measurement details}
-Parameter counts include all learned tensors. Batch-one latency and batch-256 throughput were measured in evaluation and inference modes on an NVIDIA GeForce RTX 3060 Laptop GPU with float32 inputs of shape $[B,72,17]$. Warm-up preceded synchronized repetitions. Timing excludes model loading, disk input/output, data loading, and host-to-device transfer. Peak allocation is reported in MiB. These hardware-specific measurements support only within-environment comparisons.
-
-\section{Unmatched-sample diagnostic}
-Deleting unavailable lag points from Daily Persistence alone changes its target support and can reverse a headline comparison even when each metric is calculated correctly. The matched-support analysis applies one point mask to Daily Persistence, Last-value Persistence, every neural seed, and the labels. Unmatched-support values are therefore treated only as a methodological diagnostic and never as model-performance evidence.
-
+\input{supplementary_closeout.tex}
+\input{supplementary_diagnostic_front.tex}
+\input{supplementary_diagnostic_figures.tex}
+\clearpage\part*{Historical benchmark definitions and complete tables}
+\input{supplementary_historical_body.tex}
 \end{document}

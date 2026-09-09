@@ -1,0 +1,10 @@
+{
+  "passed": 565,
+  "failed": 0,
+  "skipped": 0,
+  "learning_histories": 60,
+  "ridge_runs": 10,
+  "ridge_metric_rows": 480,
+  "neural_training_executed": false,
+  "scope": "New review checks; does not repeat historical checkpoint forward verification"
+}

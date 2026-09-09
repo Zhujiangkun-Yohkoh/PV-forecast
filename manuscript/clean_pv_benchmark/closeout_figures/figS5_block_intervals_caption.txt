@@ -1,0 +1,1 @@
+Paired temporal-block percentile intervals (2000 resamples; 24/48/72 h). SSE/count is aggregated before each seed RMSE, then seed skills are averaged. These intervals are conditional on observed dates and fitted models, not prediction intervals.

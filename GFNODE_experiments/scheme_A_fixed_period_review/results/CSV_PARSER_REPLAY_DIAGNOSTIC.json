@@ -1,0 +1,17 @@
+[
+  {
+    "parser": "high",
+    "max_abs": 0.00024771690368652344,
+    "passed": false
+  },
+  {
+    "parser": "legacy",
+    "max_abs": 0.00024771690368652344,
+    "passed": false
+  },
+  {
+    "parser": "round_trip",
+    "max_abs": 0.00024771690368652344,
+    "passed": false
+  }
+]

@@ -1,0 +1,1 @@
+Left: additive active/low-power contributions to full MSE on NIST twelve-hour Daily-matched targets; neural contributions are averaged over seeds. Active and low-power Inverted-minus-Daily MSE contributions are -420.64 and +655.38 kW²; net +234.74 kW². Right: seed42 at 2017-10-15 10:00 fixed EST, chosen by the calendar rule, not a rolling reconstruction.

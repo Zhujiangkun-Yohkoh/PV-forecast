@@ -1,0 +1,1 @@
+Post hoc minimum three-seed mean neural RMSE relative to both references on the same Daily-valid targets. F: full; A: power-active. The envelope is descriptive, not deployable.

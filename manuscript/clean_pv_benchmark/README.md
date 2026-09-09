@@ -1,51 +1,13 @@
-# Leakage-aware PV benchmark manuscript
+> 当前诊断修订（2026-09-09）：先读根目录 START_HERE_REVIEW.md、PROJECT_REPORT_CN.md 与 scheme_A_diagnostic_revision 三份诊断报告。最新图件位于 diagnostic_figures；以下旧阶段记录需按日期解释。
 
-This directory contains the JRSE-oriented Research Article **“Leakage-Aware Multi-Horizon Benchmarking of Compact Neural PV Forecasts Across Co-Located Technologies”** and its Supplementary Material. The work is a benchmark/application study, not a new-model paper. It evaluates four compact project implementations under a common causal protocol and does not claim full reproduction of iTransformer, PatchTST, or ModernTCN.
+# Scheme A：当前投稿前审核版
 
-## Evidence and reproducibility boundary
+**Reference Information and Target-Power Regimes in Multi-Window Photovoltaic Forecasting**。当前首投建议及待核实分区见根目录 JOURNAL_STRATEGY_CN.md，不默认JRSE。
 
-The quantitative source of truth is:
+先读根目录START_HERE_REVIEW.md、PROJECT_REPORT_CN.md、REVIEW_RESPONSE_MATRIX.md。当前主文10页、Supplement36页；5主图和9补图，位于review_figures。figures目录为保留的历史图件，不能与当前编号混用。
 
-`GFNODE_experiments/scheme_A_submission_correction/corrected_metrics.csv`
+绘图：从本目录运行 `python -B build_figures.py`；或使用根目录ENVIRONMENT_AND_REPRODUCTION.md中的portable入口。依赖Matplotlib自带DejaVu字体，无Windows字体路径。build_figures_legacy.py是原M3实现的历史副本，不是本轮重建入口。
 
-`build_figures.py` reads that long-format file directly and generates all five vector figures plus the main and supplementary quantitative tables. It does not read former GFNODE results. The independent verifier in the experiment directory reproduced 4,414/4,414 comparisons from saved artifacts without importing the production metric functions. The manuscript preserves the verified primary wins (12/9/2/1/0), the matched Daily-Persistence result (22/24), and the Qcells H12 support (6,463 origins; 77,556 full and 36,504 daylight target points).
+TeX：`latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex`，Supplement同理。数据代码/训练/指标路径及本轮未重跑项目见复现指南。原60次神经实验冻结不变，本轮10个Ridge对照与posthoc解释结果在scheme_A_review_extension。
 
-No neural-network training is part of the manuscript build. Checkpoints, predictions, raw data, and local `results/` are deliberately excluded.
-
-## Build
-
-Requirements are TeX Live 2025 (or equivalent), `latexmk`, REVTeX 4.2, and Python with pandas, NumPy, and ReportLab.
-
-```powershell
-python build_figures.py
-latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
-latexmk -pdf -interaction=nonstopmode -halt-on-error supplementary.tex
-```
-
-The checked build produces `main.pdf` and `supplementary.pdf`; all fonts are embedded. `FIGURE_ALT_TEXT.txt` provides 25–50-word descriptions for every figure and principal table. Both PDFs remain working documents until the authors confirm declarations and approve submission.
-
-## JRSE format basis
-
-Official requirements were checked on 2026-08-28 using the [AIP author instructions](https://publishing.aip.org/resources/researchers/author-instructions/), [JRSE scope](https://pubs.aip.org/aip/jrse/pages/about), [AIP ethics policies](https://publishing.aip.org/resources/researchers/policies-and-ethics/), and [JRSE charges](https://pubs.aip.org/aip/jrse/pages/charges). The manuscript uses the installed AIP REVTeX style, a single-paragraph abstract below 250 words, the required declarations/order, a separate Supplementary Material PDF, and alt text. The planned route is subscription/non-OA; optional Author Select is not authorized.
-
-`INDEXING_STATUS_REQUIRES_AUTHOR_OR_LIBRARY_CONFIRMATION`: current SCIE/JCR status was not independently established from an accessible Clarivate institutional record.
-
-## Files
-
-- `main.tex`, `main.pdf`: main article source and compiled working PDF.
-- `supplementary.tex`, `supplementary.pdf`: separate supplementary source and PDF.
-- `references.bib`: cited literature, including the 2025–2026 direct competitors.
-- `build_figures.py`, `figures/`: evidence-driven vector outputs.
-- `main_result_tables.tex`, `supplementary_tables.tex`: generated LaTeX tables.
-- `FIGURE_ALT_TEXT.txt`: figure/table accessibility descriptions.
-- `REVIEW.md`: reviewer-style scientific and production audit.
-- `submission_package/`: working cover letter and upload/metadata checklists.
-- `PUBLIC_RELEASE_MANIFEST.md`: proposed scope for a future dedicated public repository.
-
-## Author action still required
-
-Before upload, all authors must confirm the author list, CRediT roles, Funding Grant Nos. 62271151 and W2421092, conflict-of-interest and AI-use wording, ethics applicability, code/data release wording, and final manuscript. Three optional ORCIDs remain unconfirmed. The corresponding authors must also reconfirm the subscription route, current indexing, and any conditional production charges.
-
-## Public release status
-
-`PUBLIC_RELEASE_REQUIRES_ACTION`. GitHub reported the existing multi-branch repository as publicly visible on 2026-08-28; this task did not change that setting. It must not be represented as a curated Scheme A reproducibility release because it also exposes unrelated branches and Draft PRs. A dedicated release still requires license selection, a reviewed dependency specification, path-independent public configuration, provider-compliant data download instructions, and an author-approved release scope.
+作者审稿、许可证、最终公开URL和正式投稿仍未代替作者完成。私下完整审核ZIP包括可用本地证据，不表示公开再分发授权。

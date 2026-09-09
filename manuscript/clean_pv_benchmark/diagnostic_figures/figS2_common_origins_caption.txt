@@ -1,0 +1,1 @@
+Horizon-specific (HS, solid) versus common-H144-origin (CO, dashed) cumulative errors. Bars are seed SD. Left panels preserve reference error ranges; right panels show neural detail on separately labelled axes.

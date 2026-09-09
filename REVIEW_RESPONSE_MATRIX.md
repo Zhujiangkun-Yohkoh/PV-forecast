@@ -1,0 +1,72 @@
+# 当前收尾响应矩阵（基线89e494f）
+
+|问题|实际修改|证据|状态|剩余限制|
+|---|---|---|---|---|
+|R1 布尔回放失败|36组分布、W/kW、216指标影响和误差界限；5代表GPU批次|Alice_prediction_differences、Alice_metric_impact、batch_probe、ALICE_REPLAY_IMPACT_REPORT|完成诊断，历史数值状态部分未恢复|原16/20状态不变，不能宣称恢复历史处理器|
+|R2 整场址阻塞|按方法接受；Hanwha/Qcells三个Inv种子正式评分，Sanyo单seed；S1/S2/新增按各前缀|Alice_accepted_metrics、Alice_diagnostic_metrics、各site块CSV|完成约定核心，Sanyo三seed均值合理不生成|训练支持仍不变；诊断模型不入正式排名|
+|R3 支持/时期混杂|两站2017/2018×complete/pointwise四格；统一缓冲，原归档另表|four_cell_summary/intervals/MSE、boundary_audit、6原神经回放|完成|不是纯季节因果；2017推理分组明确记录|
+|独立复算|不调用生产interval的块计数矩阵法；动态回放状态|independent_verify、POINT_AUDIT、INDEPENDENT_AUDIT|完成|检查行数不是独立实验数；不证明重新训练结果|
+|R4文稿/图件|5主图，支持与四格前置，3张历史图移补充；弱化decisive|main、Supplement、closeout_figures|完成后依PDF QA定稿|作者声明与期刊格式待最终流程|
+|PR描述|仅生成本地草稿，不写外部PR描述|PR_DESCRIPTION_DRAFT.md|按要求完成|不绕过此前自动审批拒绝|
+
+结论B：新增核心收窄至经回放验证的方法，可进入投稿准备，不把全部次要模型逐点通过作为条件。
+
+
+---
+## 89e494f及以前的历史记录（下文“本轮”不是当前收尾）
+
+# 本次固定范围审核响应（2026-09-09）
+
+|问题|原位置|措施与实际执行|证据|状态|剩余限制|
+|---|---|---|---|---|---|
+|A 扩展网格区间|diagnostic results|复用20组原/扩展预测，精确对齐，360行配对；空块和零差保留|fixed_period_review/results/expanded_*|完成|条件时间区间，不含重训|
+|B1 负值依据|_valid_power|官方资料及代码复核，撤回“合理性已确认”暗示|DATA_SOURCE_REVIEW.md|部分完成|无全负值无效的提供方依据|
+|B2 训练支持|Alice/Ridge窗口代码|三个阵列Train/Val实际起报及小时/功率组成|*_training_support.csv; *_training_hours.csv|完成|保留神经与Ridge不同origin规则|
+|B3–B5 恢复起报评分|原36checkpoint|36加载/前向；S1/S2支持已算；20未过历史数值容差，不发布正式新评分|Alice_replay_summary.csv; *_support_only.csv|部分完成|需修复原前向复现；Fig.3实际误差补充未完成|
+|C 固定次年|2017外部权重|先记录计划，下载94缓冲日，6个神经+8个Ridge原预测复现后评价2018|*_2017_REPLAY.json; *_2018_*|完成|运行日志不完整；非全年/新场址泛化|
+|D 论文与图件|main/Supplement|扩展区间、原/扩展主表、新时期结果和对应反例|fixed_period_figures; manuscript changelog|部分完成|不把B未接受评分写成完成|
+|投稿判断|JOURNAL_STRATEGY_CN|主题适配与CAS待核实分开|官方URL及查询日期|完成|先科学复现修复，再最终定刊|
+
+以下旧矩阵仅作历史记录；其中“合理保留”不应解释为负值规则已获提供方证明。
+
+# 审核响应矩阵（P01–P06，本轮）
+
+|问题|原位置/影响|实际修改|本轮证据|状态|剩余限制|
+|---|---|---|---|---|---|
+|P01|旧Ridge与摘要，异常值未解释|真实矩阵诊断、统一扩展网格、旧新并列|ridge_*、expanded_*、NIST QR|完成诊断|特征贡献不是因果干预；新网格区间未算|
+|P02|common-origin与fixed-lead解释|三split排除机制、重叠/互斥、唯一时间戳|qcells_*及ALIGNMENT|历史诊断完成；原规则仅为可追溯而保留，合理性未确认|负值语义需提供方依据，变更或涉及下一轮拟合|
+|P03|新Ridge无时间区间|五系统原网格48h及24/72h配对|270行+块SSE独立复算|完成|观察期条件性，不包括重训|
+|P04|旧排名过强|摘要/结果/补充重排，解释前置|main/supp及CHANGELOG|完成|不宣称新架构或零样本|
+|P05|全部图件小字、编码与支持|20图重绘，PDF/SVG/320dpi/source/alt|FIGURE_QA与最终PDF检查|以FIGURE_QA实际检查为准|审美可继续精修，不能替代科学限制|
+|P06|选刊与分区混淆|官方范围/费用，CAS待核实，最小未来期设计|JOURNAL_STRATEGY_CN|部分完成|CAS需机构访问；未补充新季节|
+
+历史R01–R12响应保存在上轮Git提交和完整历史报告；本轮不把其历史测试重新标为实际执行。
+
+## 上轮响应原文（历史记录）
+
+# 问题—修改—证据对应表（2026-09-08）
+
+路径均相对项目根目录。`review/`在本表中指 `GFNODE_experiments/scheme_A_review_extension/`；`paper/`指 `manuscript/clean_pv_benchmark/`。这是本轮状态，不把旧M3通过数冒充本轮结果。
+
+|编号|原文件位置|问题及影响|拟采取措施|实际修改|验证证据|状态|剩余限制|
+|---|---|---|---|---|---|---|---|
+|R01|paper/main.tex 摘要、方法及旧图3/4；Supplement|H12等容易被理解为孤立lead误差|区分累计窗口与固定lead|方法给出1/4/8/12h前缀映射；主图轴改小时；新增144个固定lead误差|review/results/lead_specific.csv；Fig S4；逐点对照6720项|完成|不同原始窗口合法origin不同，正文明确不能全归因窗口长度|
+|R02|原primary_horizon_specific及Qcells短窗|样本组成随窗口改变|保留主分析并做common-H144|五系统、四模型、两种支持、两种参考交集、三功率范围均重算；Fig S2分完整参考范围与神经细节|metrics_decomposition.csv 的support/origins/points；compare_frozen.py|完成|Qcells1h active由36504降至42，Last-value在共同子集领先；完整H144不能代表被排除时段|
+|R03|main.tex、supplementary.tex、图注表头|daylight实为真实功率阈值|命名准确且不改阈值|全文当前图表改power-active；补集low-power；保留冻结CSV键daylight并解释|阈值源自Train；三范围可加和检查2400项|完成|不能推断夜晚、积雪、停机；未伪造太阳高度角|
+|R04|原模型介绍autoregressive/direct表述|与真实forward不一致|逐层核对，不改权重|正文给出固定context的GRUCell状态递推；三直接多输出头分开；Supplement说明dropout/normalization|原run_corrected_benchmark.py 297–402行；当前Supplement结构和参数表|完成|本轮8个17/7通道synthetic forward及模块参与检查通过；不加载checkpoint|
+|R05|固定预算架构排名解释|相同预算不代表充分优化|查全部训练记录并收窄结论|60份历史日志最优/停止轮核对；NIST TCN三seed最佳均25；Fig S9|learning_histories.csv、training_budget.csv、REVIEW_VERIFICATION.json|完成|预算边界仍存在；未延长或重训神经模型|
+|R06|仅三seed SD|未表达时间支持不确定性|预写方案后配对块重采样|48h主分析，24/72h敏感性，2000次，共用方法和seed索引，SSE/count重算；正文报告关键区间|ANALYSIS_PLAN.md；paired_block_intervals.csv；Fig S5|完成|区间条件于已观察日期与已拟合模型；跨块残余相关，Alice时间短；无未经计划p值|
+|R07|NIST H144/full与active反转|缺少直接数值解释|逐seed恒等式和逐点分解|五系统全部模型窗口分解RMSE/MAE/bias/比例及加权MSE；主文Table IV、Fig5|2400项SSE恒等式；NIST净MSE增加234.744 kW²|完成|低功率为统计子集，不是操作事件标签|
+|R08|仅两个确定性参考|简单学习与日周期输入作用未区分|五系统Ridge A/B、固定有限alpha、Validation选择|完成10个确定性fit；50候选Validation分数全部保留；Train-only变换；同目标评价；不伪造seed|ridge_metrics.csv、ridge_validation_selection.csv；480逐点独立指标行检查；Table V、Fig S8|完成|事后新增；Yulara线性参考较差仍保留；不证明给神经网络增加同信息后的效果|
+|R09|外部结果缺少时序案例|不易理解成功与失败|按origin月份和透明规则挑案例|外部三月汇总；每站三固定日历起报及明确posthoc最好/最坏seed42；每曲线单一起报|monthly.csv、trajectory_cases.csv；Fig S6/S7|完成|极端例子不是代表频率；无天气故事|
+|R10|旧标题与重复审计叙事|主线过分强调流程、用词混淆|围绕参考信息与功率误差组成重构|新标题、196词摘要、独立拟合与事后分析分层；正文约2895词；旧正文4245词（同口径）|WORD_COUNTS.json；main.tex；引用/术语及PDF检查|完成|作者声明与公开URL仍需最终确认；本轮不猜测|
+|R11|旧8幅图、极值压缩、latency线性轴|读图困难，排名放大细小差异|重绘当前所有正式图并实际看PDF|5主图＋9补图，全部PDF/SVG/320dpiPNG及CSV/caption/alt；旧新预览；NIST加权MSE和固定轨迹|review_figures/；FIGURE_QA.md；FIGURE_OVERVIEW.png；PDF逐页渲染记录|完成|这是经过视觉检查的科学初版；S2/S7多面板标签可在定刊后再做美术微调，数据与整图可独立交接|
+|R12|Windows字体、私人数据查找、git show|离开原环境不易复现|自包含当前入口和显式路径|当前build_figures入口用Matplotlib字体；portable_entry；prepare_training_copy保留历史源码、独立新目录显式路径，已导入检查|ENVIRONMENT_AND_REPRODUCTION.md；CSV绘图与保存预测指标实际执行；训练副本inspect成功|部分完成|本轮禁止神经重训，未测试官方数据→60次完整训练；CAS/JCR/作者费用路线需机构/官方核实|
+
+## 科学结论变化
+
+原冻结神经数字不变。新增分析使解释更具体并限制推广：小幅Yulara长窗Daily收益的时间区间跨零；NIST低功率额外误差抵消active节省；Ridge＋日周期在NIST的12h/full优于现有主模型和Daily，但在Yulara仍较差。论文不再把神经模型普遍占优或某结构普遍第一作为贡献。
+
+## 未执行项目
+
+本轮没有神经训练、微调、checkpoint更新或额外神经模型；没有原60次训练全复现；没有自动完成作者声明、许可证、OA选择、公开发布或实际投稿。CAS最新版大类/小类、JCR分区及大部分当前JIF尚未获得权威条目，见JOURNAL_STRATEGY_CN.md。

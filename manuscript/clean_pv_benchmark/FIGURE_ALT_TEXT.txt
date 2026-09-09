@@ -1,15 +1,95 @@
-Figure 1. Three-layer causal benchmark workflow showing three co-located arrays, Train-only preprocessing, a 17-dimensional L72 history, the forecast origin, and an H144 target. Within each array, every method uses the same forecast origins, labels, and point masks.
+M3 accessibility descriptions: 8 figures and 23 tables.
+Generated alongside the final figure and table sources.
 
-Figure 2. Two aligned logarithmic dot plots show the post hoc neural-envelope RMSE divided by Last-value or matched Daily Persistence RMSE for 24 combinations. All points are shown. Daily is lower in 22 comparisons; Hanwha H12 full and daylight are the two exceptions.
+Figure 1
+Three separate columns show Alice Springs with three co-located arrays and 17 channels, Yulara with one combined facility and seven channels, and NIST with one facility and seven channels. Each target is fitted separately before matched evaluation.
 
-Figure 3. Six panels arrange full-timeline and daylight evaluations in rows and Sanyo, Hanwha, and Qcells in columns. Five method curves show Train-range nRMSE from H12 through H144, revealing horizon growth and array- and scope-dependent ranking changes.
+Figure 2
+Two panels show the Alice post hoc neural envelope divided by Last-value or Daily RMSE for every array, horizon and scope. Ratios below one favor the envelope. Daily leads in 22 comparisons; Hanwha H12 provides the two exceptions.
 
-Figure 4. Neural-focused scatter plot of macro Train-range nRMSE against logarithmic batch-one GPU latency for four compact implementations. Bubble area is proportional to parameter count, bold borders mark the within-environment Pareto frontier, and a text annotation reports the off-scale Last-value macro error.
+Figure 3
+Signed heat-map cells show Inverted-variate skill against Last-value for five target systems and four horizons, separated into full and daylight panels. All cells are positive. A dashed line separates descriptive 17-channel Alice results from prespecified seven-channel external results.
 
-Table 1. Recent PV forecasting studies differ in sites, available future weather information, horizons, model scope, persistence references, and uncertainty treatment. The present study isolates causal history-only compact implementations on matched samples across co-located arrays.
+Figure 4
+Signed heat-map cells show Inverted-variate skill against matched Daily for all five systems and four horizons. Alice cells are negative. Yulara cells and seven NIST cells are positive; NIST H144 full is negative. White marks zero on a symmetric color scale.
 
-Table 2. The Sanyo, Hanwha, and Qcells arrays are co-located but use different module technologies and DC ratings. Horizon-specific Test origin counts are reported separately for each array and shared only among methods evaluated within that array.
+Figure 5
+Printed mean neural ranks and gray shading compare four implementations across three Alice arrays, Yulara and NIST. Inverted-variate leads Yulara; recurrent has the best NIST average. Alice array rows remain separately visible above the external-site boundary.
 
-Table 3. Four compact neural implementations retain recurrent, inverted-variate, joint-patch, or depthwise-convolution mechanisms while omitting components of the architectures that inspired them. Parameter counts and batch-one latency describe the common 17-channel H144 task.
+Figure S1
+The original Alice heat map displays all five primary method ranks in twenty-four array, horizon and scope combinations. Rank one indicates lowest RMSE. The best compact implementation changes with array, horizon and evaluation scope.
 
-Table 4. Primary H12 and H144 Train-range nRMSE compares the descriptive post hoc best-of-four neural envelope with Last-value Persistence on identical horizon-specific targets. The envelope is lower in every listed primary comparison but is not a prespecified model.
+Figure S2
+Six panels show Alice Train-range normalized RMSE by horizon for every method. Columns identify three co-located arrays and rows distinguish full timeline from daylight. Line style and marker shape supplement color to identify implementations.
+
+Figure S3
+Aligned rows show the four Alice implementations, parameter counts, average normalized error and batch-one latency. Both axes start at zero, and a dashed line shows Last-value normalized error. Joint-patch is fastest; Inverted-variate has the lowest average normalized error.
+
+Table I
+Three geographic sites are compared by target systems, descriptive DC ratings, input width, chronological splits, sampling and time coordinates. Alice contains three co-located arrays. Yulara and NIST each contribute one separately fitted external facility with documented metadata limits.
+
+Table II
+The Alice post hoc envelope and Last-value normalized errors are shown for H12 and H144 in both scopes for each array. Every envelope skill is positive; the selected envelope implementation changes across the twelve displayed conditions.
+
+Table S1
+The shared historical training configuration specifies AdamW, learning rate, weight decay, batch size, maximum budget, patience, minimum improvement, clipping, global H144 Validation objective and three seeds. These settings describe completed experiments, not a new training request.
+
+Table S2
+Per-seed root mean square errors show how forecast accuracy changes across arrays, scopes, and horizons for the four compact neural implementations. Seed spread reflects initialization variability rather than independent data replication.
+
+Table S3
+Per-seed mean absolute errors provide a less tail-sensitive comparison of the four compact neural implementations across arrays, scopes, and horizons. The pattern complements RMSE by reducing the influence of large residuals.
+
+Table S4
+Per-seed coefficients of determination show horizon- and scope-dependent explained variance, including negative values where forecasts underperform the target mean. Values are descriptive because adjacent forecast origins overlap.
+
+Table S5
+Per-seed mean errors identify underprediction and overprediction patterns across the three arrays, two scopes, and four forecast horizons. Positive values indicate overprediction, and negative values indicate underprediction.
+
+Table S6
+Per-seed Train-range normalized RMSE values permit within-array comparison of error growth while avoiding unsupported AC-capacity normalization. The denominator is fitted only on Train and differs by array.
+
+Table S7
+Per-seed RMSE skill relative to Last-value Persistence quantifies improvement beyond local continuity; positive values favor the neural implementation. Every value uses the same origins, labels, and masks as its reference.
+
+Table S8
+Forecast-origin and valid-target counts decrease with horizon and are shared by every method within each array-specific comparison. Full and daylight scopes report their target support separately.
+
+Table S9
+Restricting every prefix to complete H144 origins preserves the main pattern of horizon-dependent error without changing the primary horizon-specific analysis. This analysis is secondary to the horizon-specific evaluation.
+
+Table S10
+On identical Daily-valid target points, Daily Persistence has lower RMSE than the post hoc neural envelope in 22 of 24 comparisons; the exceptions are Hanwha H12 full and daylight.
+
+Table III
+Normalized errors and matched skills for all sixteen external primary comparisons. The NIST H144 full-timeline Daily skill is negative; all other Daily skills and all Last-value skills are positive.
+
+Table IV
+Inverted-variate has the best mean rank at Alice Springs and Yulara. Recurrent has the best mean rank at NIST. Ranks average within-setting comparisons rather than cross-site kilowatt errors.
+
+Table V
+Programmatically counted wins distinguish the focal or prespecified model from the post hoc neural envelope and distinguish the two matched persistence references.
+
+Table S11
+Six common numerical fields are summarized. Both negative and large finite observations remain in the external experiment; GHI units are not equated across sites.
+
+Table S12
+Every implementation retains its compact structure with the seven-channel input width; counts differ from the original seventeen-channel networks.
+
+Table S13
+Every split, horizon, scope and matching regime is represented; larger horizons retain fewer eligible origins.
+
+Table S14
+All four compact models are shown without selecting favorable seeds; negative coefficients of determination are retained.
+
+Table S15
+All four compact models are shown without selecting favorable seeds; negative coefficients of determination are retained.
+
+Table S16
+Every external model, horizon and scope has three displayed seed errors; none is selected as the reported best seed.
+
+Table S17
+Two facilities, four models and three seeds yield exactly twenty-four completed runs with individually recorded Validation checkpoints.
+
+Table S18
+The best neural mean on each Daily-matched target set defines a favorable descriptive envelope. Both wins and losses are retained.

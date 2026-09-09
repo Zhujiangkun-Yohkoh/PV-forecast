@@ -1,0 +1,52 @@
+{
+  "threshold": 0.060368347169999996,
+  "checks": [
+    {
+      "split": "train",
+      "h": 12,
+      "candidates": 30528,
+      "retained": 27951,
+      "exclusive_reconciled": true
+    },
+    {
+      "split": "train",
+      "h": 144,
+      "candidates": 30528,
+      "retained": 12648,
+      "exclusive_reconciled": true
+    },
+    {
+      "split": "validation",
+      "h": 12,
+      "candidates": 6624,
+      "retained": 6194,
+      "exclusive_reconciled": true
+    },
+    {
+      "split": "validation",
+      "h": 144,
+      "candidates": 6624,
+      "retained": 2977,
+      "exclusive_reconciled": true
+    },
+    {
+      "split": "test",
+      "h": 12,
+      "candidates": 6912,
+      "retained": 6463,
+      "exclusive_reconciled": true
+    },
+    {
+      "split": "test",
+      "h": 144,
+      "candidates": 6912,
+      "retained": 2996,
+      "exclusive_reconciled": true
+    },
+    {
+      "split": "test",
+      "h": 144,
+      "exact_frozen_timestamp_labels_mask": true
+    }
+  ]
+}

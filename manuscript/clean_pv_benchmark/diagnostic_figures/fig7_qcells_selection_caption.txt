@@ -1,0 +1,1 @@
+Qcells Test: 6463 one-hour origins become 2996 complete-twelve-hour origins. Exclusive attribution assigns 3350 removals to future negative labels and 117 to the tail boundary. Active one-hour pairs decrease from 36504 to 42, involving 25 unique active timestamps and 25 origins.

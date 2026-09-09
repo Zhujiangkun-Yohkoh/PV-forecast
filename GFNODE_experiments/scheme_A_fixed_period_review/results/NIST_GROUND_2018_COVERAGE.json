@@ -1,0 +1,22 @@
+{
+  "site": "NIST_GROUND",
+  "origin_first": "2018-04-01 00:00:00-05:00",
+  "origin_last": "2018-06-30 23:55:00-05:00",
+  "target_last": "2018-07-01 11:55:00-05:00",
+  "candidate_origins": 26208,
+  "raw_coordinate": "UTC-05:00",
+  "frame_missing": {
+    "power": 880,
+    "temperature": 880,
+    "ghi": 880
+  },
+  "period_missing_fraction": {
+    "power": 0.033386752136752136,
+    "temperature": 0.033386752136752136,
+    "ghi": 0.033386752136752136
+  },
+  "negative_power": 597,
+  "negative_GHI": 11192,
+  "threshold_from_2017": 2.574,
+  "fit_calls": 0
+}

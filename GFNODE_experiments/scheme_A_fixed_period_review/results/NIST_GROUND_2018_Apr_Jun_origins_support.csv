@@ -1,0 +1,13 @@
+site,period,support,horizon,scope,candidate_origins,before_reference_origins,before_reference_points,origins,points,unique_targets,active_points
+NIST_GROUND,2018_Apr_Jun_origins,fixed_period,12,full,26208,26207,303996,25319,292202,24710,146476
+NIST_GROUND,2018_Apr_Jun_origins,fixed_period,12,power-active,26208,13852,150996,13616,146476,12318,146476
+NIST_GROUND,2018_Apr_Jun_origins,fixed_period,12,low-power,26208,14557,153000,13861,145726,12392,0
+NIST_GROUND,2018_Apr_Jun_origins,fixed_period,48,full,26208,26208,1215984,25333,1168305,24746,585563
+NIST_GROUND,2018_Apr_Jun_origins,fixed_period,48,power-active,26208,16993,603984,16675,585563,12318,585563
+NIST_GROUND,2018_Apr_Jun_origins,fixed_period,48,low-power,26208,17809,612000,17064,582742,12428,0
+NIST_GROUND,2018_Apr_Jun_origins,fixed_period,96,full,26208,26208,2431968,25333,2335738,24794,1170061
+NIST_GROUND,2018_Apr_Jun_origins,fixed_period,96,power-active,26208,21178,1208157,20758,1170061,12343,1170061
+NIST_GROUND,2018_Apr_Jun_origins,fixed_period,96,low-power,26208,21967,1223811,21151,1165677,12451,0
+NIST_GROUND,2018_Apr_Jun_origins,fixed_period,144,full,26208,26208,3647952,25333,3502466,24842,1753131
+NIST_GROUND,2018_Apr_Jun_origins,fixed_period,144,power-active,26208,24756,1812573,24251,1753131,12391,1753131
+NIST_GROUND,2018_Apr_Jun_origins,fixed_period,144,low-power,26208,25664,1835379,24804,1749335,12451,0

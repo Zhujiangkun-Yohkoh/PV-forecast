@@ -1,0 +1,1 @@
+All internal support abbreviations are expanded. Qcells common origins select a different power distribution; this is not the new S1/S2 restored-origin error comparison.

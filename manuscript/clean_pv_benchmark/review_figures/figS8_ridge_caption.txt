@@ -1,0 +1,1 @@
+Post hoc Ridge with recent history and Ridge plus available previous-day trajectory; alphas selected on Validation only. Daily-matched full targets are identical to the neural comparison. Ridge is deterministic; neural bars are three-seed SD.

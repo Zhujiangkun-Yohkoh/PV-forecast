@@ -1,0 +1,1 @@
+Historical horizon-specific versus common complete-twelve-hour origin support, full target range. Bars show seed SD. Separate reference and neural panels retain full error ranges and readable details. Common-origin selection does not isolate window length from the selected population.

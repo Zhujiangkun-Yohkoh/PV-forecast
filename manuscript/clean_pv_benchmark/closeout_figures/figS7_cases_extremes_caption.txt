@@ -1,0 +1,1 @@
+Post hoc diagnostic extremes seed42 trajectories. Fixed cases use the first eligible origin on or after each month’s 15th at 10:00; extremes use original Daily SSE differences and are not representative frequencies.

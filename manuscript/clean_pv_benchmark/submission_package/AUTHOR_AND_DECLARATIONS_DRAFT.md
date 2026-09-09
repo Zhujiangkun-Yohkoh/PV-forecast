@@ -42,9 +42,10 @@ The authors declare that they have no known competing financial interests or per
 
 `FINAL_AUTHOR_CONFIRMATION_REQUIRED`: every author must confirm the roles and order.
 
-## AI-assisted-tools disclosure draft
+## AI-assisted-tools disclosure status
 
-AIP Publishing's AI policy was checked on 2026-08-27. AI-assisted tools were used during code review, evidence organization, language editing, and manuscript preparation. All numerical experiments and verification procedures were executed under author supervision; all outputs were reviewed by the authors; and the authors take full responsibility for the manuscript and reported results. AI tools are not listed as authors.
+The standalone AI workflow Methods subsection has been removed. Exact tool/version details and any applicable final disclosure wording remain for author confirmation under the M3 instruction; no model name or all-author review is inferred.
 
-Before upload, add the exact tool name, version, manufacturer/provider, task-specific use, and reason required by AIP policy. `FINAL_AUTHOR_CONFIRMATION_REQUIRED`.
+## Earlier user confirmations and M3 approval
 
+The user has confirmed funding, author contributions, absence of conflicts, ethics applicability, official-source data, exclusive submission and intended code publication. These confirmations are retained. The final wording for the newly integrated M3 paper, its Supplement and its submission files still requires all-author approval. Code URL, license and release details remain for the final submission preparation stage.
