@@ -1,0 +1,11 @@
+site,horizon,support,origins,points,unique_targets,active_points,status
+Qcells,12,Original,6463,77530,6756,36504,support_only_prediction_replay_unresolved
+Qcells,12,S1,6786,80692,6781,37574,support_only_prediction_replay_unresolved
+Qcells,12,S2,6786,80746,6786,37574,support_only_prediction_replay_unresolved
+Qcells,12,S1_new_origins,323,3162,552,1070,support_only_prediction_replay_unresolved
+Qcells,12,S2_new_origins,323,3216,557,1070,support_only_prediction_replay_unresolved
+Qcells,144,Original,2996,431150,6425,187950,support_only_prediction_replay_unresolved
+Qcells,144,S1,6786,958668,6781,442887,support_only_prediction_replay_unresolved
+Qcells,144,S2,6786,959382,6786,442887,support_only_prediction_replay_unresolved
+Qcells,144,S1_new_origins,3790,527518,6755,254937,support_only_prediction_replay_unresolved
+Qcells,144,S2_new_origins,3790,528232,6760,254937,support_only_prediction_replay_unresolved

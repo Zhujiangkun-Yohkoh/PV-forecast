@@ -1,0 +1,4 @@
+field,missing,nonfinite,negative,minus999,minimum,p01,median,p99,maximum
+PwrMtrP_kW_Avg,2018,0,2783,0,-0.615,-0.285,1.973,234.6,258.1
+AmbTemp_C_Avg,2018,0,232,0,-1.119,1.94433,19.48,32.81,39.94
+Pyra1_Wm2_Avg,2018,0,59005,0,-25.238287,-14.901329,30.876625,996.3753,1302.1881

@@ -8,13 +8,13 @@
 \usepackage{xcolor}
 \usepackage{hyperref}
 \usepackage{url}
-\hypersetup{colorlinks=true,linkcolor=blue!45!black,citecolor=blue!45!black,urlcolor=blue!45!black,pdftitle={Reference Information and Target-Power Regimes in Multi-Window Photovoltaic Forecasting},pdfauthor={Jiangkun Zhu et al.}}
+\hypersetup{colorlinks=true,linkcolor=blue!45!black,citecolor=blue!45!black,urlcolor=blue!45!black,pdftitle={Reference History and Target Support in Multi-Window Photovoltaic Forecasting},pdfauthor={Jiangkun Zhu et al.}}
 \sisetup{detect-all,round-mode=places,round-precision=3}
 \setcounter{dbltopnumber}{4}\renewcommand{\dbltopfraction}{0.95}\renewcommand{\textfraction}{0.05}
 
 \begin{document}
 \preprint{WORKING MANUSCRIPT --- AUTHOR DECLARATIONS PENDING CONFIRMATION}
-\title{Reference Information and Target-Power Regimes in Multi-Window Photovoltaic Forecasting}
+\title{Reference History and Target Support in Multi-Window Photovoltaic Forecasting}
 
 \author{Jiangkun Zhu}
 \thanks{ORCID: \href{https://orcid.org/0009-0009-5335-2345}{0009-0009-5335-2345}}
@@ -33,7 +33,7 @@
 
 
 \begin{abstract}
-Forecasting gains depend on the history available to a reference model and on which targets enter evaluation. We examine these dependencies in five photovoltaic systems at three geographic sites, using 60 frozen neural runs and separately fitted linear references. Six-hour histories predict twelve-hour trajectories, evaluated over cumulative 1, 4, 8 and 12 hour windows. Adding previous-day trajectories changes Ridge performance, but its interpretation requires both numerical and temporal checks. At Yulara, the original linear errors arise from rare training missingness indicators exposed much more frequently later; an independent real-matrix solver reproduces the predictions. A uniformly expanded, Validation-selected regularization grid reduces twelve-hour Ridge errors from 119.58 to 29.84 kW with recent history and from 35.95 to 15.84 kW with daily history. At NIST, daily-augmented Ridge improves on Daily by 6.90 kW, with a conditional 48-hour-block interval of 5.31--8.43 kW. Target selection also matters: requiring complete twelve-hour Qcells windows reduces the active share of one-hour targets from 47.07\% to 0.117\%, mainly through the frozen negative-label rule. These post hoc analyses explain how information, missingness exposure and evaluation support alter apparent forecasting advantages. They support conditional comparisons of implemented models, rather than a universally preferred architecture.
+Forecasting gains depend on the reference history, the scored power range, and the evaluation period. We examine these dependencies in five photovoltaic systems at three geographic sites, using 60 frozen neural runs and two linear information sets: six-hour recent history, with or without an available previous-day trajectory. Forecasts are assessed over cumulative one- to twelve-hour windows. A post hoc expanded regularization grid brings Yulara daily-augmented Ridge to 15.84 kW twelve-hour error, close to Daily at 16.07 kW and Inverted-variate at 15.81 kW; paired temporal intervals cross zero for both contrasts. Fixed next-year evaluation at the two external sites changes these comparisons without refitting. At Yulara, original-grid Ridge, Daily, expanded-grid Ridge and Inverted-variate have full-target errors of 8.02, 9.56, 10.84 and 13.86 kW, respectively. At NIST, Inverted-variate improves on Daily in that period, reversing the earlier full-target ordering. Separately, complete-window conditioning in Qcells strongly changes target-power composition; the finite-negative exclusion rule lacks confirmed provider justification. These results show why information gains, target selection and time-period effects must be distinguished. They support conditional comparisons of frozen forecasters, rather than a universally preferred model or regularization grid.
 \end{abstract}
 \keywords{photovoltaic forecasting, reference information, cumulative forecast windows, error decomposition}
 \maketitle
@@ -55,7 +55,7 @@ Recurrent, variate-token, patch-token, and convolutional models provide alternat
 Figure~\ref{fig:protocol} shows the information available at forecast time. Alice Springs contributes three co-located arrays and 36 historical neural runs; Yulara and NIST Ground each contribute one target and 12 runs. Seeds are 42, 43, and 44. No observations are pooled across systems. Table~\ref{tab:data} records the two input regimes and chronological splits.
 
 \begin{figure*}[!tp]
-\centering\includegraphics[width=0.97\textwidth]{diagnostic_figures/fig1_design.pdf}
+\centering\includegraphics[width=0.97\textwidth]{fixed_period_figures/fig1_design.pdf}
 \caption{Every future target at origin plus j times five minutes uses its exact minus-24-hour historical counterpart for Daily or Ridge B. The six-hour history contains 72 samples from minus 355 minutes through origin; the twelve-hour target sequence begins at plus five minutes.}
 \label{fig:protocol}
 \end{figure*}
@@ -117,17 +117,25 @@ The later diagnostic revision preserves these original fits. It reconstructs the
 
 Ridge temporal comparisons use a common complete-H144 origin set and the Daily-finite point intersection for A, B, Daily and all three Inverted seeds. The effect is $\mathrm{RMSE}_B-\mathrm{RMSE}_{\rm reference}$, so negative values favor B. Each neural-seed contrast is computed first, and their mean uses the same temporal draw. These intervals quantify time-sample variation in frozen predictions, not uncertainty from retraining. Qcells support attribution separately records overlapping exclusion flags and an exclusive order: history/tail boundary, future missing or nonfinite labels, future negative labels, invalid origin power, then retention. Daily missingness remains a separate point intersection.
 
+
+\subsection{Frozen next-year evaluation and scoring sensitivity}
+Before calculating the new-period errors, forecast origins were fixed to 1 April--30 June 2018 at Yulara and NIST. The final origin is 30 June at 23:55 and its last target is 1 July at 11:55. Source data from 30 March through 1 July provide historical and target buffers. NIST retains fixed EST and strict five-minute aggregation; Yulara retains provider-local availability coordinates. Original 2017 processors, three Inverted checkpoints and both saved Ridge grids are applied without fitting any component or changing thresholds. This is a same-site next-year fixed-period evaluation, not zero-shot transfer to new sites or year-round validation.
+
+Each new-period comparison scores the intersection of finite target power, valid origin power and available Daily values. Missing labels are never filled; negative finite external power remains eligible. This pointwise support is stated separately from the original complete-H144 Test support. Differences between periods therefore are not attributed solely to season. The same 48-hour primary and 24/72-hour sensitivity block procedure applies, with origin blocks anchored at 1 April.
+
+For Alice, a separate support analysis distinguishes pointwise nonnegative targets (S1) from finite raw targets (S2), retaining the frozen input and Daily rules. Provider documentation does not establish that every finite negative measurement is invalid. A completed-window filter and a pointwise scoring mask answer different questions. The restored-origin neural comparison is not promoted here because the new forward path has not reproduced every historical checkpoint within the original numerical tolerance; its support counts and diagnostic status are reported in the Supplement.
+
 \section{Results}
 \subsection{Temporal support and simple learned references}
 Paired 48 h block intervals qualify the small long-window Daily gains. Yulara twelve-hour/full skill is 1.62\%, with a conditional interval of $[-9.47,9.85]$\%; NIST eight-hour/full is 3.88\% with $[-6.10,11.91]$\%, and twelve-hour/full is $-6.47$\% with $[-17.14,2.28]$\%. NIST's corresponding power-active eight- and twelve-hour intervals are $[11.75,27.07]$\% and $[4.60,19.94]$\%. All prechosen block-size results are retained in the Supplement. These intervals describe temporal variation over the observed Test support and fitted models, separately from seed SD.
 
-\subsubsection{Original-grid effects and paired intervals}
-Table~\ref{tab:ridge} preserves the original-grid twelve-hour results. Ridge B reduces full-target error relative to A in all five systems, but this is an information-set comparison within a particular linear specification. Figure~\ref{fig:ridgeintervals} supplies the paired time intervals. At NIST, B minus Daily is $-6.90$ kW with a 48-hour interval $[-8.43,-5.31]$ kW; B minus mean Inverted is $-9.61$ kW with $[-12.08,-7.15]$ kW. At Qcells, the observed $-0.0071$ kW B-minus-Daily difference has interval $[-0.0525,0.0494]$ kW. These are conditional differences over the scored dates, not proof of stability across future years. All 24/72-hour checks, power-active comparisons and individual neural-seed contrasts are retained.
+\subsubsection{Saved-grid effects and paired intervals}
+Table~\ref{tab:ridge} presents both saved grids on identical twelve-hour targets. Ridge B reduces full-target error relative to A in all five systems, but this is an information-set comparison within a particular linear specification. Figure~\ref{fig:ridgeintervals} now shows the expanded-grid intervals; original-grid intervals are retained in the supplementary evidence. At NIST, B minus Daily is $-6.90$ kW with a 48-hour interval $[-8.43,-5.31]$ kW; B minus mean Inverted is $-9.61$ kW with $[-12.08,-7.15]$ kW. At Qcells, the observed $-0.0071$ kW B-minus-Daily difference has interval $[-0.0525,0.0494]$ kW. These are conditional differences over the scored dates, not proof of stability across future years. All 24/72-hour checks, power-active comparisons and individual neural-seed contrasts are retained.
 \input{review_ridge_table.tex}
 
 \begin{figure*}[p]\centering
-\includegraphics[width=0.97\textwidth,height=0.79\textheight,keepaspectratio]{diagnostic_figures/fig6_ridge_intervals.pdf}
-\caption{Original-grid Ridge B minus each reference: negative RMSE differences favor B. Points and 95\% paired 48-hour temporal-block intervals use identical complete-H144, Daily-finite targets within each system and scope. Inverted effects average three seed-specific contrasts under common draws. Panel scales differ; kW errors are not pooled.}
+\includegraphics[width=0.97\textwidth,height=0.79\textheight,keepaspectratio]{fixed_period_figures/fig6_ridge_intervals.pdf}
+\caption{Expanded-grid Ridge B minus each reference over cumulative 12 h windows. Negative differences favor B. Bars are 95\% paired 48 h origin-block intervals, 2000 draws; Inverted contrasts average three seed-specific effects, not predictions. Identical complete-H144 and Daily-finite target support is used within each system/scope. Scales differ between panels. Original-grid intervals remain in the supplementary evidence.}
 \label{fig:ridgeintervals}\end{figure*}
 
 \subsubsection{Why the Yulara reference extrapolates}
@@ -145,7 +153,7 @@ The exclusion mechanism is identifiable (Fig.~\ref{fig:qcellsselection}). Among 
 The mechanism also operates before Test. On complete-H144 evaluation support, the active share of first-hour pairs is 3.08\% in Train and zero in Validation, versus 44.84\% and 44.96\% on one-hour support. Historical Alice neural training checks full future-label validity without requiring valid origin power, unlike evaluation and Ridge fitting; its corresponding Train and Validation counts are 12747 and 2999 rather than 12648 and 2977. This distinction is reported without changing frozen models. Common-origin and fixed-lead curves therefore describe a selected complete-window population. Last-value's 0.00398 kW versus Inverted's 0.12494 kW on the retained one-hour full targets does not establish performance over the removed production periods.
 
 \begin{figure*}[!tp]\centering
-\includegraphics[width=0.97\textwidth]{diagnostic_figures/fig7_qcells_selection.pdf}
+\includegraphics[width=0.97\textwidth]{fixed_period_figures/fig7_qcells_selection.pdf}
 \caption{Qcells Test: 6463 one-hour origins become 2996 complete-twelve-hour origins. Exclusive attribution assigns 3350 removals to future negative labels and 117 to the tail boundary. Active one-hour pairs decrease from 36504 to 42, involving 25 unique active timestamps and 25 origins.}
 \label{fig:qcellsselection}\end{figure*}
 
@@ -156,7 +164,7 @@ Table~\ref{tab:decomp} and Fig.~\ref{fig:decomp} quantify this cancellation on t
 \input{review_decomposition_table.tex}
 
 \begin{figure*}[!tp]
-\centering\includegraphics[width=0.97\textwidth]{diagnostic_figures/fig5_decomposition_case.pdf}
+\centering\includegraphics[width=0.97\textwidth]{fixed_period_figures/fig5_decomposition_case.pdf}
 \caption{Left: additive active/low-power contributions to full MSE on NIST twelve-hour Daily-matched targets; neural contributions are averaged over seeds. Active and low-power Inverted-minus-Daily MSE contributions are -420.64 and +655.38 kW$^2$; net +234.74 kW$^2$. Right: seed42 at 2017-10-15 10:00 fixed EST, chosen by the calendar rule, not a rolling reconstruction.}
 \label{fig:decomp}
 \end{figure*}
@@ -167,7 +175,7 @@ The frozen primary winners remain Inverted-variate 12, TCN 9, Joint-patch 2, rec
 \input{main_result_tables.tex}
 
 \begin{figure*}[!tp]
-\centering\includegraphics[width=0.97\textwidth]{diagnostic_figures/fig2_alice_references.pdf}
+\centering\includegraphics[width=0.97\textwidth]{fixed_period_figures/fig2_alice_references.pdf}
 \caption{Post hoc minimum three-seed mean neural RMSE relative to both references on the same Daily-valid targets. F: full; A: power-active. The envelope is descriptive, not deployable.}
 \label{fig:alice}
 \end{figure*}
@@ -178,7 +186,7 @@ The external prespecified model has lower mean RMSE than Last-value in all 16 co
 \input{review_external_table.tex}
 
 \begin{figure*}[!tp]
-\centering\includegraphics[width=0.97\textwidth]{diagnostic_figures/fig3_external_skills.pdf}
+\centering\includegraphics[width=0.97\textwidth]{fixed_period_figures/fig3_external_skills.pdf}
 \caption{Inverted-variate mean seed skill with 95\% paired temporal-block intervals: 48 h blocks, 2000 resamples. These are conditional time-sample intervals, not seed SD. Each reference has its own matched targets.}
 \label{fig:external}
 \end{figure*}
@@ -187,15 +195,29 @@ Inverted-variate leads all eight Yulara neural comparisons. At NIST its mean neu
 
 
 
+
+\subsection{Same-site next-year fixed-period results}
+Figure~\ref{fig:nextyear} compares the frozen models with Daily in the fixed April--June 2018 origin period. At Yulara, twelve-hour/full RMSE is 8.02 kW for original-grid B, 9.56 kW for Daily, 10.84 kW for expanded-grid B, and 13.86 kW for mean Inverted. Original B minus Daily is $-1.54$ kW with a 48-hour interval $[-1.92,-1.13]$ kW; expanded B minus Daily is $+1.28$ kW with $[0.42,2.27]$ kW. Inverted minus Daily is $+4.30$ kW with $[2.93,5.65]$ kW. Thus neither the earlier neural advantage over Daily nor the expanded-grid improvement over original B persists in this period. The two saved grids remain diagnostic comparisons, without reselection from these errors.
+
+At NIST, mean Inverted has 38.19 kW RMSE, both B grids have 40.78 kW, and Daily has 51.03 kW. Inverted minus Daily is $-12.84$ kW with $[-17.40,-8.00]$ kW. B minus mean Inverted is $+2.59$ kW with $[-0.62,5.66]$ kW; this crossing interval does not establish equivalence. The original NIST full-target ordering therefore also changes. Full, active and low-power results, point counts and all fixed block lengths are retained separately for each period.
+
+The NIST squared-error decomposition retains an active saving and a low-power cost, but their balance changes. The next-year mean seed contributions to Inverted-minus-Daily full MSE are $-1275.75$ and $+130.09$ kW$^2$, respectively, giving a net $-1145.65$ kW$^2$. These disjoint contributions explain the new full-target advantage without assigning low-power measurements to a particular weather or operating event.
+
+\begin{figure*}[!tp]\centering
+\includegraphics[width=0.97\textwidth]{fixed_period_figures/fig8_fixed_period.pdf}
+\caption{Same-site next-year evaluation of cumulative twelve-hour windows, with origins fixed to April--June 2018. Negative differences favor the named method over Daily. Points and 95\% paired 48-hour-block intervals use common finite target and reference support within each panel; Inverted averages seed-specific effects. Both saved Ridge grids are retained. Panel scales differ.}
+\label{fig:nextyear}\end{figure*}
+
+\clearpage
 \section{Interpretation and limits}
 Last-value holds the present power through the entire future trajectory, whereas learned recent-history models can represent changing output. On the original horizon-specific support, the repeated neural improvement shows added predictive value over that local-continuity reference; complete-window conditioning can change the population and the comparison. Daily supplies a measured trajectory from another day and therefore asks whether a model adds to daily recurrence. The Alice--external contrast and the daily-augmented Ridge results show why these questions should be reported separately. Differences in daily stability, operating distributions, and input availability are possible explanations for site differences, not mechanisms established by this experiment.
 
 The power decomposition provides a direct explanation for one scope-dependent result: NIST's active error saving is outweighed by low-power error. It also explains why the full-target winner need not be the active-target winner. This conclusion follows from disjoint squared-error contributions and does not require attributing the low-power records to night, snow, or downtime. Ranking differences across sites remain observational, with different years, input widths, target systems, and held-out months.
 
-The three geographic sites broaden the evidence beyond a single facility, but the external October--December period is not an all-season validation. Alice's three arrays are co-located and use 2018 data with 17 channels, compared with seven external channels in 2017. Each model is fitted separately. The missing NIST operation log and partial Yulara metadata limit event and sensor interpretation. Test records underwent data-quality inspection during development; they remain held-out performance splits, while the added decompositions, intervals, and Ridge comparisons are explicitly post hoc. Fixed-budget compact models do not represent fully tuned official implementations. Seed SD and finite-period block intervals address different, incomplete sources of uncertainty. Common target masks remove within-comparison sample discrepancies, not information-set differences or selection effects. The Qcells one-hour common-origin reversal demonstrates why the retained target distribution must also be reported.
+The three geographic sites broaden the evidence beyond a single facility. The original October--December performance splits and the added April--June next-year origin period do not constitute all-season validation. Period differences include model age, input exposure, operating conditions and scoring support, not an isolated seasonal effect. Alice's three arrays are co-located and use 2018 data with 17 channels, compared with seven external channels in 2017. Each model was fitted separately; no new-period refitting is performed. The incomplete NIST operation logs and partial Yulara metadata limit event and sensor interpretation. Test records underwent data-quality inspection during development; they remain held-out performance splits, while the added decompositions, intervals, and Ridge comparisons are explicitly post hoc. Fixed-budget compact models do not represent fully tuned official implementations. Seed SD and finite-period block intervals address different, incomplete sources of uncertainty. Common target masks remove within-comparison sample discrepancies, not information-set differences or selection effects. The Qcells one-hour common-origin reversal demonstrates why the retained target distribution must also be reported.
 
 \section{Conclusion}
-The benchmark identifies three conditions that change a PV forecasting advantage: the reference history, the cumulative window and its support, and the target-power composition. Daily outperforms the favorable neural envelope in 22 of 24 Alice comparisons; the external prespecified model improves on Last-value in 16 of 16 and Daily in 15 of 16. At NIST's twelve-hour full scope, a quantified low-power error contribution reverses the active-target advantage. Added previous-day inputs improve the original linear reference in all five systems, while the Yulara diagnosis shows that this comparison also depends on missingness exposure and regularization. Qcells demonstrates how a small set of excluded negative labels can select a different long-window population. Paired temporal intervals make the scope of observed differences explicit. Reporting these reference and support conditions makes a forecasting gain interpretable beyond an architecture name.
+The benchmark identifies three conditions governing the interpretation of PV forecasting gains: reference history, target support and power composition, and the period in which frozen models are assessed. Daily changes the conclusion drawn from Last-value at Alice, while matched squared-error decomposition explains the changing NIST balance between active savings and low-power costs. Added daily inputs and expanded regularization have distinct, period-dependent effects within Ridge. The fixed next-year results show that neither a neural model nor a selected Ridge grid has a uniformly favorable ordering. Qcells support counts further show how whole-window rejection can select a different target population. Reporting these conditions alongside paired temporal effects makes the evidence useful without treating an architecture name as a universal performance guarantee.
 \section*{Supplementary Material}
 The Supplement adds common-origin and fixed-lead analyses, paired temporal-block intervals, target-power decompositions, deterministic Ridge references, monthly summaries and transparent trajectory cases alongside complete Alice evidence, external field and time audits, all 96 support groups, the 24-run matrix and checkpoint records, per-seed RMSE, complete mean/sample-SD errors, metadata limits, model configurations, and the descriptive envelope. Full per-seed metric CSVs accompany the code rather than being expanded into thousands of PDF rows.
 

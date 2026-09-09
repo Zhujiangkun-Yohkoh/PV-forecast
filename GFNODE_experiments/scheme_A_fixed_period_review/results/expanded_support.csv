@@ -1,0 +1,16 @@
+site,scope,horizon,support,origins,points,unique_targets
+Sanyo,full,144,complete_H144_Daily_intersection,4160,598317,6726
+Sanyo,power-active,144,complete_H144_Daily_intersection,3869,259345,3051
+Sanyo,low-power,144,complete_H144_Daily_intersection,4160,338972,3675
+Hanwha,full,144,complete_H144_Daily_intersection,4521,649735,6657
+Hanwha,power-active,144,complete_H144_Daily_intersection,4225,287368,2948
+Hanwha,low-power,144,complete_H144_Daily_intersection,4521,362367,3709
+Qcells,full,144,complete_H144_Daily_intersection,2996,431150,6425
+Qcells,power-active,144,complete_H144_Daily_intersection,2800,187950,2869
+Qcells,low-power,144,complete_H144_Daily_intersection,2996,243200,3556
+YULARA_COMBINED,full,144,complete_H144_Daily_intersection,26280,3784320,26423
+YULARA_COMBINED,power-active,144,complete_H144_Daily_intersection,26192,1963842,13722
+YULARA_COMBINED,low-power,144,complete_H144_Daily_intersection,25653,1820478,12701
+NIST_GROUND,full,144,complete_H144_Daily_intersection,21885,3128676,25109
+NIST_GROUND,power-active,144,complete_H144_Daily_intersection,18599,1098178,9043
+NIST_GROUND,low-power,144,complete_H144_Daily_intersection,21885,2030498,16066

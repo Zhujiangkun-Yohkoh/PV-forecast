@@ -24,7 +24,7 @@ This diagnostic revision checks saved Ridge predictions against reconstructed ma
 At the expanded NIST A choice of $10^{-4}$, an independent augmented QR solve has full column rank 504. Its maximum prediction difference from the spectral solution is 0.002390 kW; the full-scope RMSE difference is $-1.835\times10^{-7}$ kW. This small-alpha numerical sensitivity is retained in the diagnostic evidence, rather than replacing either prediction array. It does not affect the original-grid NIST B contrasts reported in the main text.
 
 
-\clearpage\section{Post hoc review: support, uncertainty and linear references}
+\section{Post hoc review: support, uncertainty and linear references}
 These analyses were planned after the original performance results were known; they do not change the frozen neural experiments. H12/H48/H96/H144 are cumulative 1/4/8/12 h windows. Common-H144 comparisons retain only complete twelve-hour origins and evaluate every prefix there. Fixed-lead curves score individual leads on that same support. Daily comparisons use the same elementwise target intersection for every method. The tables in the accompanying review CSVs include both origin and target counts for every support.
 
 Power-active targets have true power above 1\% of Train maximum; low-power is the complement, not night. In that preceding review, all 2400 tested full/active/low-power squared-error identities passed on saved neural and reference arrays. Full MSE is the sum of subset SSE divided by the full target count. The per-seed decomposition file also records MAE, bias, counts and each weighted MSE contribution. Its neural summaries must average per-seed metrics rather than square an averaged RMSE.

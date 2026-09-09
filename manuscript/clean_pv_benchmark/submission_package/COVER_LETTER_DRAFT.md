@@ -1,16 +1,14 @@
-# Cover letter — corresponding-author draft
+# Cover letter — author-review draft, not ready to upload
 
 Dear Editor,
 
-Please consider “Reference Information and Target-Power Regimes in Multi-Window Photovoltaic Forecasting” as an original research article. The manuscript examines how reference history and target-power composition change the interpretation of photovoltaic forecasting gains, using three co-located Alice Springs arrays and independently fitted replications at Yulara and NIST Ground.
+Please consider “Reference History and Target Support in Multi-Window Photovoltaic Forecasting” as an empirical original research article. It examines how available reference history, target-power composition and evaluation support change photovoltaic forecasting comparisons across three co-located Alice Springs arrays and separately fitted Yulara and NIST systems.
 
-Daily Persistence exceeds a favorable neural envelope in most Alice comparisons, while the prespecified external model usually improves on both persistence references. A pointwise squared-error decomposition explains the NIST twelve-hour aggregate reversal: lower power-active error is offset by additional low-power error. Post hoc Ridge comparisons across all five systems further isolate the contribution of available previous-day information. Common-origin sensitivity and paired temporal-block intervals qualify these comparisons.
+The analysis compares recent-history neural forecasts with persistence and linear models using previous-day information. Both original and expanded Ridge grids are reported transparently. A fixed April–June 2018 same-site evaluation changes the 2017 ordering: the original Yulara Ridge B outperforms its expanded counterpart, while the NIST Inverted mean improves on Daily. Paired temporal-block intervals and additive power-range error decompositions qualify these findings. They do not establish a universal architecture ranking or zero-shot transfer.
 
-The revision diagnoses rare-missingness extrapolation in the original Yulara Ridge design using actual matrices and a matched independent solver. A uniformly expanded Validation-selected grid is reported separately, including unfavorable changes. It also attributes the Qcells complete-window selection to the frozen negative-label rule and gives paired temporal intervals for the original Ridge contrasts. These findings qualify simple-reference and neural comparisons rather than hiding unstable or adverse results.
+Internal completion condition: restored-origin Alice error comparisons are not yet accepted because 20 frozen checkpoint replays remain outside the historical tolerance. Resolve this numerical issue before converting this draft into a submission letter. No statement of complete reproducibility is made.
 
-The work contributes an empirical interpretation of forecast skill rather than a new neural architecture. It preserves unfavorable results, distinguishes two input regimes, and provides reproducible metric and figure materials. Source data remain available through their official providers subject to their terms.
-
-Target journal proposal: Renewable Energy; subsequent route Solar Energy, then JRSE, subject to the authors' final scope, official classification and fee checks. This draft has not been submitted. Final author approval, exclusivity wording, declarations, public-code URL and signature must be confirmed before upload.
+Solar Energy is the most direct scope candidate; Renewable Energy remains a conditional stretch option, subject to the unresolved evidence and authoritative institutional CAS checks. Journal choice, declarations, public-code details, fees and final author approval remain for the authors. No submission has occurred.
 
 Sincerely,
 Corresponding authors (signature pending)

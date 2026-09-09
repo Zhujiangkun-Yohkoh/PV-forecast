@@ -1,0 +1,13 @@
+site,period,support,horizon,scope,candidate_origins,before_reference_origins,before_reference_points,origins,points,unique_targets,active_points
+YULARA_COMBINED,2018_Apr_Jun_origins,fixed_period,12,full,26208,26208,314448,26204,314353,26211,137209
+YULARA_COMBINED,2018_Apr_Jun_origins,fixed_period,12,power-active,26208,12450,137304,12446,137209,11438,137209
+YULARA_COMBINED,2018_Apr_Jun_origins,fixed_period,12,low-power,26208,15775,177144,15775,177144,14773,0
+YULARA_COMBINED,2018_Apr_Jun_origins,fixed_period,48,full,26208,26208,1257792,26204,1257410,26247,548904
+YULARA_COMBINED,2018_Apr_Jun_origins,fixed_period,48,power-active,26208,15726,549216,15722,548904,11438,548904
+YULARA_COMBINED,2018_Apr_Jun_origins,fixed_period,48,low-power,26208,19087,708576,19084,708506,14809,0
+YULARA_COMBINED,2018_Apr_Jun_origins,fixed_period,96,full,26208,26208,2515584,26204,2514818,26295,1097863
+YULARA_COMBINED,2018_Apr_Jun_origins,fixed_period,96,power-active,26208,20086,1098388,20082,1097863,11439,1097863
+YULARA_COMBINED,2018_Apr_Jun_origins,fixed_period,96,low-power,26208,23438,1417196,23434,1416955,14856,0
+YULARA_COMBINED,2018_Apr_Jun_origins,fixed_period,144,full,26208,26208,3773376,26204,3772226,26343,1646503
+YULARA_COMBINED,2018_Apr_Jun_origins,fixed_period,144,power-active,26208,24454,1647220,24450,1646503,11487,1646503
+YULARA_COMBINED,2018_Apr_Jun_origins,fixed_period,144,low-power,26208,26208,2126156,26204,2125723,14856,0

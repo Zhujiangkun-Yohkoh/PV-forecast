@@ -1,0 +1,1 @@
+Full and power-active effects include intervals crossing zero at long windows; small training-seed SD does not replace temporal uncertainty.

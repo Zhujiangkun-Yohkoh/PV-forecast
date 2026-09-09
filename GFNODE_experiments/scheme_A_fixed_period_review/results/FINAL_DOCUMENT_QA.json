@@ -1,0 +1,18 @@
+{
+  "date": "2026-09-09",
+  "main_pages": 14,
+  "supplement_pages": 44,
+  "abstract_whitespace_words": 184,
+  "main_figures": 7,
+  "supplement_figures": 14,
+  "main_tables": 5,
+  "supplement_historical_tables": 18,
+  "all_58_rendered_pages_visually_reviewed": true,
+  "font_embedding": true,
+  "vector_figures": true,
+  "overfull": 0,
+  "undefined_citation_reference": false,
+  "small_font_exception": "logarithmic tick superscript digits, supplement page 12; ordinary plot text at least approximately 8 pt",
+  "Alice_restored_error_panel": "NOT ACCEPTED: 20/36 replay discrepancies",
+  "main_float_placement": "result figures flushed before interpretation; dedicated figure pages retain whitespace for legibility"
+}

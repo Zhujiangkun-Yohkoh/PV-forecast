@@ -1,0 +1,1 @@
+Three split rows compare one-hour, complete-twelve-hour and removed support without interpreting unequal bin widths as density.

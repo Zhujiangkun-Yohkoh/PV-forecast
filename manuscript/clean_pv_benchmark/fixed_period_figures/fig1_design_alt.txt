@@ -1,0 +1,1 @@
+Three non-pooled information intervals show all previous-day values available by origin. Exact endpoints distinguish sample count from elapsed span.

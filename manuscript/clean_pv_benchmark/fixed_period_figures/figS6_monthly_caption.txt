@@ -1,0 +1,1 @@
+Monthly errors assign each full twelve-hour trajectory to its forecast-origin month on common H144 Daily-valid support. Bars show seed SD. O denotes origins and N scored origin--lead target pairs, printed for each month.

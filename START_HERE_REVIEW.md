@@ -1,7 +1,5 @@
-# 导师审核入口：2026-09-09诊断修订
+# 最新固定范围审核（2026-09-09）
 
-先读PROJECT_REPORT_CN.md，然后新诊断目录中的P01/P02/P03报告与MANUSCRIPT_CHANGELOG.md，再读最新主文PDF和Supplement。REVIEW_RESPONSE_MATRIX.md区分已解决问题与剩余科学限制。
+先读 PROJECT_REPORT_CN.md 开头及 GFNODE_experiments/scheme_A_fixed_period_review/REPORT_CN.md。A与C完成，B的36神经回放中20未过历史数值容差，因此尚不是最终投稿就绪稿。所有原重型证据和未接受的新Alice输出在完整包中区分；不要用后者作为正式比较。
 
-本轮不重训神经网络，旧结果完整保留。重点是Yulara缺失模式外推、Qcells负标签与完整窗口选择、原Ridge的条件时间区间。新增统一alpha为事后敏感性，不替换原网格。选择期刊前需机构核实CAS版本和分区。
-
-完整包支持重型证据审核；轻量包仅支持聚合/块SSE复算；图件包支持图数据与版式交接。各包清单、校验与轻量验证见PACKAGE_VERIFICATION.md。不得将其解释为重新跑通60次训练。
+论文在 manuscript/clean_pv_benchmark/main.pdf 和 supplementary.pdf；当前图件为 fixed_period_figures，旧目录保留。轻量入口为 scheme_A_fixed_period_review/verify_light.py；它不宣称神经预测已全部复现。对应Git与包校验见包内GIT_DELIVERY、清单和sidecar。

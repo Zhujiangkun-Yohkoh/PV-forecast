@@ -1,0 +1,49 @@
+site,check,max_absolute_difference_kW,rtol,atol,passed,error
+Sanyo,Original A,8.743006318923108e-15,2e-05,2e-05,True,
+Sanyo,Original B,4.440892098500626e-15,2e-05,2e-05,True,
+Sanyo,Expanded A,8.743006318923108e-15,2e-05,2e-05,True,
+Sanyo,Expanded B,4.440892098500626e-15,2e-05,2e-05,True,
+Sanyo,Depthwise convolutional TCN42,0.00024771690368652344,2e-05,2e-05,False,Original prediction replay mismatch Depthwise convolutional TCN42 0.00024771690368652344
+Sanyo,Depthwise convolutional TCN43,0.00040531158447265625,2e-05,2e-05,False,Original prediction replay mismatch Depthwise convolutional TCN43 0.00040531158447265625
+Sanyo,Depthwise convolutional TCN44,0.0007834434509277344,2e-05,2e-05,False,Original prediction replay mismatch Depthwise convolutional TCN44 0.0007834434509277344
+Sanyo,Discrete recurrent decoder42,0.00020563602447509766,2e-05,2e-05,False,Original prediction replay mismatch Discrete recurrent decoder42 0.00020563602447509766
+Sanyo,Discrete recurrent decoder43,0.00018596649169921875,2e-05,2e-05,False,Original prediction replay mismatch Discrete recurrent decoder43 0.00018596649169921875
+Sanyo,Discrete recurrent decoder44,0.00022041797637939453,2e-05,2e-05,False,Original prediction replay mismatch Discrete recurrent decoder44 0.00022041797637939453
+Sanyo,Inverted42,2.2858381271362305e-05,2e-05,2e-05,True,
+Sanyo,Inverted43,2.7805566787719727e-05,2e-05,2e-05,False,Original prediction replay mismatch Inverted43 2.7805566787719727e-05
+Sanyo,Inverted44,3.0055642127990723e-05,2e-05,2e-05,False,Original prediction replay mismatch Inverted44 3.0055642127990723e-05
+Sanyo,Joint-patch Transformer42,1.3187527656555176e-05,2e-05,2e-05,True,
+Sanyo,Joint-patch Transformer43,1.5020370483398438e-05,2e-05,2e-05,True,
+Sanyo,Joint-patch Transformer44,1.71661376953125e-05,2e-05,2e-05,True,
+Hanwha,Original A,7.549516567451064e-15,2e-05,2e-05,True,
+Hanwha,Original B,4.440892098500626e-15,2e-05,2e-05,True,
+Hanwha,Expanded A,7.549516567451064e-15,2e-05,2e-05,True,
+Hanwha,Expanded B,4.440892098500626e-15,2e-05,2e-05,True,
+Hanwha,Depthwise convolutional TCN42,0.0006260871887207031,2e-05,2e-05,False,Original prediction replay mismatch Depthwise convolutional TCN42 0.0006260871887207031
+Hanwha,Depthwise convolutional TCN43,0.0006761550903320312,2e-05,2e-05,False,Original prediction replay mismatch Depthwise convolutional TCN43 0.0006761550903320312
+Hanwha,Depthwise convolutional TCN44,0.0004440993070602417,2e-05,2e-05,False,Original prediction replay mismatch Depthwise convolutional TCN44 0.0004440993070602417
+Hanwha,Discrete recurrent decoder42,0.0001653432846069336,2e-05,2e-05,False,Original prediction replay mismatch Discrete recurrent decoder42 0.0001653432846069336
+Hanwha,Discrete recurrent decoder43,0.00022649765014648438,2e-05,2e-05,False,Original prediction replay mismatch Discrete recurrent decoder43 0.00022649765014648438
+Hanwha,Discrete recurrent decoder44,0.00013649463653564453,2e-05,2e-05,False,Original prediction replay mismatch Discrete recurrent decoder44 0.00013649463653564453
+Hanwha,Inverted42,1.4662742614746094e-05,2e-05,2e-05,True,
+Hanwha,Inverted43,1.0423362255096436e-05,2e-05,2e-05,True,
+Hanwha,Inverted44,9.73045825958252e-06,2e-05,2e-05,True,
+Hanwha,Joint-patch Transformer42,1.598149538040161e-05,2e-05,2e-05,True,
+Hanwha,Joint-patch Transformer43,1.3947486877441406e-05,2e-05,2e-05,True,
+Hanwha,Joint-patch Transformer44,1.52587890625e-05,2e-05,2e-05,True,
+Qcells,Original A,4.9960036108132044e-15,2e-05,2e-05,True,
+Qcells,Original B,2.6645352591003757e-15,2e-05,2e-05,True,
+Qcells,Expanded A,4.9960036108132044e-15,2e-05,2e-05,True,
+Qcells,Expanded B,4.440892098500626e-15,2e-05,2e-05,True,
+Qcells,Depthwise convolutional TCN42,0.00026276707649230957,2e-05,2e-05,False,Original prediction replay mismatch Depthwise convolutional TCN42 0.00026276707649230957
+Qcells,Depthwise convolutional TCN43,0.0007507950067520142,2e-05,2e-05,False,Original prediction replay mismatch Depthwise convolutional TCN43 0.0007507950067520142
+Qcells,Depthwise convolutional TCN44,0.0012869834899902344,2e-05,2e-05,False,Original prediction replay mismatch Depthwise convolutional TCN44 0.0012869834899902344
+Qcells,Discrete recurrent decoder42,0.00017344951629638672,2e-05,2e-05,False,Original prediction replay mismatch Discrete recurrent decoder42 0.00017344951629638672
+Qcells,Discrete recurrent decoder43,0.0001423358917236328,2e-05,2e-05,False,Original prediction replay mismatch Discrete recurrent decoder43 0.0001423358917236328
+Qcells,Discrete recurrent decoder44,0.00019788742065429688,2e-05,2e-05,False,Original prediction replay mismatch Discrete recurrent decoder44 0.00019788742065429688
+Qcells,Inverted42,1.0967254638671875e-05,2e-05,2e-05,True,
+Qcells,Inverted43,1.0728836059570312e-05,2e-05,2e-05,True,
+Qcells,Inverted44,1.0251998901367188e-05,2e-05,2e-05,True,
+Qcells,Joint-patch Transformer42,1.1324882507324219e-05,2e-05,2e-05,True,
+Qcells,Joint-patch Transformer43,1.0073184967041016e-05,2e-05,2e-05,True,
+Qcells,Joint-patch Transformer44,1.6555190086364746e-05,2e-05,2e-05,True,

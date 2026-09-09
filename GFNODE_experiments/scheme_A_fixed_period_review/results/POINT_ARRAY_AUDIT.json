@@ -1,0 +1,1521 @@
+{
+  "actual_point_metric_rows": 216,
+  "passed": 216,
+  "failed": 0,
+  "skipped": 0,
+  "meaning": "metric/count reductions from saved new-period arrays; not training or independent experiments",
+  "records": [
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 12,
+      "scope": "full",
+      "method": "Original A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 12,
+      "scope": "full",
+      "method": "Original B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 12,
+      "scope": "full",
+      "method": "Expanded A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 12,
+      "scope": "full",
+      "method": "Expanded B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 12,
+      "scope": "full",
+      "method": "Inverted42",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 12,
+      "scope": "full",
+      "method": "Inverted43",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 12,
+      "scope": "full",
+      "method": "Inverted44",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 12,
+      "scope": "full",
+      "method": "Daily",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 12,
+      "scope": "full",
+      "method": "Last-value",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 12,
+      "scope": "power-active",
+      "method": "Original A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 12,
+      "scope": "power-active",
+      "method": "Original B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 12,
+      "scope": "power-active",
+      "method": "Expanded A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 12,
+      "scope": "power-active",
+      "method": "Expanded B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 12,
+      "scope": "power-active",
+      "method": "Inverted42",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 12,
+      "scope": "power-active",
+      "method": "Inverted43",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 12,
+      "scope": "power-active",
+      "method": "Inverted44",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 12,
+      "scope": "power-active",
+      "method": "Daily",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 12,
+      "scope": "power-active",
+      "method": "Last-value",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 12,
+      "scope": "low-power",
+      "method": "Original A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 12,
+      "scope": "low-power",
+      "method": "Original B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 12,
+      "scope": "low-power",
+      "method": "Expanded A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 12,
+      "scope": "low-power",
+      "method": "Expanded B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 12,
+      "scope": "low-power",
+      "method": "Inverted42",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 12,
+      "scope": "low-power",
+      "method": "Inverted43",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 12,
+      "scope": "low-power",
+      "method": "Inverted44",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 12,
+      "scope": "low-power",
+      "method": "Daily",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 12,
+      "scope": "low-power",
+      "method": "Last-value",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 48,
+      "scope": "full",
+      "method": "Original A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 48,
+      "scope": "full",
+      "method": "Original B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 48,
+      "scope": "full",
+      "method": "Expanded A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 48,
+      "scope": "full",
+      "method": "Expanded B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 48,
+      "scope": "full",
+      "method": "Inverted42",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 48,
+      "scope": "full",
+      "method": "Inverted43",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 48,
+      "scope": "full",
+      "method": "Inverted44",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 48,
+      "scope": "full",
+      "method": "Daily",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 48,
+      "scope": "full",
+      "method": "Last-value",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 48,
+      "scope": "power-active",
+      "method": "Original A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 48,
+      "scope": "power-active",
+      "method": "Original B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 48,
+      "scope": "power-active",
+      "method": "Expanded A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 48,
+      "scope": "power-active",
+      "method": "Expanded B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 48,
+      "scope": "power-active",
+      "method": "Inverted42",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 48,
+      "scope": "power-active",
+      "method": "Inverted43",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 48,
+      "scope": "power-active",
+      "method": "Inverted44",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 48,
+      "scope": "power-active",
+      "method": "Daily",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 48,
+      "scope": "power-active",
+      "method": "Last-value",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 48,
+      "scope": "low-power",
+      "method": "Original A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 48,
+      "scope": "low-power",
+      "method": "Original B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 48,
+      "scope": "low-power",
+      "method": "Expanded A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 48,
+      "scope": "low-power",
+      "method": "Expanded B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 48,
+      "scope": "low-power",
+      "method": "Inverted42",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 48,
+      "scope": "low-power",
+      "method": "Inverted43",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 48,
+      "scope": "low-power",
+      "method": "Inverted44",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 48,
+      "scope": "low-power",
+      "method": "Daily",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 48,
+      "scope": "low-power",
+      "method": "Last-value",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 96,
+      "scope": "full",
+      "method": "Original A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 96,
+      "scope": "full",
+      "method": "Original B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 96,
+      "scope": "full",
+      "method": "Expanded A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 96,
+      "scope": "full",
+      "method": "Expanded B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 96,
+      "scope": "full",
+      "method": "Inverted42",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 96,
+      "scope": "full",
+      "method": "Inverted43",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 96,
+      "scope": "full",
+      "method": "Inverted44",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 96,
+      "scope": "full",
+      "method": "Daily",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 96,
+      "scope": "full",
+      "method": "Last-value",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 96,
+      "scope": "power-active",
+      "method": "Original A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 96,
+      "scope": "power-active",
+      "method": "Original B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 96,
+      "scope": "power-active",
+      "method": "Expanded A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 96,
+      "scope": "power-active",
+      "method": "Expanded B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 96,
+      "scope": "power-active",
+      "method": "Inverted42",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 96,
+      "scope": "power-active",
+      "method": "Inverted43",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 96,
+      "scope": "power-active",
+      "method": "Inverted44",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 96,
+      "scope": "power-active",
+      "method": "Daily",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 96,
+      "scope": "power-active",
+      "method": "Last-value",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 96,
+      "scope": "low-power",
+      "method": "Original A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 96,
+      "scope": "low-power",
+      "method": "Original B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 96,
+      "scope": "low-power",
+      "method": "Expanded A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 96,
+      "scope": "low-power",
+      "method": "Expanded B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 96,
+      "scope": "low-power",
+      "method": "Inverted42",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 96,
+      "scope": "low-power",
+      "method": "Inverted43",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 96,
+      "scope": "low-power",
+      "method": "Inverted44",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 96,
+      "scope": "low-power",
+      "method": "Daily",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 96,
+      "scope": "low-power",
+      "method": "Last-value",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 144,
+      "scope": "full",
+      "method": "Original A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 144,
+      "scope": "full",
+      "method": "Original B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 144,
+      "scope": "full",
+      "method": "Expanded A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 144,
+      "scope": "full",
+      "method": "Expanded B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 144,
+      "scope": "full",
+      "method": "Inverted42",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 144,
+      "scope": "full",
+      "method": "Inverted43",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 144,
+      "scope": "full",
+      "method": "Inverted44",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 144,
+      "scope": "full",
+      "method": "Daily",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 144,
+      "scope": "full",
+      "method": "Last-value",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 144,
+      "scope": "power-active",
+      "method": "Original A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 144,
+      "scope": "power-active",
+      "method": "Original B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 144,
+      "scope": "power-active",
+      "method": "Expanded A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 144,
+      "scope": "power-active",
+      "method": "Expanded B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 144,
+      "scope": "power-active",
+      "method": "Inverted42",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 144,
+      "scope": "power-active",
+      "method": "Inverted43",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 144,
+      "scope": "power-active",
+      "method": "Inverted44",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 144,
+      "scope": "power-active",
+      "method": "Daily",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 144,
+      "scope": "power-active",
+      "method": "Last-value",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 144,
+      "scope": "low-power",
+      "method": "Original A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 144,
+      "scope": "low-power",
+      "method": "Original B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 144,
+      "scope": "low-power",
+      "method": "Expanded A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 144,
+      "scope": "low-power",
+      "method": "Expanded B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 144,
+      "scope": "low-power",
+      "method": "Inverted42",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 144,
+      "scope": "low-power",
+      "method": "Inverted43",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 144,
+      "scope": "low-power",
+      "method": "Inverted44",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 144,
+      "scope": "low-power",
+      "method": "Daily",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "YULARA_COMBINED",
+      "horizon": 144,
+      "scope": "low-power",
+      "method": "Last-value",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 12,
+      "scope": "full",
+      "method": "Original A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 12,
+      "scope": "full",
+      "method": "Original B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 12,
+      "scope": "full",
+      "method": "Expanded A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 12,
+      "scope": "full",
+      "method": "Expanded B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 12,
+      "scope": "full",
+      "method": "Inverted42",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 12,
+      "scope": "full",
+      "method": "Inverted43",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 12,
+      "scope": "full",
+      "method": "Inverted44",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 12,
+      "scope": "full",
+      "method": "Daily",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 12,
+      "scope": "full",
+      "method": "Last-value",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 12,
+      "scope": "power-active",
+      "method": "Original A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 12,
+      "scope": "power-active",
+      "method": "Original B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 12,
+      "scope": "power-active",
+      "method": "Expanded A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 12,
+      "scope": "power-active",
+      "method": "Expanded B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 12,
+      "scope": "power-active",
+      "method": "Inverted42",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 12,
+      "scope": "power-active",
+      "method": "Inverted43",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 12,
+      "scope": "power-active",
+      "method": "Inverted44",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 12,
+      "scope": "power-active",
+      "method": "Daily",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 12,
+      "scope": "power-active",
+      "method": "Last-value",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 12,
+      "scope": "low-power",
+      "method": "Original A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 12,
+      "scope": "low-power",
+      "method": "Original B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 12,
+      "scope": "low-power",
+      "method": "Expanded A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 12,
+      "scope": "low-power",
+      "method": "Expanded B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 12,
+      "scope": "low-power",
+      "method": "Inverted42",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 12,
+      "scope": "low-power",
+      "method": "Inverted43",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 12,
+      "scope": "low-power",
+      "method": "Inverted44",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 12,
+      "scope": "low-power",
+      "method": "Daily",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 12,
+      "scope": "low-power",
+      "method": "Last-value",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 48,
+      "scope": "full",
+      "method": "Original A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 48,
+      "scope": "full",
+      "method": "Original B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 48,
+      "scope": "full",
+      "method": "Expanded A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 48,
+      "scope": "full",
+      "method": "Expanded B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 48,
+      "scope": "full",
+      "method": "Inverted42",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 48,
+      "scope": "full",
+      "method": "Inverted43",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 48,
+      "scope": "full",
+      "method": "Inverted44",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 48,
+      "scope": "full",
+      "method": "Daily",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 48,
+      "scope": "full",
+      "method": "Last-value",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 48,
+      "scope": "power-active",
+      "method": "Original A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 48,
+      "scope": "power-active",
+      "method": "Original B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 48,
+      "scope": "power-active",
+      "method": "Expanded A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 48,
+      "scope": "power-active",
+      "method": "Expanded B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 48,
+      "scope": "power-active",
+      "method": "Inverted42",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 48,
+      "scope": "power-active",
+      "method": "Inverted43",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 48,
+      "scope": "power-active",
+      "method": "Inverted44",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 48,
+      "scope": "power-active",
+      "method": "Daily",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 48,
+      "scope": "power-active",
+      "method": "Last-value",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 48,
+      "scope": "low-power",
+      "method": "Original A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 48,
+      "scope": "low-power",
+      "method": "Original B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 48,
+      "scope": "low-power",
+      "method": "Expanded A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 48,
+      "scope": "low-power",
+      "method": "Expanded B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 48,
+      "scope": "low-power",
+      "method": "Inverted42",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 48,
+      "scope": "low-power",
+      "method": "Inverted43",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 48,
+      "scope": "low-power",
+      "method": "Inverted44",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 48,
+      "scope": "low-power",
+      "method": "Daily",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 48,
+      "scope": "low-power",
+      "method": "Last-value",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 96,
+      "scope": "full",
+      "method": "Original A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 96,
+      "scope": "full",
+      "method": "Original B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 96,
+      "scope": "full",
+      "method": "Expanded A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 96,
+      "scope": "full",
+      "method": "Expanded B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 96,
+      "scope": "full",
+      "method": "Inverted42",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 96,
+      "scope": "full",
+      "method": "Inverted43",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 96,
+      "scope": "full",
+      "method": "Inverted44",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 96,
+      "scope": "full",
+      "method": "Daily",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 96,
+      "scope": "full",
+      "method": "Last-value",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 96,
+      "scope": "power-active",
+      "method": "Original A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 96,
+      "scope": "power-active",
+      "method": "Original B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 96,
+      "scope": "power-active",
+      "method": "Expanded A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 96,
+      "scope": "power-active",
+      "method": "Expanded B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 96,
+      "scope": "power-active",
+      "method": "Inverted42",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 96,
+      "scope": "power-active",
+      "method": "Inverted43",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 96,
+      "scope": "power-active",
+      "method": "Inverted44",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 96,
+      "scope": "power-active",
+      "method": "Daily",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 96,
+      "scope": "power-active",
+      "method": "Last-value",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 96,
+      "scope": "low-power",
+      "method": "Original A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 96,
+      "scope": "low-power",
+      "method": "Original B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 96,
+      "scope": "low-power",
+      "method": "Expanded A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 96,
+      "scope": "low-power",
+      "method": "Expanded B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 96,
+      "scope": "low-power",
+      "method": "Inverted42",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 96,
+      "scope": "low-power",
+      "method": "Inverted43",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 96,
+      "scope": "low-power",
+      "method": "Inverted44",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 96,
+      "scope": "low-power",
+      "method": "Daily",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 96,
+      "scope": "low-power",
+      "method": "Last-value",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 144,
+      "scope": "full",
+      "method": "Original A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 144,
+      "scope": "full",
+      "method": "Original B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 144,
+      "scope": "full",
+      "method": "Expanded A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 144,
+      "scope": "full",
+      "method": "Expanded B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 144,
+      "scope": "full",
+      "method": "Inverted42",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 144,
+      "scope": "full",
+      "method": "Inverted43",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 144,
+      "scope": "full",
+      "method": "Inverted44",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 144,
+      "scope": "full",
+      "method": "Daily",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 144,
+      "scope": "full",
+      "method": "Last-value",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 144,
+      "scope": "power-active",
+      "method": "Original A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 144,
+      "scope": "power-active",
+      "method": "Original B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 144,
+      "scope": "power-active",
+      "method": "Expanded A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 144,
+      "scope": "power-active",
+      "method": "Expanded B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 144,
+      "scope": "power-active",
+      "method": "Inverted42",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 144,
+      "scope": "power-active",
+      "method": "Inverted43",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 144,
+      "scope": "power-active",
+      "method": "Inverted44",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 144,
+      "scope": "power-active",
+      "method": "Daily",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 144,
+      "scope": "power-active",
+      "method": "Last-value",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 144,
+      "scope": "low-power",
+      "method": "Original A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 144,
+      "scope": "low-power",
+      "method": "Original B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 144,
+      "scope": "low-power",
+      "method": "Expanded A",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 144,
+      "scope": "low-power",
+      "method": "Expanded B",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 144,
+      "scope": "low-power",
+      "method": "Inverted42",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 144,
+      "scope": "low-power",
+      "method": "Inverted43",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 144,
+      "scope": "low-power",
+      "method": "Inverted44",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 144,
+      "scope": "low-power",
+      "method": "Daily",
+      "point_array_metric_agreement": true
+    },
+    {
+      "site": "NIST_GROUND",
+      "horizon": 144,
+      "scope": "low-power",
+      "method": "Last-value",
+      "point_array_metric_agreement": true
+    }
+  ]
+}

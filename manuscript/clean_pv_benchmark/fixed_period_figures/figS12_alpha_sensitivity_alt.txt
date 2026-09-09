@@ -1,0 +1,1 @@
+Separate scales retain the unfavorable original Yulara errors and every sensitivity result. The added grid is post hoc, not a silent replacement of the original fit.

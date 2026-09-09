@@ -1,3 +1,13 @@
+# Fixed-period review changes — 2026-09-09
+
+- Source: ad59ed2; historical raw/weights/predictions/grids preserved.
+- Main title/abstract/conclusion now distinguish reference history, target support and fixed next-year period. Yulara diagnostic wording avoids a unique causal mechanism.
+- Main Ridge table labels both grids. Fig.2 uses expanded intervals; old intervals remain in their original CSVs. Added Fig.7 fixed-period effects; original Figs.1/4/5/6 retain their explicitly historical conditions.
+- Supplement front matter records A/C, actual neural versus Ridge support, and the unresolved Alice replay (20/36). No restored-origin all-model scores are fabricated.
+- S1 denominator/range explanation, S3 categorical unequal bins, S4 caption expansion and S13 original-grid label updated.
+- Remaining: B actual error panels and formal S1/S2 comparison await accepted historical forward reproduction. This is a scientific verification limitation, not an author-signoff delay.
+
+## Historical changelog
 # 本轮论文修改记录 P01–P06
 
 主文保留题目 Reference Information and Target-Power Regimes in Multi-Window Photovoltaic Forecasting。贡献围绕历史信息、目标功率范围与支持筛选，不是新网络。

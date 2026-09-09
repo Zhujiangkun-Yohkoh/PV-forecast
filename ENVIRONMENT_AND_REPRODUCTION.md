@@ -1,3 +1,13 @@
+# Current fixed-period reproduction scope
+
+Run from the project root. Current plotting entry: `python manuscript/clean_pv_benchmark/build_figures.py` (NumPy, pandas, Matplotlib); it creates/refreshes fixed_period_figures from versioned CSVs and preserved historical figure sources. Use a standard scientific Python environment with DejaVu Sans, without private Windows font paths.
+
+Light arithmetic: `python GFNODE_experiments/scheme_A_fixed_period_review/verify_light.py` replays 1368 rows from block SSE/counts. It does not rerun the recorded 216-row point-array audit or checkpoint inference. Heavy inference uses `frozen_evaluation.py --paths LOCAL.json`; explicit paths must resolve to the full package evidence. Never point outputs at frozen evidence. The full package has relative input configuration and a separate outputs destination. Missing raw data/checkpoints must be supplied; aggregate CSVs cannot replace them.
+
+This revision loaded all 36 Alice and six external checkpoint groups for inference, with no fit/search/training. External replay passed; 20 Alice groups remain unresolved. Original Alice neural preprocessing objects were not saved separately. Whole training reproduction is NOT tested. Package extraction verifies only its stated lightweight scope.
+
+## Earlier environment and reproduction documentation (historical scope)
+
 # 本轮入口（2026-09-09，优先于下方历史指南）
 
 ①CSV→最新20组图：`python -B GFNODE_experiments/scheme_A_diagnostic_revision/build_figures.py`。依赖numpy/pandas/matplotlib，输出diagnostic_figures，使用DejaVu，无私人字体路径。本轮实际运行并在最终PDF检查；旧portable_entry figures输出上轮图，不是当前入口。

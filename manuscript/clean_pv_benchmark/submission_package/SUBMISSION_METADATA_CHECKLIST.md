@@ -1,9 +1,9 @@
-# Current metadata checklist (2026-09-09)
+# Current metadata checklist — fixed-period revision
 
-- Title: Reference Information and Target-Power Regimes in Multi-Window Photovoltaic Forecasting.
-- Empirical original research; reference information, support selection and target-power regimes, not a new architecture.
-- Candidate route Renewable Energy → Solar Energy → JRSE. CAS edition/major/subcategory require institutional verification; not a verified CAS ordering.
-- Main 12 pages, 203 abstract tokens, 6 figures/5 tables; Supplement 43 pages, 14 figures/18 tables. See WORD_COUNTS.json for exact counting scope.
-- 60 frozen neural runs; 10 original deterministic Ridge fits plus 10 selected uniform-grid sensitivity fits. No new neural training.
-- Current author fields retained. Authors must approve final manuscript, declarations, journal, license and public code details; nothing filled or submitted on their behalf.
-- Final target-specific format and publication option remain open. No OA selection, payment or visibility change.
+- Title: Reference History and Target Support in Multi-Window Photovoltaic Forecasting.
+- Empirical reference-history / target-support / same-site next-year evaluation; no new architecture or zero-shot transfer.
+- Main 14 pages, 184 abstract whitespace words, 7 figures / 5 tables; Supplement 44 pages, 14 figures / 18 historical tables.
+- Original and expanded grids are separately labeled. No additional training or alpha selection in this revision.
+- Scientific readiness: partial; Alice restored-origin error evaluation awaits resolution of historical replay discrepancies.
+- Solar Energy is the direct scope candidate; Renewable Energy is conditional stretch, JRSE a fallback. CAS edition, major and subcategory require authoritative institutional verification, not inferred ordering.
+- Authors, declarations, journal selection, license, public-code details and fees require author decisions. Existing author fields retained; no new confirmations asserted.

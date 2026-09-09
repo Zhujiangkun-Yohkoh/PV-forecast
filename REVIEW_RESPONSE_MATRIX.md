@@ -1,9 +1,23 @@
+# 本次固定范围审核响应（2026-09-09）
+
+|问题|原位置|措施与实际执行|证据|状态|剩余限制|
+|---|---|---|---|---|---|
+|A 扩展网格区间|diagnostic results|复用20组原/扩展预测，精确对齐，360行配对；空块和零差保留|fixed_period_review/results/expanded_*|完成|条件时间区间，不含重训|
+|B1 负值依据|_valid_power|官方资料及代码复核，撤回“合理性已确认”暗示|DATA_SOURCE_REVIEW.md|部分完成|无全负值无效的提供方依据|
+|B2 训练支持|Alice/Ridge窗口代码|三个阵列Train/Val实际起报及小时/功率组成|*_training_support.csv; *_training_hours.csv|完成|保留神经与Ridge不同origin规则|
+|B3–B5 恢复起报评分|原36checkpoint|36加载/前向；S1/S2支持已算；20未过历史数值容差，不发布正式新评分|Alice_replay_summary.csv; *_support_only.csv|部分完成|需修复原前向复现；Fig.3实际误差补充未完成|
+|C 固定次年|2017外部权重|先记录计划，下载94缓冲日，6个神经+8个Ridge原预测复现后评价2018|*_2017_REPLAY.json; *_2018_*|完成|运行日志不完整；非全年/新场址泛化|
+|D 论文与图件|main/Supplement|扩展区间、原/扩展主表、新时期结果和对应反例|fixed_period_figures; manuscript changelog|部分完成|不把B未接受评分写成完成|
+|投稿判断|JOURNAL_STRATEGY_CN|主题适配与CAS待核实分开|官方URL及查询日期|完成|先科学复现修复，再最终定刊|
+
+以下旧矩阵仅作历史记录；其中“合理保留”不应解释为负值规则已获提供方证明。
+
 # 审核响应矩阵（P01–P06，本轮）
 
 |问题|原位置/影响|实际修改|本轮证据|状态|剩余限制|
 |---|---|---|---|---|---|
 |P01|旧Ridge与摘要，异常值未解释|真实矩阵诊断、统一扩展网格、旧新并列|ridge_*、expanded_*、NIST QR|完成诊断|特征贡献不是因果干预；新网格区间未算|
-|P02|common-origin与fixed-lead解释|三split排除机制、重叠/互斥、唯一时间戳|qcells_*及ALIGNMENT|完成诊断，原规则合理保留于冻结结果|负值语义需提供方依据，变更或涉及下一轮拟合|
+|P02|common-origin与fixed-lead解释|三split排除机制、重叠/互斥、唯一时间戳|qcells_*及ALIGNMENT|历史诊断完成；原规则仅为可追溯而保留，合理性未确认|负值语义需提供方依据，变更或涉及下一轮拟合|
 |P03|新Ridge无时间区间|五系统原网格48h及24/72h配对|270行+块SSE独立复算|完成|观察期条件性，不包括重训|
 |P04|旧排名过强|摘要/结果/补充重排，解释前置|main/supp及CHANGELOG|完成|不宣称新架构或零样本|
 |P05|全部图件小字、编码与支持|20图重绘，PDF/SVG/320dpi/source/alt|FIGURE_QA与最终PDF检查|以FIGURE_QA实际检查为准|审美可继续精修，不能替代科学限制|
